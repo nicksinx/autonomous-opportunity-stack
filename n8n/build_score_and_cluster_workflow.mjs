@@ -572,12 +572,10 @@ const wf = {
       main: [[{ node: "20. Build run log rows", type: "main", index: 0 }]],
     },
     "20. Build run log rows": {
-      main: [
-        [
-          { node: "21. Insert stage_run_logs", type: "main", index: 0 },
-          { node: "22. Insert workflow_runs", type: "main", index: 0 },
-        ],
-      ],
+      main: [[{ node: "22. Insert workflow_runs", type: "main", index: 0 }]],
+    },
+    "22. Insert workflow_runs": {
+      main: [[{ node: "21. Insert stage_run_logs", type: "main", index: 0 }]],
     },
   },
   settings: {

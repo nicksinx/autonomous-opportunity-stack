@@ -65,9 +65,9 @@ const stage_rows = [
   { log_id: 'slog_wf_publish_queue_enqueue_'+Date.now()+'_start', run_id, workflow_name:'wf_publish_queue', stage_name:'enqueue', event_type:'start', started_at:nowIso, ended_at:null, duration_ms:null, rows_in:briefs.length, rows_out:0, error_count:0, status:'running', error_summary:'', attempt_number:1, parent_log_id:null, metadata_json:null },
   { log_id: 'slog_wf_publish_queue_enqueue_'+Date.now()+'_end',   run_id, workflow_name:'wf_publish_queue', stage_name:'enqueue', event_type:'end',   started_at:nowIso, ended_at:new Date().toISOString(), duration_ms:0, rows_in:briefs.length, rows_out:queue_rows.length, error_count:0, status:'success', error_summary:'', attempt_number:1, parent_log_id:null, metadata_json:{ enqueued: queue_rows.length } },
 ];
-const workflow_rows = [{ run_id, run_started:nowIso, run_finished:new Date().toISOString(), job_name:'wf_publish_queue', rows_added:queue_rows.length, rows_updated:0, status:'success', error_log:'', sources_summary_json:{ briefs:briefs.length, enqueued:queue_rows.length }, stage_log_root_id:null }];
+const workflow_runs_rows = [{ run_id, run_started:nowIso, run_finished:new Date().toISOString(), job_name:'wf_publish_queue', rows_added:queue_rows.length, rows_updated:0, status:'success', error_log:'', sources_summary_json:{ briefs:briefs.length, enqueued:queue_rows.length }, stage_log_root_id:null }];
 
-return [{ json: { run_id, queue_rows, stage_rows, workflow_rows } }];`;
+return [{ json: { run_id, queue_rows, stage_rows, workflow_runs_rows } }];`;
 
 // --------------------------------------------------------------------------
 // SQL: single executeQuery handles both insert and the bump-on-existing case.
@@ -169,6 +169,7 @@ const wf = {
      AND wo.processed_at >= NOW() - INTERVAL '24 hours'
 ) q`,
       }),
+      alwaysOutputData: true,
       id: "q9-102", name: "2. Read publish candidates", position: [220, 480],
     },
     {
@@ -180,7 +181,9 @@ const wf = {
       ...pgNode({
         operation: "executeQuery",
         query: sqlUpsertQueue,
-        parameters: ["={{ JSON.stringify($json.queue_rows || []) }}"],
+        parameters: [
+          "={{ JSON.stringify($('3. Build queue upsert payload').first().json.queue_rows || []) }}",
+        ],
       }),
       id: "q9-104", name: "4. Upsert publishing_queue", position: [660, 480],
     },
@@ -196,7 +199,9 @@ const wf = {
       ...pgNode({
         operation: "executeQuery",
         query: sqlInsertWorkflowRun,
-        parameters: ["={{ JSON.stringify($('3. Build queue upsert payload').first().json.workflow_rows || []) }}"],
+        parameters: [
+          "={{ JSON.stringify($json.workflow_runs_rows || []) }}",
+        ],
       }),
       id: "q9-106", name: "6. Insert workflow_runs", position: [880, 580],
     },
@@ -205,11 +210,13 @@ const wf = {
     "1. Schedule Trigger": { main: [[{ node: "2. Read publish candidates", type: "main", index: 0 }]] },
     "2. Read publish candidates": { main: [[{ node: "3. Build queue upsert payload", type: "main", index: 0 }]] },
     "3. Build queue upsert payload": {
-      main: [[
-        { node: "4. Upsert publishing_queue", type: "main", index: 0 },
-        { node: "5. Insert stage_run_logs", type: "main", index: 0 },
-        { node: "6. Insert workflow_runs", type: "main", index: 0 },
-      ]],
+      main: [[{ node: "6. Insert workflow_runs", type: "main", index: 0 }]],
+    },
+    "6. Insert workflow_runs": {
+      main: [[{ node: "4. Upsert publishing_queue", type: "main", index: 0 }]],
+    },
+    "4. Upsert publishing_queue": {
+      main: [[{ node: "5. Insert stage_run_logs", type: "main", index: 0 }]],
     },
   },
   settings: { executionOrder: "v1", timezone: "Europe/London", errorWorkflow: "q9000009-0009-4009-8009-000000000001" },

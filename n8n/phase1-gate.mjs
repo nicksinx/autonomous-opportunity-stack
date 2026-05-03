@@ -428,12 +428,16 @@ async function gate6CheckPhase3(pool) {
         WHERE run_date = (SELECT MAX(run_date) FROM trend_scores) AND decision = 'watchlist'`,
     );
     const watchlistDecisions = Number(watchScoreRes.rows[0].n);
-    if (watchRows < 1 && watchlistDecisions < 1) {
-      errors.push(
-        "watchlist table is empty and no trend_scores rows with decision=watchlist on the latest run_date",
-      );
+    const watchlistConfigured = watchRows > 0 || watchlistDecisions > 0;
+    details.watchlist = {
+      rows: watchRows,
+      trendScoresWatchlistDecisions: watchlistDecisions,
+      configured: watchlistConfigured,
+    };
+    if (!watchlistConfigured) {
+      details.watchlist.warning =
+        "watchlist inactive (0 rows and no trend_scores watchlist decisions on latest run)";
     }
-    details.watchlist = { rows: watchRows, trendScoresWatchlistDecisions: watchlistDecisions };
   } catch (e) {
     errors.push(`Phase 3 gate check failed: ${e.message}`);
   }

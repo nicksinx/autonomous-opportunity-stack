@@ -1,6 +1,6 @@
 # Layer 2 Readiness Report
 
-Generated: 2026-05-03T16:30:54.684Z  |  Repo HEAD: ?  |  Verdict: **READY**
+Generated: 2026-05-03T17:14:09.123Z  |  Repo HEAD: edb28141b96e  |  Verdict: **READY**
 
 Flags: `--run-tests`, `--sections`
 
@@ -27,8 +27,8 @@ Flags: `--run-tests`, `--sections`
 | `must.contract.source_type_seeded` | sources_config seeded mapping correct (DB) | PASS | amazon_movers->marketplace, csv_upload->csv, etsy_autocomplete->marketplace, google_kw_planner->search, google_trends->search, pinterest_trends->social, tiktok_creative->social |  |
 | `must.workflow.no_hardcoded_sources` | scorer hot path has no hardcoded source_name string switches | PASS | no JS-level source-name switches in scorer hot path |  |
 | `must.workflow.cluster_members_written` | wf_score_and_cluster writes cluster_members_v2 | PASS | INSERT INTO cluster_members_v2 present; trend_cluster_v2=0, cluster_members_v2=0 |  |
-| `must.workflow.scoring_run_per_execution` | wf_score_and_cluster opens one scoring_runs row per execution | PASS | scoring_runs INSERT + RETURNING present; scoring_runs(7d)=9 |  |
-| `must.workflow.outbox_events_in_scorer` | wf_score_and_cluster emits workflow_outbox events | PASS | SQL present; outbox(7d)={"opportunity_needs_review":10,"opportunity_scored":10} |  |
+| `must.workflow.scoring_run_per_execution` | wf_score_and_cluster opens one scoring_runs row per execution | PASS | scoring_runs INSERT + RETURNING present; scoring_runs(7d)=16 |  |
+| `must.workflow.outbox_events_in_scorer` | wf_score_and_cluster emits workflow_outbox events | PASS | SQL present; outbox(7d)={"opportunity_needs_review":130,"opportunity_scored":130} |  |
 | `must.workflow.no_mirror_writes` | no dual_write_mirror_log writes in any wf_*.json | PASS | no wf_*.json file mentions dual_write_mirror_log |  |
 | `must.workflow.publish_queue_consumes_outbox` | wf_publish_queue reads from workflow_outbox; no fallback_scores CTE | PASS | wf_publish_queue reads outbox, no fallback_scores |  |
 | `must.workflow.outbox_publisher_present` | services/outbox-publisher exists and npm script registered | PASS | publisher and npm run outbox:publish present |  |

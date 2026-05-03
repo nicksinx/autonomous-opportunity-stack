@@ -39,15 +39,40 @@ async function dispatch(client, row) {
     ON CONFLICT DO NOTHING`,
     [
       logId,
-      String(row.aggregate_id || "outbox"),
+      null,
       "outbox_publisher",
       "dispatch",
-      String(row.event_type || "event"),
+      "start",
       "success",
       JSON.stringify({
         event_id: row.event_id,
         aggregate_type: row.aggregate_type,
         schema_version: row.schema_version,
+        outbox_event_type: row.event_type,
+      }),
+    ],
+  );
+  await client.query(
+    `INSERT INTO stage_run_logs (
+      log_id, run_id, workflow_name, stage_name, event_type,
+      started_at, ended_at, duration_ms, rows_in, rows_out,
+      error_count, status, error_summary, attempt_number,
+      parent_log_id, metadata_json
+    ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), 0, 1, 1, 0, $6, '', 1, $7, $8::jsonb)
+    ON CONFLICT DO NOTHING`,
+    [
+      `${logId}_end`,
+      null,
+      "outbox_publisher",
+      "dispatch",
+      "end",
+      "success",
+      logId,
+      JSON.stringify({
+        event_id: row.event_id,
+        aggregate_type: row.aggregate_type,
+        schema_version: row.schema_version,
+        outbox_event_type: row.event_type,
       }),
     ],
   );
@@ -101,6 +126,31 @@ async function cycle(p) {
             : `UPDATE workflow_outbox SET status = 'pending', retry_count = $2 WHERE event_id = $1`,
           [row.event_id, next],
         );
+        await p.query(
+          `INSERT INTO stage_run_logs (
+            log_id, run_id, workflow_name, stage_name, event_type,
+            started_at, ended_at, duration_ms, rows_in, rows_out,
+            error_count, status, error_summary, attempt_number,
+            parent_log_id, metadata_json
+          ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), 0, 1, 0, 1, $6, $7, $8, NULL, $9::jsonb)
+          ON CONFLICT DO NOTHING`,
+          [
+            `outbox_${row.event_id}_error_${Date.now()}`,
+            null,
+            "outbox_publisher",
+            "dispatch",
+            "error",
+            dead ? "error" : "warn",
+            String(e?.message || e),
+            next,
+            JSON.stringify({
+              event_id: row.event_id,
+              aggregate_type: row.aggregate_type,
+              outbox_event_type: row.event_type,
+              deadletter: dead,
+            }),
+          ],
+        ).catch(() => {});
         console.error("outbox dispatch failed", row.event_id, e?.message || e);
       } finally {
         c2.release();

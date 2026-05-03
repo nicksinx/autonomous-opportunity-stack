@@ -441,15 +441,18 @@ const candidates_evaluated = opportunity_candidate_upsert.length;
 const audit_row = {
   audit_id: "aud_" + runDate + "_" + run_id,
   run_date: runDate,
-  run_id,
+  // scoring_audit_log.run_id references workflow_runs(run_id); that row is
+  // inserted at the end of the workflow, so keep this nullable.
+  run_id: null,
   candidates_evaluated,
-  // Lowercase keys: jsonb_to_recordset matches by Postgres-folded identifier
-  // names. The columns in scoring_audit_log are case-insensitively
-  // tier_a_count/tier_b_count/tier_c_count (DDL uses tier_A_count but Postgres
-  // folds unquoted identifiers to lower case), so the JSON keys must follow.
+  // Emit both lowercase and DDL-style key variants to stay compatible with
+  // any stale imported workflow mapping during transition.
   tier_a_count: tier_A_count,
   tier_b_count: tier_B_count,
   tier_c_count: tier_C_count,
+  tier_A_count: tier_A_count,
+  tier_B_count: tier_B_count,
+  tier_C_count: tier_C_count,
   rejected_count,
   avg_opportunity_score: candidates_evaluated ? round1(scoreSum / candidates_evaluated) : 0,
   top_opportunity: topKeyword,
