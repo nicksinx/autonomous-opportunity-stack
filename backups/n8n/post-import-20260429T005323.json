@@ -1,0 +1,228 @@
+{
+  "source": "api:live",
+  "workflows": 19,
+  "activeWorkflows": 8,
+  "activeWithGoogleSheets": 0,
+  "activeWfTargets": 7,
+  "duplicateActiveNames": [],
+  "rows": [
+    {
+      "name": "Contract Ingestion Pipeline",
+      "id": "RdbVFq2pTN9WEFpq",
+      "active": true,
+      "postgres": 0,
+      "googleSheets": 0,
+      "code": 6,
+      "http": 4,
+      "postgresCredentialNames": []
+    },
+    {
+      "name": "My workflow",
+      "id": "hd0bYSEmZsUYvjsn",
+      "active": false,
+      "postgres": 0,
+      "googleSheets": 0,
+      "code": 0,
+      "http": 0,
+      "postgresCredentialNames": []
+    },
+    {
+      "name": "wf_collect_trends",
+      "id": "AsORoSwQOE4ABSmb",
+      "active": true,
+      "postgres": 5,
+      "googleSheets": 0,
+      "code": 11,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_collect_trends — Error Handler",
+      "id": "yY38I7zLX0KqVBA9",
+      "active": false,
+      "postgres": 1,
+      "googleSheets": 0,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_enrich_marketplace",
+      "id": "0jY0awmaJn8RMY8q",
+      "active": true,
+      "postgres": 5,
+      "googleSheets": 0,
+      "code": 3,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_enrich_marketplace — Error Handler",
+      "id": "TS0ub3Nc0oHRqhUV",
+      "active": false,
+      "postgres": 1,
+      "googleSheets": 0,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_generate_range_briefs",
+      "id": "HfUHI8bSMxO6KzFU",
+      "active": true,
+      "postgres": 4,
+      "googleSheets": 0,
+      "code": 5,
+      "http": 1,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_generate_range_briefs — Error Handler",
+      "id": "8qEKHsdsmszGSn4W",
+      "active": false,
+      "postgres": 1,
+      "googleSheets": 0,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_ingest_performance_feedback",
+      "id": "f9000009-f009-4009-8009-000000000002",
+      "active": true,
+      "postgres": 4,
+      "googleSheets": 0,
+      "code": 5,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_normalize_terms",
+      "id": "b2000002-0002-4002-8002-000000000002",
+      "active": true,
+      "postgres": 8,
+      "googleSheets": 0,
+      "code": 10,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_normalize_terms — Error Handler",
+      "id": "TMtQCsIrYBjBPuuu",
+      "active": false,
+      "postgres": 0,
+      "googleSheets": 1,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": []
+    },
+    {
+      "name": "wf_normalize_terms — Error Handler",
+      "id": "b2000002-0002-4002-8002-000000000001",
+      "active": false,
+      "postgres": 1,
+      "googleSheets": 0,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_phrase_expansion",
+      "id": "COtkbdAHy4HWEhh7",
+      "active": false,
+      "postgres": 2,
+      "googleSheets": 0,
+      "code": 4,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_publish_queue",
+      "id": "WcJaRbT1v4GE1Dv9",
+      "active": true,
+      "postgres": 4,
+      "googleSheets": 0,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_publish_queue — Error Handler",
+      "id": "iDVs9G6KzfsYnchS",
+      "active": false,
+      "postgres": 1,
+      "googleSheets": 0,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_score_and_cluster",
+      "id": "d4000004-0004-4004-8004-000000000002",
+      "active": true,
+      "postgres": 13,
+      "googleSheets": 0,
+      "code": 5,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_score_and_cluster — Error Handler",
+      "id": "QH79tUGvWoFe25Mq",
+      "active": false,
+      "postgres": 0,
+      "googleSheets": 1,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": []
+    },
+    {
+      "name": "wf_score_and_cluster — Error Handler",
+      "id": "d4000004-0004-4004-8004-000000000001",
+      "active": false,
+      "postgres": 1,
+      "googleSheets": 0,
+      "code": 1,
+      "http": 0,
+      "postgresCredentialNames": [
+        "Postgres - POD Research"
+      ]
+    },
+    {
+      "name": "wf_score_and_cluster (legacy-sheets)",
+      "id": "FzwunYIiBc76MFJp",
+      "active": false,
+      "postgres": 0,
+      "googleSheets": 12,
+      "code": 11,
+      "http": 0,
+      "postgresCredentialNames": []
+    }
+  ]
+}

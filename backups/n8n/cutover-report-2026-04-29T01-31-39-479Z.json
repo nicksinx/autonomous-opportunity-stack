@@ -1,0 +1,311 @@
+{
+  "generatedAt": "2026-04-29T01:31:39.478Z",
+  "supersedes": "cutover-report-2026-04-29T00-52-01-324Z.json",
+  "objective": "Postgres cutover Steps 11-15 refresh after successful Step 10 chain",
+  "artifacts": {
+    "baselineFile": "baseline-2026-04-28T23-32-08-527Z.json",
+    "structuralFile": "structural-verify-2026-04-29T00-46-54-425Z.json",
+    "step10File": "step10-execution-chain-2026-04-29T01-28-16-512Z.json",
+    "step11File": "step11-postgres-verification-2026-04-29T01-31-05-069Z.json",
+    "importFile": "import-results-20260429T005304.json"
+  },
+  "importedWorkflowIds": [
+    {
+      "name": "wf_collect_trends — Error Handler",
+      "id": "yY38I7zLX0KqVBA9",
+      "action": "updated"
+    },
+    {
+      "name": "wf_collect_trends",
+      "id": "AsORoSwQOE4ABSmb",
+      "action": "updated"
+    },
+    {
+      "name": "wf_enrich_marketplace — Error Handler",
+      "id": "TS0ub3Nc0oHRqhUV",
+      "action": "updated"
+    },
+    {
+      "name": "wf_enrich_marketplace",
+      "id": "0jY0awmaJn8RMY8q",
+      "action": "updated"
+    },
+    {
+      "name": "wf_generate_range_briefs — Error Handler",
+      "id": "8qEKHsdsmszGSn4W",
+      "action": "updated"
+    },
+    {
+      "name": "wf_generate_range_briefs",
+      "id": "HfUHI8bSMxO6KzFU",
+      "action": "updated"
+    },
+    {
+      "name": "wf_phrase_expansion",
+      "id": "COtkbdAHy4HWEhh7",
+      "action": "updated"
+    },
+    {
+      "name": "wf_ingest_performance_feedback",
+      "id": "f9000009-f009-4009-8009-000000000002",
+      "action": "updated"
+    },
+    {
+      "name": "wf_normalize_terms — Error Handler",
+      "id": "b2000002-0002-4002-8002-000000000001",
+      "action": "updated"
+    },
+    {
+      "name": "wf_normalize_terms",
+      "id": "b2000002-0002-4002-8002-000000000002",
+      "action": "updated"
+    },
+    {
+      "name": "wf_publish_queue — Error Handler",
+      "id": "iDVs9G6KzfsYnchS",
+      "action": "updated"
+    },
+    {
+      "name": "wf_publish_queue",
+      "id": "WcJaRbT1v4GE1Dv9",
+      "action": "updated"
+    },
+    {
+      "name": "wf_score_and_cluster — Error Handler",
+      "id": "d4000004-0004-4004-8004-000000000001",
+      "action": "updated"
+    },
+    {
+      "name": "wf_score_and_cluster",
+      "id": "d4000004-0004-4004-8004-000000000002",
+      "action": "updated"
+    }
+  ],
+  "step10Summary": {
+    "status": "PASS",
+    "path": "step10-execution-chain-2026-04-29T01-28-16-512Z.json",
+    "executions": [
+      {
+        "name": "wf_collect_trends",
+        "workflowId": "AsORoSwQOE4ABSmb",
+        "executionId": "113",
+        "startTime": "2026-04-29T01:28:17.707Z",
+        "stopTime": "2026-04-29T01:28:44.305Z",
+        "terminalStatus": "success",
+        "n8nStartedAt": "2026-04-29T01:28:17.887Z",
+        "n8nStoppedAt": "2026-04-29T01:28:40.921Z"
+      },
+      {
+        "name": "wf_normalize_terms",
+        "workflowId": "b2000002-0002-4002-8002-000000000002",
+        "executionId": "114",
+        "startTime": "2026-04-29T01:28:44.305Z",
+        "stopTime": "2026-04-29T01:28:44.489Z",
+        "terminalStatus": "success",
+        "n8nStartedAt": "2026-04-29T01:28:44.371Z",
+        "n8nStoppedAt": "2026-04-29T01:28:44.433Z"
+      },
+      {
+        "name": "wf_enrich_marketplace",
+        "workflowId": "0jY0awmaJn8RMY8q",
+        "executionId": "115",
+        "startTime": "2026-04-29T01:28:44.490Z",
+        "stopTime": "2026-04-29T01:28:44.673Z",
+        "terminalStatus": "success",
+        "n8nStartedAt": "2026-04-29T01:28:44.566Z",
+        "n8nStoppedAt": "2026-04-29T01:28:44.582Z"
+      },
+      {
+        "name": "wf_score_and_cluster",
+        "workflowId": "d4000004-0004-4004-8004-000000000002",
+        "executionId": "116",
+        "startTime": "2026-04-29T01:28:44.674Z",
+        "stopTime": "2026-04-29T01:28:44.852Z",
+        "terminalStatus": "success",
+        "n8nStartedAt": "2026-04-29T01:28:44.722Z",
+        "n8nStoppedAt": "2026-04-29T01:28:44.746Z"
+      },
+      {
+        "name": "wf_publish_queue",
+        "workflowId": "WcJaRbT1v4GE1Dv9",
+        "executionId": "117",
+        "startTime": "2026-04-29T01:28:44.853Z",
+        "stopTime": "2026-04-29T01:28:44.978Z",
+        "terminalStatus": "success",
+        "n8nStartedAt": "2026-04-29T01:28:44.891Z",
+        "n8nStoppedAt": "2026-04-29T01:28:44.905Z"
+      }
+    ]
+  },
+  "checkpoints": {
+    "step11_postgres_data_verification": {
+      "status": "FAIL",
+      "reason": "Not all target workflows wrote success rows to workflow_runs since Step 10 anchor",
+      "details": {
+        "timestamp": "2026-04-29T01:31:05.068Z",
+        "anchor": "2026-04-29T01:28:17.887Z",
+        "workflow_runs_since_anchor": [
+          {
+            "job_name": "wf_collect_trends",
+            "status": "success",
+            "run_started": "2026-04-29T01:28:17.945Z",
+            "run_finished": "2026-04-29T01:28:27.412Z"
+          },
+          {
+            "job_name": "wf_collect_trends",
+            "status": "success",
+            "run_started": "2026-04-29T01:21:28.992Z",
+            "run_finished": "2026-04-29T01:21:29.885Z"
+          }
+        ],
+        "table_counts": [
+          {
+            "tbl": "raw_signals",
+            "n": 21
+          },
+          {
+            "tbl": "normalized_terms",
+            "n": 0
+          },
+          {
+            "tbl": "marketplace_evidence",
+            "n": 0
+          },
+          {
+            "tbl": "opportunity_scores",
+            "n": 0
+          },
+          {
+            "tbl": "publishing_queue",
+            "n": 0
+          }
+        ]
+      }
+    },
+    "step12_mirror_consistency": {
+      "status": "PASS",
+      "details": "npm run n8n:check-mirror OVERALL: PASS"
+    },
+    "step13_confirm_sheets_no_writes": {
+      "status": "MANUAL_PENDING",
+      "reason": "Drive API check blocked by invalid OAuth token (401); requires Google Sheets UI timestamp check before/after run."
+    },
+    "step14_lockdown_sheets_access": {
+      "status": "MANUAL_PENDING",
+      "reason": "Requires owner/admin change in Google Drive permissions after Step 13 pass."
+    },
+    "step15_final_report": {
+      "status": "UPDATED",
+      "path": "cutover-report-2026-04-29T01-31-39-479Z.json"
+    }
+  },
+  "baselineVsFinalNodeTypeCounts": {
+    "baseline": {
+      "activeWorkflows": 9,
+      "activeWithGoogleSheets": 8,
+      "duplicateActiveNames": [
+        {
+          "name": "wf_score_and_cluster",
+          "count": 2
+        }
+      ]
+    },
+    "final": {
+      "activeWfWithGoogleSheets": 0,
+      "targetStatuses": [
+        {
+          "id": "0jY0awmaJn8RMY8q",
+          "name": "wf_enrich_marketplace",
+          "active": true,
+          "postgres": 5,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        },
+        {
+          "id": "AsORoSwQOE4ABSmb",
+          "name": "wf_collect_trends",
+          "active": true,
+          "postgres": 5,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        },
+        {
+          "id": "COtkbdAHy4HWEhh7",
+          "name": "wf_phrase_expansion",
+          "active": true,
+          "postgres": 2,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        },
+        {
+          "id": "HfUHI8bSMxO6KzFU",
+          "name": "wf_generate_range_briefs",
+          "active": true,
+          "postgres": 4,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        },
+        {
+          "id": "WcJaRbT1v4GE1Dv9",
+          "name": "wf_publish_queue",
+          "active": true,
+          "postgres": 4,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        },
+        {
+          "id": "b2000002-0002-4002-8002-000000000002",
+          "name": "wf_normalize_terms",
+          "active": true,
+          "postgres": 8,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        },
+        {
+          "id": "d4000004-0004-4004-8004-000000000002",
+          "name": "wf_score_and_cluster",
+          "active": true,
+          "postgres": 13,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        },
+        {
+          "id": "f9000009-f009-4009-8009-000000000002",
+          "name": "wf_ingest_performance_feedback",
+          "active": true,
+          "postgres": 4,
+          "googleSheets": 0,
+          "postgresCredentialNames": [
+            "Postgres - POD Research"
+          ]
+        }
+      ],
+      "pass": {
+        "noActiveWfGoogleSheets": true,
+        "allTargetsHavePostgres": true,
+        "allTargetsUsePodResearchCred": true,
+        "oneActivePerTarget": true
+      }
+    }
+  },
+  "overallStatus": "TECHNICAL_PARTIAL_MANUAL_PENDING",
+  "nextActions": [
+    "Investigate why only wf_collect_trends writes workflow_runs while downstream workflows show success executions but no workflow_runs rows.",
+    "Re-run Step 11 after fixing workflow_runs writes for normalize/enrich/score/publish.",
+    "Then complete manual Steps 13 and 14."
+  ]
+}

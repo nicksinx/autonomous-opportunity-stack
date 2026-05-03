@@ -1,0 +1,628 @@
+{
+  "generatedAt": "2026-04-29T10:12:36.778Z",
+  "sourceStep10Artifact": "backups/n8n/step10-execution-chain-2026-04-29T10-10-57-860Z.json",
+  "executions": [
+    {
+      "name": "wf_collect_trends",
+      "workflowId": "AsORoSwQOE4ABSmb",
+      "executionId": "169",
+      "ok": true,
+      "status": "success",
+      "workflowName": "wf_collect_trends",
+      "startedAt": "2026-04-29T10:10:58.651Z",
+      "stoppedAt": "2026-04-29T10:11:19.436Z",
+      "errorSummary": null,
+      "lastNodeExecuted": "Filter validated rows",
+      "nodeClues": [
+        {
+          "nodeName": "Schedule Trigger (06:00 Europe/London)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Set Run Metadata",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Split Out — fan-out to parallel branches",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 3,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "If — route Google Trends branch",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 3,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Google Trends — daily rising queries",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 10,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Merge branch outputs",
+          "runs": 3,
+          "lastExecutionStatus": "success",
+          "itemCount": 10,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Deduplicate signals",
+          "runs": 3,
+          "lastExecutionStatus": "success",
+          "itemCount": 10,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Validate raw_signals contract",
+          "runs": 3,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Filter validated rows",
+          "runs": 3,
+          "lastExecutionStatus": "success",
+          "itemCount": 0,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append raw_signals (batch)",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 10,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build run log",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append workflow_runs (success)",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build source_health rows",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 3,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append source_health",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 3,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build stage_run_logs",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 2,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append stage_run_logs",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 2,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build raw_signals mirror rows",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append dual_write_mirror_log (raw_signals)",
+          "runs": 2,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "If — route Etsy branch",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 3,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Etsy Autocomplete — buyer intent (Phase-2 seeds)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 10,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "If — route Pinterest branch",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 3,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Pinterest Trends — typeahead per seed",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 10,
+          "hasError": false,
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "name": "wf_normalize_terms",
+      "workflowId": "b2000002-0002-4002-8002-000000000002",
+      "executionId": "170",
+      "ok": true,
+      "status": "success",
+      "workflowName": "wf_normalize_terms",
+      "startedAt": "2026-04-29T10:11:19.596Z",
+      "stoppedAt": "2026-04-29T10:11:19.768Z",
+      "errorSummary": null,
+      "lastNodeExecuted": "Append stage_run_logs",
+      "nodeClues": [
+        {
+          "nodeName": "Schedule Trigger",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Read raw_signals",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 42,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Read normalized_terms",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1722,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build normalized terms",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "IF — Has rows?",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build no-rows run log",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append workflow_runs (success)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build normalized_terms mirror rows",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append dual_write_mirror_log (normalized_terms)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build normalization_log rows",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 42,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Filter normalization_log rows",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 42,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append normalization_log",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 42,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build watchlist rows",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Filter watchlist rows",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 0,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build stage_run_logs",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 2,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append stage_run_logs",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 2,
+          "hasError": false,
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "name": "wf_enrich_marketplace",
+      "workflowId": "0jY0awmaJn8RMY8q",
+      "executionId": "171",
+      "ok": true,
+      "status": "success",
+      "workflowName": "wf_enrich_marketplace",
+      "startedAt": "2026-04-29T10:11:24.900Z",
+      "stoppedAt": "2026-04-29T10:11:26.637Z",
+      "errorSummary": null,
+      "lastNodeExecuted": "Append workflow_runs (success)",
+      "nodeClues": [
+        {
+          "nodeName": "Schedule Trigger",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Read raw_signals",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 42,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Read normalized_terms",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1722,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Read marketplace_evidence",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 70602,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build marketplace evidence",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "IF — Has rows?",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Build no-rows run log",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "Append workflow_runs (success)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "name": "wf_score_and_cluster",
+      "workflowId": "d4000004-0004-4004-8004-000000000002",
+      "executionId": "172",
+      "ok": true,
+      "status": "success",
+      "workflowName": "wf_score_and_cluster",
+      "startedAt": "2026-04-29T10:11:30.345Z",
+      "stoppedAt": "2026-04-29T10:11:47.666Z",
+      "errorSummary": null,
+      "lastNodeExecuted": "13. Has Tier A opportunities?",
+      "nodeClues": [
+        {
+          "nodeName": "1. Schedule Trigger — 07:00 Europe/London daily",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "2. Read normalized_terms (active)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 41,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "3. Read raw_signals (today)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1722,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "4. Read marketplace_evidence (7d)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 70602,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "5. Read score_weights (enabled)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 635418,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "6. Merge signals per canonical_id",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 41,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "7. Score all candidates",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "17. Build run log + mirror rows",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "20. Insert workflow_runs",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "8. Insert opportunity_scores",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "9. Insert trend_scores",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "10. Insert score_components",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "11. Upsert normalized_terms scores",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "18. Insert stage_run_logs",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "12. Insert scoring_audit_log",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "19. Insert dual_write_mirror_log",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "13. Has Tier A opportunities?",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        }
+      ]
+    },
+    {
+      "name": "wf_publish_queue",
+      "workflowId": "WcJaRbT1v4GE1Dv9",
+      "executionId": "173",
+      "ok": true,
+      "status": "success",
+      "workflowName": "wf_publish_queue",
+      "startedAt": "2026-04-29T10:11:57.287Z",
+      "stoppedAt": "2026-04-29T10:11:57.374Z",
+      "errorSummary": null,
+      "lastNodeExecuted": "4. Upsert publishing_queue",
+      "nodeClues": [
+        {
+          "nodeName": "1. Schedule Trigger",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "2. Read range_briefs (publishable)",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 3,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "3. Build queue upsert payload",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "6. Insert workflow_runs",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "5. Insert stage_run_logs",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        },
+        {
+          "nodeName": "4. Upsert publishing_queue",
+          "runs": 1,
+          "lastExecutionStatus": "success",
+          "itemCount": 1,
+          "hasError": false,
+          "errorMessage": null
+        }
+      ]
+    }
+  ]
+}

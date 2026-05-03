@@ -1,0 +1,1372 @@
+[
+  {
+    "id": "0jY0awmaJn8RMY8q",
+    "name": "wf_enrich_marketplace",
+    "active": true,
+    "createdAt": "2026-04-28T00:20:19.482Z",
+    "updatedAt": "2026-04-28T23:53:06.011Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "errorWorkflow": "TS0ub3Nc0oHRqhUV",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "8qEKHsdsmszGSn4W",
+    "name": "wf_generate_range_briefs — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T00:20:19.629Z",
+    "updatedAt": "2026-04-28T23:53:06.186Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "AsORoSwQOE4ABSmb",
+    "name": "wf_collect_trends",
+    "active": true,
+    "createdAt": "2026-04-28T00:20:18.367Z",
+    "updatedAt": "2026-04-28T23:53:05.626Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.splitOut",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.merge",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "timezone": "Europe/London",
+      "errorWorkflow": "yY38I7zLX0KqVBA9",
+      "binaryMode": "separate",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "COtkbdAHy4HWEhh7",
+    "name": "wf_phrase_expansion",
+    "active": true,
+    "createdAt": "2026-04-28T00:20:20.128Z",
+    "updatedAt": "2026-04-28T23:53:06.355Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.webhook",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.respondToWebhook",
+        "credentials": []
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "FzwunYIiBc76MFJp",
+    "name": "wf_score_and_cluster (legacy-sheets)",
+    "active": false,
+    "createdAt": "2026-04-28T00:20:19.164Z",
+    "updatedAt": "2026-04-28T23:35:15.543Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "errorWorkflow": "d4000004-0004-4004-8004-000000000001",
+      "callerPolicy": "workflowsFromSameOwner",
+      "timeSavedMode": "fixed"
+    }
+  },
+  {
+    "id": "HfUHI8bSMxO6KzFU",
+    "name": "wf_generate_range_briefs",
+    "active": true,
+    "createdAt": "2026-04-28T00:20:19.837Z",
+    "updatedAt": "2026-04-28T23:53:06.252Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.splitInBatches",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.httpRequest",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "QH79tUGvWoFe25Mq",
+    "name": "wf_score_and_cluster — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T00:20:18.963Z",
+    "updatedAt": "2026-04-28T10:42:09.595Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "RdbVFq2pTN9WEFpq",
+    "name": "Contract Ingestion Pipeline",
+    "active": true,
+    "createdAt": "2026-04-23T23:24:11.334Z",
+    "updatedAt": "2026-04-24T00:23:36.664Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.webhook",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.httpRequest",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.noOp",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.httpRequest",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.httpRequest",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.httpRequest",
+        "credentials": []
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "saveDataErrorExecution": "all",
+      "saveDataSuccessExecution": "all",
+      "saveManualExecutions": true,
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "TMtQCsIrYBjBPuuu",
+    "name": "wf_normalize_terms — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T00:01:24.326Z",
+    "updatedAt": "2026-04-28T10:42:09.407Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.googleSheets",
+        "credentials": [
+          {
+            "type": "googleSheetsOAuth2Api",
+            "name": "Google Sheets account"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "TS0ub3Nc0oHRqhUV",
+    "name": "wf_enrich_marketplace — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T00:20:19.324Z",
+    "updatedAt": "2026-04-28T23:53:05.857Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  },
+  {
+    "id": "WcJaRbT1v4GE1Dv9",
+    "name": "wf_publish_queue",
+    "active": true,
+    "createdAt": "2026-04-28T03:46:38.457Z",
+    "updatedAt": "2026-04-28T23:53:06.894Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "errorWorkflow": "iDVs9G6KzfsYnchS",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "b2000002-0002-4002-8002-000000000001",
+    "name": "wf_normalize_terms — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T05:36:53.605Z",
+    "updatedAt": "2026-04-28T23:53:06.571Z",
+    "tags": [
+      "pod-research"
+    ],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "b2000002-0002-4002-8002-000000000002",
+    "name": "wf_normalize_terms",
+    "active": true,
+    "createdAt": "2026-04-28T04:58:13.261Z",
+    "updatedAt": "2026-04-28T23:53:06.714Z",
+    "tags": [
+      "pod-research"
+    ],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "errorWorkflow": "b2000002-0002-4002-8002-000000000001",
+      "binaryMode": "separate",
+      "timeSavedMode": "fixed",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "d4000004-0004-4004-8004-000000000001",
+    "name": "wf_score_and_cluster — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T05:36:52.645Z",
+    "updatedAt": "2026-04-28T23:53:07.132Z",
+    "tags": [
+      "pod-research"
+    ],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "d4000004-0004-4004-8004-000000000002",
+    "name": "wf_score_and_cluster",
+    "active": true,
+    "createdAt": "2026-04-28T05:36:52.652Z",
+    "updatedAt": "2026-04-28T23:53:07.286Z",
+    "tags": [
+      "pod-research"
+    ],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "errorWorkflow": "d4000004-0004-4004-8004-000000000001",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "f9000009-f009-4009-8009-000000000002",
+    "name": "wf_ingest_performance_feedback",
+    "active": true,
+    "createdAt": "2026-04-28T04:01:36.377Z",
+    "updatedAt": "2026-04-28T23:53:06.418Z",
+    "tags": [
+      "pod-research"
+    ],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.webhook",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.if",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.respondToWebhook",
+        "credentials": []
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "hd0bYSEmZsUYvjsn",
+    "name": "My workflow",
+    "active": false,
+    "createdAt": "2026-04-27T16:15:15.795Z",
+    "updatedAt": "2026-04-27T23:19:12.773Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.manualTrigger",
+        "credentials": []
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "binaryMode": "separate"
+    }
+  },
+  {
+    "id": "iDVs9G6KzfsYnchS",
+    "name": "wf_publish_queue — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T03:46:38.329Z",
+    "updatedAt": "2026-04-28T23:53:06.835Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    }
+  },
+  {
+    "id": "yY38I7zLX0KqVBA9",
+    "name": "wf_collect_trends — Error Handler",
+    "active": false,
+    "createdAt": "2026-04-28T00:01:24.194Z",
+    "updatedAt": "2026-04-28T23:53:05.467Z",
+    "tags": [],
+    "nodes": [
+      {
+        "type": "n8n-nodes-base.errorTrigger",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.code",
+        "credentials": []
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "credentials": [
+          {
+            "type": "postgres",
+            "name": "Postgres - POD Research"
+          }
+        ]
+      }
+    ],
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": false,
+      "binaryMode": "separate",
+      "timezone": "Europe/London",
+      "callerPolicy": "workflowsFromSameOwner"
+    }
+  }
+]

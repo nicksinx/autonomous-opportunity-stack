@@ -1,0 +1,72 @@
+{
+  "repo": "autonomous-ideas-signals",
+  "branch": "commit-changes",
+  "commit": "07967251434f33e0b0afb459052fef8d53e654aa",
+  "snapshot_date": "2026-04-28",
+  "canonical_sources": {
+    "stage_6_range_briefs": "n8n/wf_generate_range_briefs_and_phrase_expansion.json",
+    "legacy_range_briefs": "n8n/wf_generate_range_briefs.json"
+  },
+  "dependency_inventory": {
+    "package_manager_manifest": null,
+    "lockfile": null,
+    "sbom_status": "not_provided",
+    "sbom_reason": "The repository is a script-and-workflow repo without a package.json or lockfile. The runtime dependencies are external services (n8n, Google Sheets API, Anthropic API) rather than bundled packages.",
+    "external_services": [
+      "n8n",
+      "Google Sheets API",
+      "Anthropic API"
+    ]
+  },
+  "provenance": {
+    "release_artifact": "source repository snapshot",
+    "generated_from": [
+      "README.md",
+      "sprint-plan.md",
+      "setup_sheets.gs",
+      "n8n/wf_collect_trends.json",
+      "n8n/wf_normalize_terms.json",
+      "n8n/wf_score_and_cluster.json",
+      "n8n/build_score_and_cluster_workflow.mjs",
+      "n8n/wf_ingest_performance_feedback.json"
+    ]
+  },
+  "file_inventory": [
+    {
+      "path": "README.md",
+      "sha256": "61d7fc280af35f011f2d4f264a2a8ceeb38a487d60ba2e3b52e760bdd9c24929"
+    },
+    {
+      "path": "sprint-plan.md",
+      "sha256": "91baaf3f40debe9c764b1ad628254c2ee08a8e2c4cc961497ec6862682600497"
+    },
+    {
+      "path": "setup_sheets.gs",
+      "sha256": "366581eaa77593cdc7c0cef21c529c8cf36f174d0b340e0397d7fd349f6a0dd1"
+    },
+    {
+      "path": "n8n/wf_collect_trends.json",
+      "sha256": "3891522f2cb2632928bc30e0b5f869e789f920f5c675f4b2eb6725638ee622df"
+    },
+    {
+      "path": "n8n/wf_normalize_terms.json",
+      "sha256": "247bce56bb4968fbf70917317e77441ec94371add605a1f7a58f766a28840d36"
+    },
+    {
+      "path": "n8n/wf_score_and_cluster.json",
+      "sha256": "426d3c25496c97fdda82d9b1fe750100c84219b7da10c19bdf36c4ea27acd4db"
+    },
+    {
+      "path": "n8n/build_score_and_cluster_workflow.mjs",
+      "sha256": "b144f9d4d69e7c3981680df4cb7bdadad544c6545cccd2d51bc73ba93e2c4521"
+    },
+    {
+      "path": "n8n/wf_ingest_performance_feedback.json",
+      "sha256": "fe3c94439674dcc1860b4552da31289a12d1c95b52e2720365b3570b9978c42c"
+    }
+  ],
+  "verification": {
+    "workflow_validation": "node n8n/validate-workflows.mjs",
+    "notes": "Mirror consistency check retired in Phase 5 closeout; the dual_write_mirror_log table was renamed to *_legacy in db/migrations/0015_retire_dual_write_mirror_log.sql and is scheduled for DROP in a follow-up sprint."
+  }
+}

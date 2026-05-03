@@ -1,0 +1,764 @@
+[
+  {
+    "id": "c3000003-0003-4003-8003-000000000001",
+    "name": "wf_enrich_marketplace — Error Handler",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "c3000003-0003-4003-8003-000000000011",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j = $input.first().json;\nconst wfName = j.workflow?.name ?? 'unknown';\nconst msg = j.execution?.error?.message ?? String(j.execution?.error ?? 'Error');\nconst now = new Date().toISOString();\nreturn [{\n  json: {\n    run_id: `run_${wfName}_error_${Date.now()}`,\n    run_started: now,\n    run_finished: now,\n    job_name: wfName,\n    rows_added: 0,\n    rows_updated: 0,\n    status: 'error',\n    error_log: msg,\n      sources_summary_json: null,\n      stage_log_root_id: null\n  }\n}];"
+        },
+        "id": "c3000003-0003-4003-8003-000000000012",
+        "name": "Build error row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "workflow_runs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_started",
+                "displayName": "run_started",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_finished",
+                "displayName": "run_finished",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "job_name",
+                "displayName": "job_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_added",
+                "displayName": "rows_added",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_updated",
+                "displayName": "rows_updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_log",
+                "displayName": "error_log",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "sources_summary_json",
+                "displayName": "sources_summary_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_log_root_id",
+                "displayName": "stage_log_root_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-000000000013",
+        "name": "Append workflow_runs (error)",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          440,
+          260
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Build error row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build error row": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (error)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "versionId": "c3000003-0003-4003-8003-0000000000e0"
+  },
+  {
+    "id": "c3000003-0003-4003-8003-000000000002",
+    "name": "wf_enrich_marketplace",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 35 6 * * *"
+              }
+            ]
+          }
+        },
+        "id": "c3000003-0003-4003-8003-000000000021",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT signal_id, date_collected, source, market, term, related_term, category, signal_type, velocity_hint, url, raw_payload_json\n  FROM raw_signals\n  WHERE date_collected::date = CURRENT_DATE\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '__empty__' AS signal_id, NOW() AS date_collected, '' AS source, '' AS market, '' AS term, '' AS related_term, '' AS category, '' AS signal_type, '' AS velocity_hint, '' AS url, '{}'::jsonb AS raw_payload_json\nWHERE NOT EXISTS (SELECT 1 FROM rows)",
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-000000000022",
+        "name": "Read raw_signals",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          220,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT canonical_id, canonical_term, aliases, status\n  FROM normalized_terms\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS canonical_id, '' AS canonical_term, '' AS aliases, '' AS status\nWHERE NOT EXISTS (SELECT 1 FROM rows)",
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-000000000023",
+        "name": "Read normalized_terms",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          440,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT evidence_id, canonical_id, source, phrase, captured_at\n  FROM marketplace_evidence\n  WHERE captured_at >= CURRENT_DATE - INTERVAL '7 days'\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS evidence_id, '' AS canonical_id, '' AS source, '' AS phrase, NOW() AS captured_at\nWHERE NOT EXISTS (SELECT 1 FROM rows)",
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-000000000024",
+        "name": "Read marketplace_evidence",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          660,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const rawSignals = $('Read raw_signals').all().map((it) => it.json || {});\nconst normalizedRows = $('Read normalized_terms').all().map((it) => it.json || {});\nconst existingRows = $('Read marketplace_evidence').all().map((it) => it.json || {}).filter((row) => String(row.evidence_id || '').trim());\nconst existing = new Set(\n  existingRows.map((row) => String(row.evidence_id || '').trim()).filter(Boolean),\n);\n\nfunction slugify(text) {\n  return String(text || '')\n    .toLowerCase()\n    .replace(/[^a-z0-9]+/g, '_')\n    .replace(/^_+|_+$/g, '')\n    .slice(0, 80);\n}\n\nfunction normalizeText(text) {\n  return String(text || '').replace(/\\s+/g, ' ').trim();\n}\n\nconst canonicalMap = new Map();\nfor (const row of normalizedRows) {\n  const canonicalId = String(row.canonical_id || '').trim();\n  if (!canonicalId) continue;\n  const canonicalTerm = normalizeText(row.canonical_term || canonicalId.replace(/^norm_/, ''));\n  canonicalMap.set(canonicalTerm.toLowerCase(), canonicalId);\n  const aliases = normalizeText(row.aliases);\n  if (aliases) {\n    for (const alias of aliases.split('|')) {\n      const key = normalizeText(alias).toLowerCase();\n      if (key) canonicalMap.set(key, canonicalId);\n    }\n  }\n}\n\nfunction resolveCanonicalId(term) {\n  const key = normalizeText(term).toLowerCase();\n  return canonicalMap.get(key) || null;\n}\n\nconst out = [];\nfor (const raw of rawSignals) {\n  const signalId = String(raw.signal_id || '').trim();\n  const term = normalizeText(raw.term);\n  if (!term || signalId === 'ERROR' || term.toLowerCase() === 'fetch_failed') continue;\n\n  const canonicalId = resolveCanonicalId(term);\n  if (!canonicalId) continue;\n\n  const source = normalizeText(raw.source);\n  const evidenceId = 'ev_' + slugify(signalId || term);\n  if (existing.has(evidenceId)) continue;\n\n  out.push({\n    json: {\n      evidence_id: evidenceId,\n      canonical_id: canonicalId,\n      source: source || 'unknown',\n      phrase: term,\n      product_type: source === 'etsy_autocomplete' ? 't-shirt|mug|sticker' : 't-shirt|sticker',\n      intent_type: source === 'etsy_autocomplete' ? 'buyer_intent' : 'trend_interest',\n      evidence_strength: source === 'etsy_autocomplete' ? 0.9 : 0.55,\n      captured_at: normalizeText(raw.date_collected) || new Date().toISOString(),\n    },\n  });\n}\n\nif (!out.length) {\n  const now = new Date().toISOString();\n  return [\n    {\n      json: {\n        __noRows: true,\n        run_id: 'run_wf_enrich_marketplace_' + Date.now(),\n        run_started: now,\n        run_finished: now,\n        job_name: 'wf_enrich_marketplace',\n        rows_added: 0,\n        rows_updated: 0,\n        status: 'success',\n        error_log: '',\n      },\n    },\n  ];\n}\n\nreturn out;"
+        },
+        "id": "c3000003-0003-4003-8003-000000000025",
+        "name": "Build marketplace evidence",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ Boolean($json.__noRows) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-000000000026",
+        "name": "IF — Has rows?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1100,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const now = new Date().toISOString();\nreturn [\n  {\n    json: {\n      run_id: 'run_wf_enrich_marketplace_' + Date.now(),\n      run_started: now,\n      run_finished: now,\n      job_name: 'wf_enrich_marketplace',\n      rows_added: 0,\n      rows_updated: 0,\n      status: 'success',\n      error_log: '',\n    },\n  },\n];"
+        },
+        "id": "c3000003-0003-4003-8003-000000000027",
+        "name": "Build no-rows run log",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1320,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "marketplace_evidence"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "evidence_id",
+                "displayName": "evidence_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "canonical_id",
+                "displayName": "canonical_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "source",
+                "displayName": "source",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "phrase",
+                "displayName": "phrase",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "product_type",
+                "displayName": "product_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "intent_type",
+                "displayName": "intent_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "evidence_strength",
+                "displayName": "evidence_strength",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "captured_at",
+                "displayName": "captured_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-000000000028",
+        "name": "Append marketplace_evidence",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1320,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const now = new Date().toISOString();\nconst rowsAdded = $('Build marketplace evidence').all().filter((it) => !(it.json && it.json.__noRows)).length;\nreturn [\n  {\n    json: {\n      run_id: 'run_wf_enrich_marketplace_' + Date.now(),\n      run_started: now,\n      run_finished: now,\n      job_name: 'wf_enrich_marketplace',\n      rows_added: rowsAdded,\n      rows_updated: 0,\n      status: 'success',\n      error_log: '',\n    },\n  },\n];"
+        },
+        "id": "c3000003-0003-4003-8003-000000000029",
+        "name": "Build run log",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1540,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "workflow_runs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [
+              "run_id"
+            ],
+            "schema": [
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_started",
+                "displayName": "run_started",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_finished",
+                "displayName": "run_finished",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "job_name",
+                "displayName": "job_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_added",
+                "displayName": "rows_added",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_updated",
+                "displayName": "rows_updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_log",
+                "displayName": "error_log",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "sources_summary_json",
+                "displayName": "sources_summary_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_log_root_id",
+                "displayName": "stage_log_root_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-00000000002a",
+        "name": "Append workflow_runs (success)",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1760,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "WITH agg AS (\n  SELECT\n    canonical_id,\n    jsonb_build_object(\n      'window_days', 7,\n      'evidence_rows', COUNT(*)::int,\n      'distinct_sources', COUNT(DISTINCT source)::int\n    ) AS metrics\n  FROM marketplace_evidence\n  WHERE captured_at >= NOW() - INTERVAL '7 days'\n  GROUP BY canonical_id\n)\nUPDATE canonical_signals AS cs\nSET competition_metrics = agg.metrics,\n    updated_at = NOW()\nFROM agg\nWHERE cs.lineage->>'normalized_term_id' = agg.canonical_id\n  AND cs.contract_version = '2026-05-01'",
+          "options": {}
+        },
+        "id": "c3000003-0003-4003-8003-000000000040",
+        "name": "Update canonical_signals competition_metrics",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1980,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Read raw_signals",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read raw_signals": {
+        "main": [
+          [
+            {
+              "node": "Read normalized_terms",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read normalized_terms": {
+        "main": [
+          [
+            {
+              "node": "Read marketplace_evidence",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read marketplace_evidence": {
+        "main": [
+          [
+            {
+              "node": "Build marketplace evidence",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build marketplace evidence": {
+        "main": [
+          [
+            {
+              "node": "IF — Has rows?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF — Has rows?": {
+        "main": [
+          [
+            {
+              "node": "Build no-rows run log",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Append marketplace_evidence",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build no-rows run log": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (success)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append marketplace_evidence": {
+        "main": [
+          [
+            {
+              "node": "Build run log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build run log": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (success)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append workflow_runs (success)": {
+        "main": [
+          [
+            {
+              "node": "Update canonical_signals competition_metrics",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": true,
+      "timezone": "Europe/London",
+      "errorWorkflow": "c3000003-0003-4003-8003-000000000001"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "versionId": "c3000003-0003-4003-8003-0000000000e1"
+  }
+]

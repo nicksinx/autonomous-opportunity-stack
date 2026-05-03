@@ -1,0 +1,59 @@
+{
+  "id": "fixture-cycle-0001",
+  "name": "wf_fixture_with_cycle",
+  "active": false,
+  "nodes": [
+    {
+      "id": "node-trigger",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {}
+    },
+    {
+      "id": "node-build-log",
+      "name": "Build run log + mirror rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [200, 0],
+      "parameters": { "language": "javaScript", "jsCode": "return $input.all();" }
+    },
+    {
+      "id": "node-insert-runs",
+      "name": "Insert workflow_runs",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [400, 0],
+      "parameters": {
+        "operation": "insert",
+        "table": { "value": "workflow_runs" },
+        "columns": { "schema": [{ "name": "run_id" }] }
+      },
+      "credentials": { "postgres": { "name": "Postgres - POD Research" } }
+    },
+    {
+      "id": "node-tier-a-check",
+      "name": "Has Tier A opportunities?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [600, 0],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "Trigger": { "main": [[{ "node": "Build run log + mirror rows", "type": "main", "index": 0 }]] },
+    "Build run log + mirror rows": { "main": [[{ "node": "Insert workflow_runs", "type": "main", "index": 0 }]] },
+    "Insert workflow_runs": { "main": [[{ "node": "Has Tier A opportunities?", "type": "main", "index": 0 }]] },
+    "Has Tier A opportunities?": {
+      "main": [
+        [{ "node": "Build run log + mirror rows", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [{ "name": "pod-research" }, { "name": "fixture" }]
+}

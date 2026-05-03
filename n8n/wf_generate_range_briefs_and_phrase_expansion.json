@@ -1,0 +1,842 @@
+[
+  {
+    "id": "f7000007-f007-4007-8007-000000000001",
+    "name": "wf_generate_range_briefs — Error Handler",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "f7000007-f007-4007-8007-000000000011",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          700
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j=$input.first().json||{};const wfName=j.workflow?.name||'unknown';const msg=j.execution?.error?.message||String(j.execution?.error||'Error');const now=new Date().toISOString();return [{json:{rows:[{run_id:'run_'+wfName+'_error_'+Date.now(),run_started:now,run_finished:now,job_name:wfName,rows_added:0,rows_updated:0,status:'error',error_log:msg,sources_summary_json:null,stage_log_root_id:null}]}}];"
+        },
+        "id": "f7000007-f007-4007-8007-000000000012",
+        "name": "Build error row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          700
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started timestamptz, run_finished timestamptz,\n       job_name text, rows_added int, rows_updated int, status text,\n       error_log text, sources_summary_json jsonb, stage_log_root_id text)\nON CONFLICT (run_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.rows || []) }}"
+          }
+        },
+        "id": "f7000007-f007-4007-8007-000000000013",
+        "name": "Insert workflow_runs (error)",
+        "position": [
+          440,
+          700
+        ]
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Build error row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build error row": {
+        "main": [
+          [
+            {
+              "node": "Insert workflow_runs (error)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London"
+    },
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ]
+  },
+  {
+    "id": "f7000007-f007-4007-8007-000000000002",
+    "name": "wf_generate_range_briefs",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 30 7 * * 1"
+              }
+            ]
+          }
+        },
+        "id": "f7-101",
+        "name": "Schedule Trigger (Mon 07:30 Europe/London)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          300
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT cluster_id, run_date, theme_name, theme_slug, theme_summary, audience, seasonality, review_notes, status\nFROM theme_clusters\nWHERE LOWER(status) IN ('approved','draft')\n  AND (run_date = CURRENT_DATE OR LOWER(review_notes) = 'high')\nUNION ALL\nSELECT\n  tc.cluster_id::text AS cluster_id,\n  CURRENT_DATE AS run_date,\n  COALESCE(tc.primary_topic, va.title) AS theme_name,\n  COALESCE(NULLIF(tc.cluster_key, ''), regexp_replace(lower(COALESCE(tc.primary_topic, va.title)), '[^a-z0-9]+', '-', 'g')) AS theme_slug,\n  COALESCE(NULLIF(trim(oc.commercial_hypothesis), ''), tc.aggregate_metrics::text, '') AS theme_summary,\n  COALESCE(oc.target_audience->>'primary', '') AS audience,\n  COALESCE(oc.market_context->>'seasonality_flag', 'unknown') AS seasonality,\n  'high' AS review_notes,\n  'approved' AS status\nFROM v_approved_opportunities va\nJOIN opportunity_candidate oc ON oc.opportunity_id = va.opportunity_id\nJOIN trend_cluster_v2 tc ON tc.cluster_id = oc.cluster_id\nWHERE oc.cluster_id IS NOT NULL\nUNION ALL\nSELECT NULL::text, NULL::date, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text\nWHERE NOT EXISTS (\n    SELECT 1 FROM theme_clusters tc1\n    WHERE LOWER(tc1.status) IN ('approved','draft')\n      AND (tc1.run_date = CURRENT_DATE OR LOWER(tc1.review_notes) = 'high')\n  )\n  AND NOT EXISTS (\n    SELECT 1\n    FROM v_approved_opportunities va2\n    JOIN opportunity_candidate oc2 ON oc2.opportunity_id = va2.opportunity_id\n    JOIN trend_cluster_v2 tc2 ON tc2.cluster_id = oc2.cluster_id\n    WHERE oc2.cluster_id IS NOT NULL\n  )",
+          "options": {}
+        },
+        "id": "f7-102",
+        "name": "Read theme_clusters (publishable today)",
+        "position": [
+          220,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const run_id = 'run_wf_generate_range_briefs_' + Date.now();\nconst run_started = new Date().toISOString();\nconst rows = $input.all();\nconst today = new Date().toISOString().slice(0, 10);\nconst out = [];\nfor (const it of rows) {\n  const j = it.json || {};\n  const pr = String(j.review_notes || j.priority || '').toLowerCase();\n  const rd = String(j.run_date || '');\n  const rdDay = rd.includes('T') ? rd.slice(0, 10) : rd.slice(0, 10);\n  if (pr === 'high' || rdDay === today) out.push({ json: { ...j, run_id, run_started } });\n}\nif (!out.length) return [{ json: { __noClusters: true, run_id, run_started } }];\nreturn out;"
+        },
+        "id": "f7-103",
+        "name": "Filter clusters (high or today)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          440,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ Boolean($json.__noClusters) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "f7-104",
+        "name": "IF — Has clusters?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          660,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const fj = $('Filter clusters (high or today)').first().json || {};\nconst now = new Date().toISOString();\nreturn [{ json: { workflow_runs_rows: [{\n  run_id: fj.run_id || ('run_wf_generate_range_briefs_' + Date.now()),\n  run_started: fj.run_started || now,\n  run_finished: now,\n  job_name: 'wf_generate_range_briefs',\n  rows_added: 0,\n  rows_updated: 0,\n  status: 'no_clusters',\n  error_log: '',\n  sources_summary_json: { briefs: 0 },\n  stage_log_root_id: null,\n}] } }];"
+        },
+        "id": "f7-105",
+        "name": "Build no-clusters run log",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          120
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started timestamptz, run_finished timestamptz,\n       job_name text, rows_added int, rows_updated int, status text,\n       error_log text, sources_summary_json jsonb, stage_log_root_id text)\nON CONFLICT (run_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.workflow_runs_rows || []) }}"
+          }
+        },
+        "id": "f7-106",
+        "name": "Insert workflow_runs (no clusters)",
+        "position": [
+          1100,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": false
+          },
+          "batchSize": 1
+        },
+        "id": "f7-107",
+        "name": "Split clusters (batch 1)",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          880,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const row = $input.first().json || {};\nconst cluster_id = String(row.cluster_id || '').trim();\nif (!cluster_id) return [{ json: { error: true, message: 'Missing cluster_id' } }];\n\nfunction getAnthropicKey() {\n  try { if (typeof $env !== 'undefined' && $env.ANTHROPIC_API_KEY) return String($env.ANTHROPIC_API_KEY); } catch (_e) {}\n  if (typeof process !== 'undefined' && process.env?.ANTHROPIC_API_KEY) return String(process.env.ANTHROPIC_API_KEY);\n  return '';\n}\nfunction extractJsonText(raw) {\n  const s = String(raw == null ? '' : raw).trim();\n  const start = s.indexOf('{'); const end = s.lastIndexOf('}');\n  if (start !== -1 && end > start) return s.slice(start, end + 1).trim();\n  return s;\n}\n\nconst PROMPT_TEMPLATE = `You are a print-on-demand product strategist.\n\nTask: Turn the supplied theme cluster into a commercially useful product range brief for a POD business.\n\nBusiness goal: Generate ideas suitable for T-shirts, mugs, stickers, tote bags, and sweatshirts.\n\nInstructions:\n- Produce a range, not one design.\n- Focus on commercially viable concepts.\n- Avoid copyrighted characters, brand names, slogans, celebrity references, sports teams, breaking-news references, and trademark-heavy language.\n- Favor evergreen or repeatable seasonal angles.\n- Include both text-led and graphic-led directions.\n\nReturn exactly this JSON. No markdown. No preamble:\n{\n  \"range_title\":\"\",\"hero_angle\":\"\",\"why_now\":\"\",\"audience_segments\":[],\"best_products\":[],\n  \"design_directions\":[{\"name\":\"\",\"style_notes\":\"\",\"visual_motifs\":[],\"color_feel\":\"\",\"best_for\":[]}],\n  \"phrase_concepts\":[{\"text\":\"\",\"tone\":\"\",\"best_products\":[],\"notes\":\"\"}],\n  \"sub_niches\":[],\"seasonality_window\":\"\",\"ip_risk_level\":\"\",\"reasons_to_skip\":[],\"next_action\":\"\"\n}\n\nCluster input:\n{{CLUSTER_SUMMARY}}`;\n\nconst theme_name = String(row.theme_name ?? row.theme ?? '').trim();\nconst cluster_summary = String(row.theme_summary ?? row.cluster_summary ?? '').trim();\nconst audience = String(row.audience ?? '').trim();\nconst seasonality = String(row.seasonality ?? '').trim();\nconst CLUSTER_SUMMARY = ['Theme: '+theme_name,'Summary: '+cluster_summary,'Audience: '+audience,'Seasonality: '+seasonality].join('\\n');\nconst userContent = PROMPT_TEMPLATE.replace('{{CLUSTER_SUMMARY}}', CLUSTER_SUMMARY);\nconst apiKey = getAnthropicKey();\nif (!apiKey) return [{ json: { error: true, message: 'ANTHROPIC_API_KEY not set', cluster_id } }];\n\nlet body;\ntry {\n  body = await this.helpers.httpRequest({\n    method: 'POST',\n    url: 'https://api.anthropic.com/v1/messages',\n    headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },\n    body: { model: 'claude-sonnet-4-20250514', max_tokens: 4096, system: 'You are a POD strategist. Output only valid JSON.', messages: [{ role: 'user', content: userContent }] },\n    json: true,\n  });\n} catch (err) {\n  return [{ json: { error: true, message: String(err?.message || err), cluster_id } }];\n}\nlet brief;\ntry {\n  const tb = (body?.content || []).find((b) => b.type === 'text' && b.text);\n  if (!tb?.text) throw new Error('No text in response');\n  brief = JSON.parse(extractJsonText(tb.text));\n} catch (_e) {\n  return [{ json: { error: true, message: 'JSON parse failed', cluster_id } }];\n}\n\nfunction safeJoin(arr, sep) { return Array.isArray(arr) ? arr.map(String).join(sep) : ''; }\nconst ipLevel = String(brief.ip_risk_level || '').toLowerCase();\nconst isHighIp = ['high','very_high'].includes(ipLevel);\nconst status = isHighIp ? 'manual_review' : 'draft';\nconst run_date = new Date().toISOString().slice(0, 10);\nconst brief_id = 'brf_' + cluster_id + '_' + run_date.replace(/-/g, '');\n\nreturn [{ json: {\n  brief_id,\n  cluster_id,\n  run_date,\n  range_title: String(brief.range_title || ''),\n  hero_angle: String(brief.hero_angle || ''),\n  best_products: safeJoin(brief.best_products, '|'),\n  design_directions: JSON.stringify(brief.design_directions ?? []),\n  phrase_concepts: brief.phrase_concepts ?? [],\n  audiences: safeJoin(brief.audience_segments, '|'),\n  ip_risk: brief.ip_risk_level || 'unknown',\n  status,\n  __isHighIp: isHighIp,\n}}];"
+        },
+        "id": "f7-108",
+        "name": "Generate range brief",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "s1",
+                "leftValue": "={{ Boolean(String($env.SLACK_WEBHOOK_URL || '').trim()) && $json.__isHighIp !== true && !$json.error }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "f7-109",
+        "name": "IF — Slack notify?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1320,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={{ JSON.stringify({ text: \"New range brief: \" + $json.range_title + \" | Cluster: \" + $json.cluster_id }) }}",
+          "options": {}
+        },
+        "id": "f7-110",
+        "name": "Slack notification (POST)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1540,
+          360
+        ],
+        "continueOnFail": true
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const items = $('Generate range brief').all().map((i) => i.json || {});\nconst rows = items\n  .filter((i) => i.brief_id && !i.error)\n  .map((i) => ({\n    brief_id: i.brief_id,\n    cluster_id: i.cluster_id,\n    run_date: i.run_date,\n    range_title: i.range_title,\n    hero_angle: i.hero_angle,\n    best_products: i.best_products,\n    design_directions: i.design_directions,\n    phrase_concepts: i.phrase_concepts,\n    audiences: i.audiences,\n    ip_risk: i.ip_risk,\n    status: i.status,\n  }));\nreturn [{ json: { brief_rows: rows } }];"
+        },
+        "id": "f7-111",
+        "name": "Collect brief rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          0
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO range_briefs\n  (brief_id, cluster_id, run_date, range_title, hero_angle, best_products,\n   design_directions, phrase_concepts, audiences, ip_risk, status)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(brief_id text, cluster_id text, run_date date, range_title text,\n       hero_angle text, best_products text, design_directions text,\n       phrase_concepts jsonb, audiences text, ip_risk text, status text)\nON CONFLICT (brief_id) DO UPDATE SET\n  range_title       = EXCLUDED.range_title,\n  hero_angle        = EXCLUDED.hero_angle,\n  best_products     = EXCLUDED.best_products,\n  design_directions = EXCLUDED.design_directions,\n  phrase_concepts   = EXCLUDED.phrase_concepts,\n  audiences         = EXCLUDED.audiences,\n  ip_risk           = EXCLUDED.ip_risk,\n  status            = EXCLUDED.status",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.brief_rows || []) }}"
+          }
+        },
+        "id": "f7-112",
+        "name": "Bulk upsert range_briefs",
+        "position": [
+          1320,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const fj = $('Filter clusters (high or today)').first().json || {};\nconst briefRows = ($('Collect brief rows').first()?.json?.brief_rows) || [];\nconst run_finished = new Date().toISOString();\nreturn [{ json: { workflow_runs_rows: [{\n  run_id: fj.run_id || ('run_wf_generate_range_briefs_' + Date.now()),\n  run_started: fj.run_started || run_finished,\n  run_finished,\n  job_name: 'wf_generate_range_briefs',\n  rows_added: briefRows.length,\n  rows_updated: 0,\n  status: 'success',\n  error_log: '',\n  sources_summary_json: { briefs: briefRows.length },\n  stage_log_root_id: null,\n}] } }];"
+        },
+        "id": "f7-113",
+        "name": "Build run log",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1540,
+          0
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started timestamptz, run_finished timestamptz,\n       job_name text, rows_added int, rows_updated int, status text,\n       error_log text, sources_summary_json jsonb, stage_log_root_id text)\nON CONFLICT (run_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.workflow_runs_rows || []) }}"
+          }
+        },
+        "id": "f7-114",
+        "name": "Insert workflow_runs (success)",
+        "position": [
+          1760,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger (Mon 07:30 Europe/London)": {
+        "main": [
+          [
+            {
+              "node": "Read theme_clusters (publishable today)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read theme_clusters (publishable today)": {
+        "main": [
+          [
+            {
+              "node": "Filter clusters (high or today)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter clusters (high or today)": {
+        "main": [
+          [
+            {
+              "node": "IF — Has clusters?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF — Has clusters?": {
+        "main": [
+          [
+            {
+              "node": "Build no-clusters run log",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Split clusters (batch 1)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build no-clusters run log": {
+        "main": [
+          [
+            {
+              "node": "Insert workflow_runs (no clusters)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split clusters (batch 1)": {
+        "main": [
+          [
+            {
+              "node": "Collect brief rows",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Generate range brief",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate range brief": {
+        "main": [
+          [
+            {
+              "node": "IF — Slack notify?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF — Slack notify?": {
+        "main": [
+          [
+            {
+              "node": "Slack notification (POST)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Split clusters (batch 1)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Slack notification (POST)": {
+        "main": [
+          [
+            {
+              "node": "Split clusters (batch 1)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Collect brief rows": {
+        "main": [
+          [
+            {
+              "node": "Bulk upsert range_briefs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bulk upsert range_briefs": {
+        "main": [
+          [
+            {
+              "node": "Build run log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build run log": {
+        "main": [
+          [
+            {
+              "node": "Insert workflow_runs (success)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "errorWorkflow": "f7000007-f007-4007-8007-000000000001"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "versionId": "f7000007-f007-4007-8007-0000000000e2"
+  },
+  {
+    "id": "p8000008-p008-4008-8008-000000000002",
+    "name": "wf_phrase_expansion",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "approve-brief",
+          "httpMethod": "POST",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "p8-201",
+        "name": "Webhook approve-brief",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          300
+        ],
+        "webhookId": "approve-brief-pod"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const b = $input.first().json?.body || $input.first().json || {};\nconst brief_id = String(b.brief_id || '').trim();\nif (!brief_id) return [{ json: { error: true, message: 'Missing brief_id in body' } }];\nreturn [{ json: { brief_id } }];"
+        },
+        "id": "p8-202",
+        "name": "Extract brief_id",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          300
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE range_briefs\n   SET status = $2\n WHERE brief_id = $1\nRETURNING brief_id, cluster_id, run_date, range_title, hero_angle,\n          best_products, design_directions, phrase_concepts,\n          audiences, ip_risk, status",
+          "options": {
+            "queryReplacement": "={{ $json.brief_id }},approved"
+          }
+        },
+        "id": "p8-203",
+        "name": "Update range_briefs SET status=approved",
+        "position": [
+          440,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "bf1",
+                "leftValue": "={{ Boolean($json && $json.brief_id) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "p8-204",
+        "name": "IF — Brief found?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          660,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const row = $input.first().json || {};\nconst briefId = String(row.brief_id || '').trim();\nif (!briefId) return [{ json: { error: true, message: 'Brief not found' } }];\n\nfunction getAnthropicKey() {\n  try { if (typeof $env !== 'undefined' && $env.ANTHROPIC_API_KEY) return String($env.ANTHROPIC_API_KEY); } catch (_e) {}\n  if (typeof process !== 'undefined' && process.env?.ANTHROPIC_API_KEY) return String(process.env.ANTHROPIC_API_KEY);\n  return '';\n}\nfunction flattenPhraseConceptsField(raw) {\n  if (raw == null) return '';\n  if (Array.isArray(raw)) return raw.map((p) => String(p?.text ?? p?.phrase ?? '').trim()).filter(Boolean).join('|');\n  return String(raw).trim();\n}\nfunction extractJsonArray(raw) {\n  const s = String(raw == null ? '' : raw).trim();\n  const start = s.indexOf('['); const end = s.lastIndexOf(']');\n  if (start === -1 || end <= start) throw new Error('No JSON array');\n  return JSON.parse(s.slice(start, end + 1));\n}\n\nconst PROMPT_TEMPLATE = `You are generating print-on-demand phrase ideas from an approved product theme.\nGenerate exactly 30 short phrase concepts (max 7 words each). No copyrighted phrases.\nSplit into 3 buckets of 10: funny, heartfelt, minimalist.\nOutput strict JSON: [{\"bucket\":\"funny|heartfelt|minimalist\",\"phrase\":\"\",\"target_products\":[],\"style_hint\":\"\"}]\n\nApproved theme:\n{{APPROVED_RANGE_BRIEF}}`;\n\nconst title = String(row.range_title || '').trim();\nconst hero = String(row.hero_angle || '').trim();\nconst concepts = flattenPhraseConceptsField(row.phrase_concepts);\nconst userContent = PROMPT_TEMPLATE.replace('{{APPROVED_RANGE_BRIEF}}', [title, hero, concepts].join('|'));\nconst apiKey = getAnthropicKey();\nif (!apiKey) return [{ json: { error: true, message: 'ANTHROPIC_API_KEY not set' } }];\n\nconst body = await this.helpers.httpRequest({\n  method: 'POST',\n  url: 'https://api.anthropic.com/v1/messages',\n  headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },\n  body: { model: 'claude-sonnet-4-20250514', max_tokens: 4096, system: 'Reply with JSON only.', messages: [{ role: 'user', content: userContent }] },\n  json: true,\n});\nconst tb = (body?.content || []).find((b) => b.type === 'text' && b.text);\nconst phrases = extractJsonArray(tb?.text);\nif (!Array.isArray(phrases) || phrases.length !== 30) throw new Error('Expected 30 phrases');\n\nconst created_at = new Date().toISOString();\nconst phrase_rows = phrases.map((p, i) => ({\n  phrase_id: 'phr_' + briefId + '_' + (i + 1),\n  brief_id: briefId,\n  bucket: String(p?.bucket || '').toLowerCase(),\n  phrase: String(p?.phrase || '').trim(),\n  target_products: Array.isArray(p?.target_products) ? p.target_products.join('|') : '',\n  style_hint: String(p?.style_hint || ''),\n  created_at,\n}));\nreturn [{ json: { brief_id: briefId, phrase_rows } }];"
+        },
+        "id": "p8-205",
+        "name": "Phrase expansion (Claude)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          240
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO phrase_bank\n  (phrase_id, brief_id, bucket, phrase, target_products, style_hint, created_at)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(phrase_id text, brief_id text, bucket text, phrase text,\n       target_products text, style_hint text, created_at timestamptz)\nON CONFLICT (phrase_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.phrase_rows || []) }}"
+          }
+        },
+        "id": "p8-206",
+        "name": "Bulk insert phrase_bank",
+        "position": [
+          1100,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const phraseRows = ($('Phrase expansion (Claude)').first()?.json?.phrase_rows) || [];\nreturn [{ json: { status: 'ok', phrases_added: phraseRows.length, __statusCode: 200 } }];"
+        },
+        "id": "p8-207",
+        "name": "Build success response",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1320,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "return [{ json: { status: 'error', message: 'Brief not found', phrases_added: 0, __statusCode: 404 } }];"
+        },
+        "id": "p8-208",
+        "name": "Build not-found response",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          380
+        ]
+      },
+      {
+        "parameters": {
+          "options": {},
+          "respondWith": "json",
+          "responseBody": "={{ { status: $json.status, message: $json.message, phrases_added: $json.phrases_added } }}",
+          "responseCode": "={{ Number($json.__statusCode || 200) }}"
+        },
+        "id": "p8-209",
+        "name": "Respond to Webhook",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          1540,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook approve-brief": {
+        "main": [
+          [
+            {
+              "node": "Extract brief_id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract brief_id": {
+        "main": [
+          [
+            {
+              "node": "Update range_briefs SET status=approved",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update range_briefs SET status=approved": {
+        "main": [
+          [
+            {
+              "node": "IF — Brief found?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF — Brief found?": {
+        "main": [
+          [
+            {
+              "node": "Phrase expansion (Claude)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Build not-found response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Phrase expansion (Claude)": {
+        "main": [
+          [
+            {
+              "node": "Bulk insert phrase_bank",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Bulk insert phrase_bank": {
+        "main": [
+          [
+            {
+              "node": "Build success response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build success response": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build not-found response": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "versionId": "p8000008-p008-4008-8008-0000000000e2"
+  }
+]

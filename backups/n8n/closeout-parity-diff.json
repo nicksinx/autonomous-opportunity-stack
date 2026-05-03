@@ -1,0 +1,104 @@
+{
+  "ok": false,
+  "snapshot": "backups/n8n/closeout-snapshot.json",
+  "workflows": [
+    {
+      "file": "n8n/wf_collect_trends.json",
+      "name": "wf_collect_trends — Error Handler",
+      "status": "parity",
+      "liveId": "yY38I7zLX0KqVBA9"
+    },
+    {
+      "file": "n8n/wf_collect_trends.json",
+      "name": "wf_collect_trends",
+      "status": "parity",
+      "liveId": "AsORoSwQOE4ABSmb"
+    },
+    {
+      "file": "n8n/wf_enrich_marketplace.json",
+      "name": "wf_enrich_marketplace — Error Handler",
+      "status": "parity",
+      "liveId": "TS0ub3Nc0oHRqhUV"
+    },
+    {
+      "file": "n8n/wf_enrich_marketplace.json",
+      "name": "wf_enrich_marketplace",
+      "status": "parity",
+      "liveId": "0jY0awmaJn8RMY8q"
+    },
+    {
+      "file": "n8n/wf_generate_range_briefs_and_phrase_expansion.json",
+      "name": "wf_generate_range_briefs — Error Handler",
+      "status": "parity",
+      "liveId": "8qEKHsdsmszGSn4W"
+    },
+    {
+      "file": "n8n/wf_generate_range_briefs_and_phrase_expansion.json",
+      "name": "wf_generate_range_briefs",
+      "status": "drift",
+      "liveId": "HfUHI8bSMxO6KzFU",
+      "issues": [
+        {
+          "kind": "settings-drift",
+          "repo": {
+            "executionOrder": "v1",
+            "timezone": "Europe/London",
+            "errorWorkflow": "f7000007-f007-4007-8007-000000000001"
+          },
+          "live": {
+            "executionOrder": "v1",
+            "timezone": "Europe/London"
+          }
+        }
+      ]
+    },
+    {
+      "file": "n8n/wf_generate_range_briefs_and_phrase_expansion.json",
+      "name": "wf_phrase_expansion",
+      "status": "parity",
+      "liveId": "COtkbdAHy4HWEhh7"
+    },
+    {
+      "file": "n8n/wf_ingest_performance_feedback.json",
+      "name": "wf_ingest_performance_feedback",
+      "status": "parity",
+      "liveId": "f9000009-f009-4009-8009-000000000002"
+    },
+    {
+      "file": "n8n/wf_normalize_terms.json",
+      "name": "wf_normalize_terms — Error Handler",
+      "status": "parity",
+      "liveId": "b2000002-0002-4002-8002-000000000001"
+    },
+    {
+      "file": "n8n/wf_normalize_terms.json",
+      "name": "wf_normalize_terms",
+      "status": "parity",
+      "liveId": "b2000002-0002-4002-8002-000000000002"
+    },
+    {
+      "file": "n8n/wf_publish_queue.json",
+      "name": "wf_publish_queue — Error Handler",
+      "status": "parity",
+      "liveId": "iDVs9G6KzfsYnchS"
+    },
+    {
+      "file": "n8n/wf_publish_queue.json",
+      "name": "wf_publish_queue",
+      "status": "parity",
+      "liveId": "WcJaRbT1v4GE1Dv9"
+    },
+    {
+      "file": "n8n/wf_score_and_cluster.json",
+      "name": "wf_score_and_cluster — Error Handler",
+      "status": "parity",
+      "liveId": "d4000004-0004-4004-8004-000000000001"
+    },
+    {
+      "file": "n8n/wf_score_and_cluster.json",
+      "name": "wf_score_and_cluster",
+      "status": "parity",
+      "liveId": "d4000004-0004-4004-8004-000000000002"
+    }
+  ]
+}

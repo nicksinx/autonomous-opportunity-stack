@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pod-trends.local/contracts/canonical_signal_v1.json",
+  "title": "canonical_signal_v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "signal_id",
+    "contract_version",
+    "source_type",
+    "source_name",
+    "lineage",
+    "dedupe_key",
+    "status"
+  ],
+  "properties": {
+    "signal_id": { "type": "string", "minLength": 1 },
+    "contract_version": { "type": "string", "minLength": 1 },
+    "source_type": {
+      "type": "string",
+      "enum": ["marketplace", "search", "social", "reviews", "csv", "internal", "unknown"]
+    },
+    "source_name": { "type": "string", "minLength": 1 },
+    "source_record_id": { "type": ["string", "null"] },
+    "intake_run_id": { "type": ["string", "null"] },
+    "observed_at": { "type": ["string", "null"] },
+    "ingested_at": { "type": ["string", "null"] },
+    "normalized_topic": { "type": ["string", "null"] },
+    "normalized_niche": { "type": ["string", "null"] },
+    "normalized_sub_niche": { "type": ["string", "null"] },
+    "audience_hint": { "type": ["object", "null"] },
+    "product_type_hints": { "type": ["array", "null"], "items": { "type": "string" } },
+    "trend_metrics": { "type": ["object", "null"] },
+    "sentiment_metrics": { "type": ["object", "null"] },
+    "competition_metrics": { "type": ["object", "null"] },
+    "seasonality_hint": { "type": ["object", "null"] },
+    "enrichment": { "type": ["object", "null"] },
+    "risk_flags": { "type": ["object", "null"] },
+    "quality_score": { "type": ["number", "null"] },
+    "lineage": {
+      "type": "object",
+      "required": ["normalized_term_id"],
+      "properties": {
+        "raw_signal_ids": { "type": "array", "items": { "type": "string" } },
+        "normalized_term_id": { "type": "string", "minLength": 1 },
+        "intake_run_id": { "type": ["string", "null"] }
+      }
+    },
+    "dedupe_key": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": ["ready", "suppressed", "invalid", "archived", "quarantined"]
+    }
+  }
+}

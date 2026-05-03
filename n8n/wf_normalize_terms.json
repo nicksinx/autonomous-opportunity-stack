@@ -1,0 +1,1468 @@
+[
+  {
+    "id": "b2000002-0002-4002-8002-000000000001",
+    "name": "wf_normalize_terms — Error Handler",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "b2000002-0002-4002-8002-000000000011",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j = $input.first().json;\nconst wfName = j.workflow?.name ?? 'unknown';\nconst msg = j.execution?.error?.message ?? String(j.execution?.error ?? 'Error');\nconst now = new Date().toISOString();\nreturn [{\n  json: {\n    run_id: `run_${wfName}_error_${Date.now()}`,\n    run_started: now,\n    run_finished: now,\n    job_name: wfName,\n    rows_added: 0,\n    rows_updated: 0,\n    status: 'error',\n    error_log: msg,\n      sources_summary_json: null,\n      stage_log_root_id: null\n  }\n}];"
+        },
+        "id": "b2000002-0002-4002-8002-000000000012",
+        "name": "Build error row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          260
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "workflow_runs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_started",
+                "displayName": "run_started",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_finished",
+                "displayName": "run_finished",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "job_name",
+                "displayName": "job_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_added",
+                "displayName": "rows_added",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_updated",
+                "displayName": "rows_updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_log",
+                "displayName": "error_log",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "sources_summary_json",
+                "displayName": "sources_summary_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_log_root_id",
+                "displayName": "stage_log_root_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000013",
+        "name": "Append workflow_runs (error)",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          440,
+          260
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Build error row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build error row": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (error)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "versionId": "b2000002-0002-4002-8002-0000000000e0"
+  },
+  {
+    "id": "b2000002-0002-4002-8002-000000000002",
+    "name": "wf_normalize_terms",
+    "active": false,
+    "description": "Scheduled workflow that normalizes and deduplicates raw signals into canonical terms, writes normalized_terms, and logs the run.",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 20 6 * * *"
+              }
+            ]
+          }
+        },
+        "id": "b2000002-0002-4002-8002-000000000021",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT signal_id, date_collected, source, market, term, related_term, category, signal_type, velocity_hint, url, raw_payload_json\n  FROM raw_signals\n  WHERE date_collected::date = CURRENT_DATE\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '__empty__' AS signal_id, NOW() AS date_collected, '' AS source, '' AS market, '' AS term, '' AS related_term, '' AS category, '' AS signal_type, '' AS velocity_hint, '' AS url, '{}'::jsonb AS raw_payload_json\nWHERE NOT EXISTS (SELECT 1 FROM rows)",
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000022",
+        "name": "Read raw_signals",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          220,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT canonical_id, canonical_term, aliases, status\n  FROM normalized_terms\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS canonical_id, '' AS canonical_term, '' AS aliases, '' AS status\nWHERE NOT EXISTS (SELECT 1 FROM rows)",
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000023",
+        "name": "Read normalized_terms",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          440,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Stage 2 normalization with audit (Item 3 of pipeline hardening plan).\n// Inlined from normalizationAuditor.js.\n\nconst LOW_CONFIDENCE_THRESHOLD = 0.7;\n\nfunction slugify(text) {\n  return String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80);\n}\nfunction normalizeText(text) { return String(text || '').replace(/\\s+/g, ' ').trim(); }\nfunction titleCase(text) {\n  return normalizeText(text).split(/\\s+/).filter(Boolean).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');\n}\nfunction parseDate(v) { const ts = Date.parse(v); return Number.isFinite(ts) ? ts : Date.now(); }\nfunction isoDate(ts) { return new Date(ts).toISOString().slice(0, 10); }\nfunction num(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }\nfunction round2(v) { return Math.round(v * 100) / 100; }\nfunction hash(s) { let h = 0; const x = String(s || ''); for (let i = 0; i < x.length; i++) { h = (h << 5) - h + x.charCodeAt(i); h |= 0; } return Math.abs(h).toString(36); }\nfunction looksLikeJunk(term) {\n  const t = String(term || '').trim();\n  if (!t || t.length < 3 || t.length > 60) return true;\n  if (/[A-Z]/.test(t) && !/\\s/.test(t)) return true;\n  if (/[:{}<>]/.test(t)) return true;\n  if (/\\b(middleware|responder|resource|provider|wrapper|request|parser|loader|cookieparser|sessionparser|csrfrequest)\\b/i.test(t)) return true;\n  return false;\n}\n\nfunction confidenceFor(group, candidate) {\n  const a = String(candidate || '').toLowerCase();\n  const b = String(group.term || '').toLowerCase();\n  if (!a || !b) return 0;\n  if (a === b) return 1;\n  const ta = new Set(a.split(/\\s+/).filter(Boolean));\n  const tb = new Set(b.split(/\\s+/).filter(Boolean));\n  const inter = [...ta].filter((t) => tb.has(t)).length;\n  const union = new Set([...ta, ...tb]).size || 1;\n  const j = inter / union;\n  const lp = a.length < 4 ? 0.5 : 1;\n  return Math.min(1, j * lp + (j >= 0.5 ? 0.1 : 0));\n}\n\nfunction logRow(input) {\n  const i = input || {};\n  return {\n    log_id: 'norm_' + (i.canonical_id || 'noid') + '_' + hash(i.input_term || '') + '_' + Date.now() + '_' + Math.floor(Math.random() * 1e6),\n    run_id: i.run_id || '',\n    run_date: i.run_date || '',\n    canonical_id: i.canonical_id || '',\n    input_term: i.input_term || '',\n    decision_type: i.decision_type || '',\n    confidence: round2(num(i.confidence)),\n    merged_into: i.merged_into || '',\n    reason: i.reason || '',\n    created_at: new Date().toISOString(),\n  };\n}\n\nconst rawSignals = $('Read raw_signals').all().map((it) => it.json || {});\nconst existingRows = $('Read normalized_terms').all().map((it) => it.json || {});\nconst existing = new Set(existingRows.map((r) => String(r.canonical_id || '').trim()).filter(Boolean));\n\nconst runId = 'run_wf_normalize_terms_' + Date.now();\nconst runDate = new Date().toISOString().slice(0, 10);\nconst runStarted = new Date().toISOString();\n\nconst groups = new Map();\nconst logRows = [];\nconst watchRows = [];\nconst stats = { created: 0, merged: 0, skipped: 0, low_confidence: 0, duplicates: 0 };\nconst signalLinks = [];\n\nfor (const raw of rawSignals) {\n  const signalId = String(raw.signal_id || '').trim();\n  const term = normalizeText(raw.term);\n  if (looksLikeJunk(term)) {\n    logRows.push(logRow({ run_id: runId, run_date: runDate, canonical_id: '', input_term: term || raw.term, decision_type: 'skipped', confidence: 0, reason: 'low_quality_term' }));\n    stats.skipped += 1;\n    continue;\n  }\n  if (!term || signalId === 'ERROR' || term.toLowerCase() === 'fetch_failed') {\n    logRows.push(logRow({ run_id: runId, run_date: runDate, canonical_id: '', input_term: term || raw.term, decision_type: 'skipped', confidence: 0, reason: 'invalid_or_sentinel' }));\n    stats.skipped += 1;\n    continue;\n  }\n  const canonicalId = 'norm_' + slugify(term);\n  if (existing.has(canonicalId)) {\n    stats.duplicates += 1;\n    logRows.push(logRow({ run_id: runId, run_date: runDate, canonical_id: canonicalId, input_term: term, decision_type: 'skipped', confidence: 1, merged_into: canonicalId, reason: 'already_canonical' }));\n    signalLinks.push({ signal_id: signalId, canonical_id: canonicalId });\n    continue;\n  }\n  const collectedAt = normalizeText(raw.date_collected) || new Date().toISOString();\n  const collectedTs = parseDate(collectedAt);\n  const market = normalizeText(raw.market) || 'UK';\n  const category = normalizeText(raw.category || raw.source || 'general') || 'general';\n\n  let group = groups.get(canonicalId);\n  const isNew = !group;\n  if (isNew) {\n    group = { canonicalId, term, firstTs: collectedTs, lastTs: collectedTs, aliases: new Set([term]), markets: new Set(), categoryCounts: new Map() };\n    groups.set(canonicalId, group);\n  }\n  group.firstTs = Math.min(group.firstTs, collectedTs);\n  group.lastTs = Math.max(group.lastTs, collectedTs);\n  group.aliases.add(term);\n  const related = normalizeText(raw.related_term);\n  if (related) {\n    for (const part of related.split('|')) {\n      const alias = normalizeText(part);\n      if (alias) group.aliases.add(alias);\n    }\n  }\n  group.markets.add(market);\n  group.categoryCounts.set(category, (group.categoryCounts.get(category) || 0) + 1);\n\n  const conf = confidenceFor(group, term);\n  const decisionType = isNew ? 'created' : 'merged';\n  logRows.push(logRow({ run_id: runId, run_date: runDate, canonical_id: canonicalId, input_term: term, decision_type: decisionType, confidence: conf, merged_into: isNew ? '' : canonicalId, reason: isNew ? 'new_canonical_term' : 'alias_into_existing_group' }));\n  if (isNew) stats.created += 1; else stats.merged += 1;\n\n  if (decisionType === 'merged' && conf < LOW_CONFIDENCE_THRESHOLD) {\n    stats.low_confidence += 1;\n    logRows.push(logRow({ run_id: runId, run_date: runDate, canonical_id: canonicalId, input_term: term, decision_type: 'low_confidence', confidence: conf, merged_into: canonicalId, reason: 'merge_below_threshold' }));\n    watchRows.push({\n      watch_id: 'watch_norm_' + canonicalId + '_' + Date.now() + '_' + Math.floor(Math.random() * 1e6),\n      canonical_id: canonicalId,\n      reason: 'normalization_low_confidence',\n      review_after: runDate,\n      notes: 'Auto-flagged: alias \\'' + term + '\\' merged at confidence ' + conf.toFixed(2),\n    });\n  }\n  signalLinks.push({ signal_id: signalId, canonical_id: canonicalId });\n}\n\nconst normalizedRows = Array.from(groups.values()).map((g) => {\n  let primaryCategory = 'general';\n  let max = 0;\n  for (const [c, k] of g.categoryCounts.entries()) { if (k > max) { max = k; primaryCategory = c; } }\n  return {\n    json: {\n      canonical_id: g.canonicalId,\n      date_first_seen: isoDate(g.firstTs),\n      date_last_seen: isoDate(g.lastTs),\n      canonical_term: titleCase(g.term),\n      aliases: Array.from(g.aliases).join('|'),\n      language: 'en',\n      market: Array.from(g.markets).join('|'),\n      primary_category: primaryCategory,\n      status: 'active',\n    },\n  };\n});\n\nif (!normalizedRows.length) {\n  const now = new Date().toISOString();\n  return [\n    { json: { __noRows: true, __runMeta: { run_id: runId, run_started: runStarted }, __logRows: logRows, __watchRows: watchRows, __stats: stats, __signal_links: signalLinks, run_id: runId, run_started: runStarted, run_finished: now, job_name: 'wf_normalize_terms', rows_added: 0, rows_updated: 0, status: 'no_rows', error_log: '' } },\n  ];\n}\n\nreturn normalizedRows.concat([\n  { json: { __sidecar: true, __runMeta: { run_id: runId, run_started: runStarted }, __logRows: logRows, __watchRows: watchRows, __stats: stats, __signal_links: signalLinks } },\n]);"
+        },
+        "id": "b2000002-0002-4002-8002-000000000024",
+        "name": "Build normalized terms",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          660,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Filter the sidecar/no-rows item out so the Sheets append only sees real rows.\nconst rows = $input.all().filter((it) => it.json && !it.json.__sidecar && !it.json.__noRows);\nreturn rows;"
+        },
+        "id": "b2000002-0002-4002-8002-00000000002a",
+        "name": "Filter normalized rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "c1",
+                "leftValue": "={{ Boolean($json.__noRows) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000025",
+        "name": "IF — Has rows?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          880,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const sidecars = $('Build normalized terms').all().map((it) => it.json || {}).filter((j) => j.__sidecar || j.__noRows);\nconst sidecar = sidecars[sidecars.length - 1] || {};\nconst meta = sidecar.__runMeta || { run_id: 'run_wf_normalize_terms_' + Date.now(), run_started: new Date().toISOString() };\nconst now = new Date().toISOString();\nreturn [\n  {\n    json: {\n      run_id: meta.run_id,\n      run_started: meta.run_started,\n      run_finished: now,\n      job_name: 'wf_normalize_terms',\n      rows_added: 0,\n      rows_updated: 0,\n      status: 'success',\n      error_log: '',\n    },\n  },\n];"
+        },
+        "id": "b2000002-0002-4002-8002-000000000026",
+        "name": "Build no-rows run log",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          -160
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "normalized_terms"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [
+              "canonical_id"
+            ],
+            "schema": [
+              {
+                "id": "canonical_id",
+                "displayName": "canonical_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "date_first_seen",
+                "displayName": "date_first_seen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "date_last_seen",
+                "displayName": "date_last_seen",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "canonical_term",
+                "displayName": "canonical_term",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "aliases",
+                "displayName": "aliases",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "language",
+                "displayName": "language",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "market",
+                "displayName": "market",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "primary_category",
+                "displayName": "primary_category",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "last_scored_at",
+                "displayName": "last_scored_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "latest_opp_id",
+                "displayName": "latest_opp_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "latest_opportunity_score",
+                "displayName": "latest_opportunity_score",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "latest_tier",
+                "displayName": "latest_tier",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000027",
+        "name": "Append normalized_terms",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1320,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Pull sidecar from Build normalized terms and emit normalization_log rows.\nconst sidecars = $('Build normalized terms').all().map((it) => it.json || {}).filter((j) => j.__sidecar || j.__noRows);\nconst sidecar = sidecars[sidecars.length - 1] || {};\nconst rows = (sidecar.__logRows || []).map((r) => ({ json: r }));\nreturn rows.length ? rows : [{ json: { __empty: true } }];"
+        },
+        "id": "b2000002-0002-4002-8002-00000000002b",
+        "name": "Build normalization_log rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Strip empty placeholder so we don't append a malformed row.\nreturn $input.all().filter((it) => it.json && !it.json.__empty);"
+        },
+        "id": "b2000002-0002-4002-8002-00000000002c",
+        "name": "Filter normalization_log rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1320,
+          280
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "normalization_log"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "log_id",
+                "displayName": "log_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_date",
+                "displayName": "run_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "canonical_id",
+                "displayName": "canonical_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "input_term",
+                "displayName": "input_term",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "decision_type",
+                "displayName": "decision_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "confidence",
+                "displayName": "confidence",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "merged_into",
+                "displayName": "merged_into",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "reason",
+                "displayName": "reason",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "created_at",
+                "displayName": "created_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-00000000002d",
+        "name": "Append normalization_log",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1540,
+          280
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const sidecars = $('Build normalized terms').all().map((it) => it.json || {}).filter((j) => j.__sidecar || j.__noRows);\nconst sidecar = sidecars[sidecars.length - 1] || {};\nconst rows = (sidecar.__watchRows || []).map((r) => ({ json: r }));\nreturn rows.length ? rows : [{ json: { __empty: true } }];"
+        },
+        "id": "b2000002-0002-4002-8002-00000000002e",
+        "name": "Build watchlist rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "return $input.all().filter((it) => it.json && !it.json.__empty);"
+        },
+        "id": "b2000002-0002-4002-8002-00000000002f",
+        "name": "Filter watchlist rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1320,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "watchlist"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [
+              "watch_id"
+            ],
+            "schema": [
+              {
+                "id": "watch_id",
+                "displayName": "watch_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "canonical_id",
+                "displayName": "canonical_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "reason",
+                "displayName": "reason",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "review_after",
+                "displayName": "review_after",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "notes",
+                "displayName": "notes",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "created_at",
+                "displayName": "created_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000030",
+        "name": "Append watchlist",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1540,
+          440
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const sidecars = $('Build normalized terms').all().map((it) => it.json || {}).filter((j) => j.__sidecar || j.__noRows);\nconst sidecar = sidecars[sidecars.length - 1] || {};\nconst meta = sidecar.__runMeta || { run_id: 'run_wf_normalize_terms_' + Date.now(), run_started: new Date().toISOString() };\nconst stats = sidecar.__stats || { created: 0, merged: 0, skipped: 0, low_confidence: 0, duplicates: 0 };\nconst rowsIn = $('Read raw_signals').all().length;\nconst rowsOut = $('Build normalized terms').all().filter((it) => !(it.json && (it.json.__sidecar || it.json.__noRows))).length;\nconst startedAt = meta.run_started || new Date().toISOString();\nconst endedAt = new Date().toISOString();\nconst durationMs = Math.max(0, Date.parse(endedAt) - Date.parse(startedAt));\nconst status = stats.low_confidence > 0 ? 'warn' : (rowsOut === 0 ? 'success' : 'success');\nreturn [\n  { json: { log_id: 'slog_wf_normalize_terms_normalize_' + Date.now() + '_start', run_id: meta.run_id, workflow_name: 'wf_normalize_terms', stage_name: 'normalize', event_type: 'start', started_at: startedAt, ended_at: null, duration_ms: 0, rows_in: rowsIn, rows_out: 0, error_count: 0, status: 'running', error_summary: '', attempt_number: 1, parent_log_id: '', metadata_json: '{}' } },\n  { json: { log_id: 'slog_wf_normalize_terms_normalize_' + Date.now() + '_end', run_id: meta.run_id, workflow_name: 'wf_normalize_terms', stage_name: 'normalize', event_type: 'end', started_at: startedAt, ended_at: endedAt, duration_ms: durationMs, rows_in: rowsIn, rows_out: rowsOut, error_count: 0, status, error_summary: '', attempt_number: 1, parent_log_id: '', metadata_json: JSON.stringify(stats) } },\n];"
+        },
+        "id": "b2000002-0002-4002-8002-000000000031",
+        "name": "Build stage_run_logs",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1100,
+          600
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "stage_run_logs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "log_id",
+                "displayName": "log_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "workflow_name",
+                "displayName": "workflow_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_name",
+                "displayName": "stage_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "event_type",
+                "displayName": "event_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "started_at",
+                "displayName": "started_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "ended_at",
+                "displayName": "ended_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "duration_ms",
+                "displayName": "duration_ms",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_in",
+                "displayName": "rows_in",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_out",
+                "displayName": "rows_out",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_count",
+                "displayName": "error_count",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_summary",
+                "displayName": "error_summary",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "attempt_number",
+                "displayName": "attempt_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "parent_log_id",
+                "displayName": "parent_log_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "metadata_json",
+                "displayName": "metadata_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000032",
+        "name": "Append stage_run_logs",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1320,
+          600
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const sidecars = $('Build normalized terms').all().map((it) => it.json || {}).filter((j) => j.__sidecar || j.__noRows);\nconst sidecar = sidecars[sidecars.length - 1] || {};\nconst meta = sidecar.__runMeta || { run_id: 'run_wf_normalize_terms_' + Date.now(), run_started: new Date().toISOString() };\nconst stats = sidecar.__stats || { created: 0, merged: 0, skipped: 0, low_confidence: 0, duplicates: 0 };\nconst rowsAdded = $('Build normalized terms').all().filter((it) => !(it.json && (it.json.__sidecar || it.json.__noRows))).length;\nconst now = new Date().toISOString();\nreturn [\n  {\n    json: {\n      run_id: meta.run_id,\n      run_started: meta.run_started,\n      run_finished: now,\n      job_name: 'wf_normalize_terms',\n      rows_added: rowsAdded,\n      rows_updated: 0,\n      status: stats.low_confidence > 0 ? 'success_with_rejects' : 'success',\n      error_log: stats.low_confidence > 0 ? ('low_confidence=' + stats.low_confidence) : '',\n      sources_summary_json: (stats),\n      stage_log_root_id: null,\n    },\n  },\n];"
+        },
+        "id": "b2000002-0002-4002-8002-000000000028",
+        "name": "Build run log",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1540,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "workflow_runs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [
+              "run_id"
+            ],
+            "schema": [
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_started",
+                "displayName": "run_started",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_finished",
+                "displayName": "run_finished",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "job_name",
+                "displayName": "job_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_added",
+                "displayName": "rows_added",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_updated",
+                "displayName": "rows_updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_log",
+                "displayName": "error_log",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "sources_summary_json",
+                "displayName": "sources_summary_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_log_root_id",
+                "displayName": "stage_log_root_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000029",
+        "name": "Append workflow_runs (success)",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1540,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const items = $('Build normalized terms').all();\nlet links = [];\nfor (const it of items) {\n  const j = it.json || {};\n  if (j.__sidecar && Array.isArray(j.__signal_links)) links = j.__signal_links;\n  if (j.__noRows && Array.isArray(j.__signal_links)) links = j.__signal_links;\n}\nreturn [{ json: { signal_links_json: JSON.stringify(links) } }];"
+        },
+        "id": "b2000002-0002-4002-8002-000000000035",
+        "name": "Prepare raw_signals lineage update",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          -120
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE raw_signals AS rs\nSET canonical_id = v.canonical_id\nFROM jsonb_to_recordset($1::jsonb) AS v(signal_id text, canonical_id text)\nWHERE rs.signal_id = v.signal_id\n  AND v.signal_id IS NOT NULL\n  AND v.signal_id <> ''\n  AND v.canonical_id IS NOT NULL",
+          "options": {
+            "queryReplacement": "={{ $json.signal_links_json }}"
+          }
+        },
+        "id": "b2000002-0002-4002-8002-000000000036",
+        "name": "Update raw_signals canonical_id",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1100,
+          -120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT source_name, source_type, enabled FROM sources_config",
+          "options": {}
+        },
+        "id": "b2000002-0002-4002-8002-000000000037",
+        "name": "Read sources_config",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          550,
+          0
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const CONTRACT_VERSION = \"2026-05-01\";\nfunction slugify(text) {\n  return String(text || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80);\n}\nfunction normalizeText(text) { return String(text || '').replace(/\\\\s+/g, ' ').trim(); }\nfunction looksLikeJunk(term) {\n  const t = String(term || '').trim();\n  if (!t || t.length < 3 || t.length > 60) return true;\n  if (/[A-Z]/.test(t) && !/\\\\s/.test(t)) return true;\n  if (/[:{}<>]/.test(t)) return true;\n  return false;\n}\nfunction hashDedupe(s) {\n  let h = 0;\n  const x = String(s || '');\n  for (let i = 0; i < x.length; i++) { h = (h << 5) - h + x.charCodeAt(i); h |= 0; }\n  return Math.abs(h).toString(36);\n}\nfunction tokenize(h) {\n  return String(h || '').toLowerCase().replace(/[^a-z0-9\\\\s]+/g, ' ').split(/\\\\s+/).filter(Boolean);\n}\nfunction deriveAudience(termLower) {\n  const IDENTITY_WORDS = [\"mom\",\"dad\",\"teacher\",\"nurse\",\"dog\",\"cat\",\"wife\",\"husband\",\"grandma\",\"grandpa\",\"auntie\",\"uncle\",\"sister\",\"brother\",\"friend\",\"girl\",\"guy\",\"queen\",\"king\",\"boss\",\"lover\",\"fan\",\"nerd\",\"geek\",\"pro\",\"hero\",\"rebel\",\"doctor\",\"lawyer\",\"chef\",\"baker\",\"runner\",\"hiker\",\"gamer\",\"reader\",\"gardener\",\"crafter\"];\n  const tk = new Set(tokenize(termLower));\n  for (const t of IDENTITY_WORDS) { if (tk.has(t)) return { audience_tags: [t], primary_audience: t }; }\n  return { audience_tags: [] };\n}\nfunction deriveSeasonality(termLower) {\n  const OCCASION_WORDS = [\"birthday\",\"christmas\",\"halloween\",\"valentine\",\"mother\",\"father\",\"wedding\",\"anniversary\",\"graduation\",\"baby\",\"shower\",\"new year\",\"easter\",\"thanksgiving\",\"holiday\",\"party\"];\n  const tk = new Set(tokenize(termLower));\n  for (const t of OCCASION_WORDS) { if (tk.has(t)) return { flags: [t], has_occasion: true }; }\n  return { flags: [], has_occasion: false };\n}\nfunction deriveRisk(termLower) {\n  const BRAND = [\"disney\",\"marvel\",\"nfl\",\"nba\",\"mlb\",\"nhl\",\"taylor\",\"swift\",\"beyonce\",\"kardashian\",\"trump\",\"biden\",\"harry\",\"styles\",\"billie\",\"eilish\",\"pokemon\",\"minecraft\",\"roblox\",\"fortnite\",\"barbie\",\"nike\",\"adidas\",\"supreme\",\"gucci\",\"nasa\",\"ncaa\"];\n  const NEWS = [\"election\",\"war\",\"shooting\",\"flood\",\"earthquake\",\"covid\",\"pandemic\",\"terrorist\",\"riot\",\"protest\",\"hostage\"];\n  const tk = new Set(tokenize(termLower));\n  const hit = [];\n  for (const t of BRAND) if (tk.has(t)) hit.push(t);\n  if (hit.length) return { level: 'high', matched_terms: hit, has_high_risk: true };\n  const n = [];\n  for (const t of NEWS) if (tk.has(t)) n.push(t);\n  if (n.length) return { level: 'moderate', matched_terms: n, has_high_risk: false };\n  return { level: 'low', matched_terms: [], has_high_risk: false };\n}\n\nconst rawSignals = $('Read raw_signals').all().map((it) => it.json || {}).filter((r) => String(r.signal_id || '').trim() && String(r.signal_id).trim() !== '__empty__');\nconst cfgRows = $('Read sources_config').all().map((it) => it.json || {});\nconst typeBySource = {};\nfor (const c of cfgRows) {\n  const sn = String(c.source_name || '').trim();\n  if (sn) typeBySource[sn] = String(c.source_type || 'unknown');\n}\nconst sidecars = $('Build normalized terms').all().map((it) => it.json || {}).filter((j) => j.__sidecar || j.__noRows);\nconst sidecar = sidecars[sidecars.length - 1] || {};\nconst runMeta = sidecar.__runMeta || {};\nconst intakeRunId = runMeta.run_id || '';\n\nconst byCanon = new Map();\nfor (const raw of rawSignals) {\n  const term = normalizeText(raw.term);\n  if (looksLikeJunk(term)) continue;\n  const sid = String(raw.signal_id || '').trim();\n  if (!sid || sid === '__empty__') continue;\n  const canonicalId = 'norm_' + slugify(term);\n  if (!byCanon.has(canonicalId)) byCanon.set(canonicalId, { signal_ids: [], sources: [], observed: [] });\n  const b = byCanon.get(canonicalId);\n  b.signal_ids.push(sid);\n  b.sources.push(String(raw.source || '').trim());\n  b.observed.push(raw.date_collected);\n}\n\nconst normRows = $('Filter normalized rows').all().map((it) => it.json || {}).filter((j) => j.canonical_id);\nconst out = [];\nfor (const row of normRows) {\n  const canonicalId = String(row.canonical_id || '').trim();\n  if (!canonicalId) continue;\n  const dedupeKey = canonicalId.startsWith('norm_') ? canonicalId.slice(5) : canonicalId;\n  const agg = byCanon.get(canonicalId) || { signal_ids: [], sources: [], observed: [] };\n  const sources = agg.sources.filter(Boolean);\n  const primarySource = sources[0] || 'google_trends';\n  const sourceType = typeBySource[primarySource] || 'unknown';\n  const termLower = String(row.canonical_term || dedupeKey || '').toLowerCase();\n  const audience = deriveAudience(termLower);\n  const season = deriveSeasonality(termLower);\n  const risk = deriveRisk(termLower);\n  const lineage = {\n    raw_signal_ids: [...new Set(agg.signal_ids)],\n    normalized_term_id: canonicalId,\n    intake_run_id: intakeRunId,\n  };\n  const signalId = 'cs_' + hashDedupe(dedupeKey + '|' + CONTRACT_VERSION) + '_' + CONTRACT_VERSION;\n  let observedAt = null;\n  for (const o of agg.observed) {\n    const d = new Date(o);\n    if (Number.isFinite(d.getTime())) {\n      if (!observedAt || d < observedAt) observedAt = d;\n    }\n  }\n  out.push({\n    signal_id: signalId,\n    contract_version: CONTRACT_VERSION,\n    source_type: sourceType,\n    source_name: primarySource,\n    source_record_id: null,\n    intake_run_id: intakeRunId,\n    observed_at: observedAt ? observedAt.toISOString() : null,\n    ingested_at: new Date().toISOString(),\n    normalized_topic: String(row.canonical_term || ''),\n    normalized_niche: String(row.primary_category || ''),\n    normalized_sub_niche: null,\n    audience_hint: JSON.stringify(audience),\n    product_type_hints: JSON.stringify([]),\n    trend_metrics: JSON.stringify({ source_family_counts: {} }),\n    sentiment_metrics: JSON.stringify(null),\n    competition_metrics: JSON.stringify(null),\n    seasonality_hint: JSON.stringify(season),\n    enrichment: JSON.stringify(null),\n    risk_flags: JSON.stringify(risk),\n    quality_score: null,\n    lineage: JSON.stringify(lineage),\n    dedupe_key: dedupeKey,\n    status: risk.has_high_risk ? 'quarantined' : 'ready',\n  });\n}\nreturn [{ json: { canonical_signals_rows: out } }];"
+        },
+        "id": "b2000002-0002-4002-8002-000000000038",
+        "name": "Build canonical_signals rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1540,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO canonical_signals (\n  signal_id, contract_version, source_type, source_name, source_record_id, intake_run_id,\n  observed_at, ingested_at, normalized_topic, normalized_niche, normalized_sub_niche,\n  audience_hint, product_type_hints, trend_metrics, sentiment_metrics, competition_metrics,\n  seasonality_hint, enrichment, risk_flags, quality_score, lineage, dedupe_key, status\n)\nSELECT\n  signal_id, contract_version, source_type, source_name, source_record_id, intake_run_id,\n  observed_at::timestamptz, ingested_at::timestamptz, normalized_topic, normalized_niche, normalized_sub_niche,\n  audience_hint::jsonb, product_type_hints::jsonb, trend_metrics::jsonb, sentiment_metrics::jsonb, competition_metrics::jsonb,\n  seasonality_hint::jsonb, enrichment::jsonb, risk_flags::jsonb, quality_score::numeric,\n  lineage::jsonb, dedupe_key, status\nFROM jsonb_to_recordset($1::jsonb) AS t(\n  signal_id text, contract_version text, source_type text, source_name text, source_record_id text, intake_run_id text,\n  observed_at text, ingested_at text, normalized_topic text, normalized_niche text, normalized_sub_niche text,\n  audience_hint text, product_type_hints text, trend_metrics text, sentiment_metrics text, competition_metrics text,\n  seasonality_hint text, enrichment text, risk_flags text, quality_score text, lineage text, dedupe_key text, status text\n)\nON CONFLICT (dedupe_key, contract_version) DO UPDATE SET\n  signal_id = EXCLUDED.signal_id,\n  source_type = EXCLUDED.source_type,\n  source_name = EXCLUDED.source_name,\n  intake_run_id = EXCLUDED.intake_run_id,\n  observed_at = EXCLUDED.observed_at,\n  ingested_at = EXCLUDED.ingested_at,\n  normalized_topic = EXCLUDED.normalized_topic,\n  normalized_niche = EXCLUDED.normalized_niche,\n  audience_hint = EXCLUDED.audience_hint,\n  seasonality_hint = EXCLUDED.seasonality_hint,\n  risk_flags = EXCLUDED.risk_flags,\n  lineage = EXCLUDED.lineage,\n  status = EXCLUDED.status,\n  updated_at = NOW()",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.canonical_signals_rows || []) }}"
+          }
+        },
+        "id": "b2000002-0002-4002-8002-000000000039",
+        "name": "Upsert canonical_signals",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1760,
+          120
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Read raw_signals",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read raw_signals": {
+        "main": [
+          [
+            {
+              "node": "Read normalized_terms",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read normalized_terms": {
+        "main": [
+          [
+            {
+              "node": "Read sources_config",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build normalized terms": {
+        "main": [
+          [
+            {
+              "node": "IF — Has rows?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF — Has rows?": {
+        "main": [
+          [
+            {
+              "node": "Build no-rows run log",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Filter normalized rows",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Build run log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build no-rows run log": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (success)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter normalized rows": {
+        "main": [
+          [
+            {
+              "node": "Append normalized_terms",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append normalized_terms": {
+        "main": [
+          [
+            {
+              "node": "Build canonical_signals rows",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Prepare raw_signals lineage update",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build normalization_log rows": {
+        "main": [
+          [
+            {
+              "node": "Filter normalization_log rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter normalization_log rows": {
+        "main": [
+          [
+            {
+              "node": "Append normalization_log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build watchlist rows": {
+        "main": [
+          [
+            {
+              "node": "Filter watchlist rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter watchlist rows": {
+        "main": [
+          [
+            {
+              "node": "Append watchlist",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build stage_run_logs": {
+        "main": [
+          [
+            {
+              "node": "Append stage_run_logs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build run log": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (success)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append workflow_runs (success)": {
+        "main": [
+          [
+            {
+              "node": "Build normalization_log rows",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Build watchlist rows",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Build stage_run_logs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare raw_signals lineage update": {
+        "main": [
+          [
+            {
+              "node": "Update raw_signals canonical_id",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read sources_config": {
+        "main": [
+          [
+            {
+              "node": "Build normalized terms",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build canonical_signals rows": {
+        "main": [
+          [
+            {
+              "node": "Upsert canonical_signals",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": true,
+      "timezone": "Europe/London",
+      "errorWorkflow": "b2000002-0002-4002-8002-000000000001"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "versionId": "b2000002-0002-4002-8002-0000000000e1"
+  }
+]

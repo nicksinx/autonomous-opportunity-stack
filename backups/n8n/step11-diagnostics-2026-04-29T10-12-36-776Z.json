@@ -1,0 +1,2191 @@
+{
+  "generatedAt": "2026-04-29T10:13:05.369Z",
+  "sourceStep10Artifact": "backups/n8n/step10-execution-chain-2026-04-29T10-10-57-860Z.json",
+  "executionNodeClues": {
+    "wf_collect_trends": [
+      {
+        "nodeName": "Schedule Trigger (06:00 Europe/London)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Set Run Metadata",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Split Out — fan-out to parallel branches",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 3,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "If — route Google Trends branch",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 3,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Google Trends — daily rising queries",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 10,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Merge branch outputs",
+        "runs": 3,
+        "lastExecutionStatus": "success",
+        "itemCount": 10,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Deduplicate signals",
+        "runs": 3,
+        "lastExecutionStatus": "success",
+        "itemCount": 10,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Validate raw_signals contract",
+        "runs": 3,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Filter validated rows",
+        "runs": 3,
+        "lastExecutionStatus": "success",
+        "itemCount": 0,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append raw_signals (batch)",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 10,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build run log",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append workflow_runs (success)",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build source_health rows",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 3,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append source_health",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 3,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build stage_run_logs",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 2,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append stage_run_logs",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 2,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build raw_signals mirror rows",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append dual_write_mirror_log (raw_signals)",
+        "runs": 2,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "If — route Etsy branch",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 3,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Etsy Autocomplete — buyer intent (Phase-2 seeds)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 10,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "If — route Pinterest branch",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 3,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Pinterest Trends — typeahead per seed",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 10,
+        "hasError": false,
+        "errorMessage": null
+      }
+    ],
+    "wf_normalize_terms": [
+      {
+        "nodeName": "Schedule Trigger",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Read raw_signals",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 42,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Read normalized_terms",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1722,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build normalized terms",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "IF — Has rows?",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build no-rows run log",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append workflow_runs (success)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build normalized_terms mirror rows",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append dual_write_mirror_log (normalized_terms)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build normalization_log rows",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 42,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Filter normalization_log rows",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 42,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append normalization_log",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 42,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build watchlist rows",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Filter watchlist rows",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 0,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build stage_run_logs",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 2,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append stage_run_logs",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 2,
+        "hasError": false,
+        "errorMessage": null
+      }
+    ],
+    "wf_enrich_marketplace": [
+      {
+        "nodeName": "Schedule Trigger",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Read raw_signals",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 42,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Read normalized_terms",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1722,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Read marketplace_evidence",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 70602,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build marketplace evidence",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "IF — Has rows?",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Build no-rows run log",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "Append workflow_runs (success)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      }
+    ],
+    "wf_score_and_cluster": [
+      {
+        "nodeName": "1. Schedule Trigger — 07:00 Europe/London daily",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "2. Read normalized_terms (active)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 41,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "3. Read raw_signals (today)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1722,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "4. Read marketplace_evidence (7d)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 70602,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "5. Read score_weights (enabled)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 635418,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "6. Merge signals per canonical_id",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 41,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "7. Score all candidates",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "17. Build run log + mirror rows",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "20. Insert workflow_runs",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "8. Insert opportunity_scores",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "9. Insert trend_scores",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "10. Insert score_components",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "11. Upsert normalized_terms scores",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "18. Insert stage_run_logs",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "12. Insert scoring_audit_log",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "19. Insert dual_write_mirror_log",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "13. Has Tier A opportunities?",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      }
+    ],
+    "wf_publish_queue": [
+      {
+        "nodeName": "1. Schedule Trigger",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "2. Read range_briefs (publishable)",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 3,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "3. Build queue upsert payload",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "6. Insert workflow_runs",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "5. Insert stage_run_logs",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      },
+      {
+        "nodeName": "4. Upsert publishing_queue",
+        "runs": 1,
+        "lastExecutionStatus": "success",
+        "itemCount": 1,
+        "hasError": false,
+        "errorMessage": null
+      }
+    ]
+  },
+  "stageRunLogs": [
+    {
+      "workflow_name": "wf_collect_trends",
+      "stage_name": "collect_and_append",
+      "event_type": "end",
+      "started_at": "2026-04-29T10:10:58.730Z",
+      "ended_at": "2026-04-29T10:10:59.223Z",
+      "rows_in": 10,
+      "rows_out": 10,
+      "status": "success",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_collect_trends_1777457458730"
+    },
+    {
+      "workflow_name": "wf_collect_trends",
+      "stage_name": "collect_and_append",
+      "event_type": "start",
+      "started_at": "2026-04-29T10:10:58.730Z",
+      "ended_at": null,
+      "rows_in": 10,
+      "rows_out": 0,
+      "status": "running",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_collect_trends_1777457458730"
+    },
+    {
+      "workflow_name": "wf_collect_trends",
+      "stage_name": "collect_and_append",
+      "event_type": "start",
+      "started_at": "2026-04-29T10:10:58.730Z",
+      "ended_at": null,
+      "rows_in": 10,
+      "rows_out": 0,
+      "status": "running",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_collect_trends_1777457458730"
+    },
+    {
+      "workflow_name": "wf_collect_trends",
+      "stage_name": "collect_and_append",
+      "event_type": "end",
+      "started_at": "2026-04-29T10:10:58.730Z",
+      "ended_at": "2026-04-29T10:11:07.700Z",
+      "rows_in": 10,
+      "rows_out": 10,
+      "status": "success",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_collect_trends_1777457458730"
+    },
+    {
+      "workflow_name": "wf_normalize_terms",
+      "stage_name": "normalize",
+      "event_type": "end",
+      "started_at": "2026-04-29T10:11:19.689Z",
+      "ended_at": "2026-04-29T10:11:19.759Z",
+      "rows_in": 42,
+      "rows_out": 0,
+      "status": "success",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_normalize_terms_1777457479689"
+    },
+    {
+      "workflow_name": "wf_normalize_terms",
+      "stage_name": "normalize",
+      "event_type": "start",
+      "started_at": "2026-04-29T10:11:19.689Z",
+      "ended_at": null,
+      "rows_in": 42,
+      "rows_out": 0,
+      "status": "running",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_normalize_terms_1777457479689"
+    },
+    {
+      "workflow_name": "wf_score_and_cluster",
+      "stage_name": "score_and_cluster",
+      "event_type": "start",
+      "started_at": "2026-04-29T10:11:36.541Z",
+      "ended_at": null,
+      "rows_in": 41,
+      "rows_out": 0,
+      "status": "running",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_score_and_cluster_1777457496541"
+    },
+    {
+      "workflow_name": "wf_score_and_cluster",
+      "stage_name": "score_and_cluster",
+      "event_type": "end",
+      "started_at": "2026-04-29T10:11:36.541Z",
+      "ended_at": "2026-04-29T10:11:47.548Z",
+      "rows_in": 41,
+      "rows_out": 41,
+      "status": "success",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_score_and_cluster_1777457496541"
+    },
+    {
+      "workflow_name": "wf_publish_queue",
+      "stage_name": "enqueue",
+      "event_type": "start",
+      "started_at": "2026-04-29T10:11:57.335Z",
+      "ended_at": null,
+      "rows_in": 3,
+      "rows_out": 0,
+      "status": "running",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_publish_queue_1777457517335"
+    },
+    {
+      "workflow_name": "wf_publish_queue",
+      "stage_name": "enqueue",
+      "event_type": "end",
+      "started_at": "2026-04-29T10:11:57.335Z",
+      "ended_at": "2026-04-29T10:11:57.335Z",
+      "rows_in": 3,
+      "rows_out": 3,
+      "status": "success",
+      "error_count": 0,
+      "error_summary": "",
+      "run_id": "run_wf_publish_queue_1777457517335"
+    }
+  ],
+  "sourceHealth": [
+    {
+      "source_name": "etsy_autocomplete",
+      "status": "ok",
+      "run_date": "2026-04-28T23:00:00.000Z",
+      "rows_in": 10,
+      "rows_valid": 10,
+      "rows_rejected": 0,
+      "last_error": "",
+      "run_id": "run_wf_collect_trends_1777457458730",
+      "updated_at": "2026-04-29T10:11:07.678Z"
+    },
+    {
+      "source_name": "google_trends",
+      "status": "error",
+      "run_date": "2026-04-28T23:00:00.000Z",
+      "rows_in": 0,
+      "rows_valid": 0,
+      "rows_rejected": 0,
+      "last_error": "no_rows_after_validation",
+      "run_id": "run_wf_collect_trends_1777457458730",
+      "updated_at": "2026-04-29T10:11:07.678Z"
+    },
+    {
+      "source_name": "pinterest_trends",
+      "status": "error",
+      "run_date": "2026-04-28T23:00:00.000Z",
+      "rows_in": 0,
+      "rows_valid": 0,
+      "rows_rejected": 0,
+      "last_error": "no_rows_after_validation",
+      "run_id": "run_wf_collect_trends_1777457458730",
+      "updated_at": "2026-04-29T10:11:07.678Z"
+    }
+  ],
+  "latestRows": {
+    "workflow_runs": [
+      {
+        "run_id": "run_wf_publish_queue_1777457517335",
+        "run_started": "2026-04-29T10:11:57.335Z",
+        "run_finished": "2026-04-29T10:11:57.335Z",
+        "job_name": "wf_publish_queue",
+        "rows_added": 3,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "briefs": 3,
+          "enqueued": 3
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_score_and_cluster_1777457496541",
+        "run_started": "2026-04-29T10:11:36.541Z",
+        "run_finished": "2026-04-29T10:11:47.548Z",
+        "job_name": "wf_score_and_cluster",
+        "rows_added": 41,
+        "rows_updated": 41,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "trends": 41,
+          "clusters": 0,
+          "candidates": 41
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_enrich_marketplace_1777457486623",
+        "run_started": "2026-04-29T10:11:26.623Z",
+        "run_finished": "2026-04-29T10:11:26.623Z",
+        "job_name": "wf_enrich_marketplace",
+        "rows_added": 0,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": null,
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_normalize_terms_1777457479689",
+        "run_started": "2026-04-29T10:11:19.689Z",
+        "run_finished": "2026-04-29T10:11:19.696Z",
+        "job_name": "wf_normalize_terms",
+        "rows_added": 0,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": null,
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_collect_trends_1777457458730",
+        "run_started": "2026-04-29T10:10:58.730Z",
+        "run_finished": "2026-04-29T10:11:07.658Z",
+        "job_name": "wf_collect_trends",
+        "rows_added": 10,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "etsy_autocomplete": {
+            "accepted": 10,
+            "rejected": 0,
+            "last_reason": ""
+          }
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_publish_queue_1777457270203",
+        "run_started": "2026-04-29T10:07:50.203Z",
+        "run_finished": "2026-04-29T10:07:50.203Z",
+        "job_name": "wf_publish_queue",
+        "rows_added": 3,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "briefs": 3,
+          "enqueued": 3
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_score_and_cluster_1777457246581",
+        "run_started": "2026-04-29T10:07:26.581Z",
+        "run_finished": "2026-04-29T10:07:40.223Z",
+        "job_name": "wf_score_and_cluster",
+        "rows_added": 41,
+        "rows_updated": 41,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "trends": 41,
+          "clusters": 0,
+          "candidates": 41
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_enrich_marketplace_1777457237425",
+        "run_started": "2026-04-29T10:07:17.424Z",
+        "run_finished": "2026-04-29T10:07:17.424Z",
+        "job_name": "wf_enrich_marketplace",
+        "rows_added": 2,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": null,
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_normalize_terms_1777457229686",
+        "run_started": "2026-04-29T10:07:09.686Z",
+        "run_finished": "2026-04-29T10:07:09.894Z",
+        "job_name": "wf_normalize_terms",
+        "rows_added": 2,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "merged": 0,
+          "created": 2,
+          "skipped": 1,
+          "duplicates": 39,
+          "low_confidence": 0
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_collect_trends_1777457202908",
+        "run_started": "2026-04-29T10:06:42.908Z",
+        "run_finished": "2026-04-29T10:06:51.745Z",
+        "job_name": "wf_collect_trends",
+        "rows_added": 10,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "etsy_autocomplete": {
+            "accepted": 10,
+            "rejected": 0,
+            "last_reason": ""
+          }
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_publish_queue_1777457016312",
+        "run_started": "2026-04-29T10:03:36.312Z",
+        "run_finished": "2026-04-29T10:03:36.312Z",
+        "job_name": "wf_publish_queue",
+        "rows_added": 0,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "briefs": 1,
+          "enqueued": 0
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_score_and_cluster_1777456998211",
+        "run_started": "2026-04-29T10:03:18.211Z",
+        "run_finished": "2026-04-29T10:03:26.258Z",
+        "job_name": "wf_score_and_cluster",
+        "rows_added": 39,
+        "rows_updated": 39,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "trends": 39,
+          "clusters": 0,
+          "candidates": 39
+        },
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_enrich_marketplace_1777456989826",
+        "run_started": "2026-04-29T10:03:09.826Z",
+        "run_finished": "2026-04-29T10:03:09.826Z",
+        "job_name": "wf_enrich_marketplace",
+        "rows_added": 0,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": null,
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_normalize_terms_1777456983309",
+        "run_started": "2026-04-29T10:03:03.309Z",
+        "run_finished": "2026-04-29T10:03:03.318Z",
+        "job_name": "wf_normalize_terms",
+        "rows_added": 0,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": null,
+        "stage_log_root_id": null
+      },
+      {
+        "run_id": "run_wf_collect_trends_1777456957450",
+        "run_started": "2026-04-29T10:02:37.450Z",
+        "run_finished": "2026-04-29T10:02:46.427Z",
+        "job_name": "wf_collect_trends",
+        "rows_added": 10,
+        "rows_updated": 0,
+        "status": "success",
+        "error_log": "",
+        "sources_summary_json": {
+          "etsy_autocomplete": {
+            "accepted": 10,
+            "rejected": 0,
+            "last_reason": ""
+          }
+        },
+        "stage_log_root_id": null
+      }
+    ],
+    "raw_signals": [
+      {
+        "signal_id": "sig_etsy_2026-04-29_coastal_grandmother",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "coastal grandmother",
+        "related_term": "coastal grandmother",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=coastal%20grandmother",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "coastal grandmother",
+          "suggestion": "coastal grandmother"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_quiet_luxury",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "quiet luxury",
+        "related_term": "quiet luxury",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=quiet%20luxury",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "quiet luxury",
+          "suggestion": "quiet luxury"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_dark_academia",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "dark academia",
+        "related_term": "dark academia",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=dark%20academia",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "dark academia",
+          "suggestion": "dark academia"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_granola_girl",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "granola girl",
+        "related_term": "granola girl",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=granola%20girl",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "granola girl",
+          "suggestion": "granola girl"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_that_girl",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "that girl",
+        "related_term": "that girl",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=that%20girl",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "that girl",
+          "suggestion": "that girl"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_mob_wife",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "mob wife",
+        "related_term": "mob wife",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=mob%20wife",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "mob wife",
+          "suggestion": "mob wife"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_stanley_cup",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "stanley cup",
+        "related_term": "stanley cup",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=stanley%20cup",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "stanley cup",
+          "suggestion": "stanley cup"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_pickleball",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "pickleball",
+        "related_term": "pickleball",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=pickleball",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "pickleball",
+          "suggestion": "pickleball"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_cottagecore",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "cottagecore",
+        "related_term": "cottagecore",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=cottagecore",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "cottagecore",
+          "suggestion": "cottagecore"
+        }
+      },
+      {
+        "signal_id": "sig_etsy_2026-04-29_coquette",
+        "date_collected": "2026-04-29T10:10:59.256Z",
+        "source": "etsy_autocomplete",
+        "market": "UK",
+        "term": "coquette",
+        "related_term": "coquette",
+        "category": "marketplace_phrase",
+        "signal_type": "buyer_intent",
+        "velocity_hint": "fallback",
+        "url": "https://www.etsy.com/search?q=coquette",
+        "raw_payload_json": {
+          "via": "duckduckgo_ac_fallback",
+          "seed": "coquette",
+          "suggestion": "coquette"
+        }
+      }
+    ],
+    "normalized_terms": [
+      {
+        "canonical_id": "norm_liverpool_transfer_news",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Liverpool Transfer News",
+        "aliases": "liverpool transfer news",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_liverpool_transfer_news_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T10:07:09.887Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_stephen_mulhern",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Stephen Mulhern",
+        "aliases": "stephen mulhern",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_stephen_mulhern_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:49:38.410Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_sky_newman_tickets",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Sky Newman Tickets",
+        "aliases": "sky newman tickets",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_sky_newman_tickets_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:49:38.410Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_crewe_news",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Crewe News",
+        "aliases": "crewe news",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_crewe_news_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:49:38.410Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_kevin_keegan",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Kevin Keegan",
+        "aliases": "kevin keegan",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_kevin_keegan_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:28:27.739Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_asahiyama_zoo",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Asahiyama Zoo",
+        "aliases": "asahiyama zoo",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_asahiyama_zoo_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:28:27.739Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_panama_canal",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Panama Canal",
+        "aliases": "panama canal",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_panama_canal_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:28:27.739Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_ubs_share_price",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Ubs Share Price",
+        "aliases": "ubs share price",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_ubs_share_price_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:28:27.739Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_the_lives_of_others",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "The Lives Of Others",
+        "aliases": "the lives of others",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_the_lives_of_others_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T09:28:27.739Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      },
+      {
+        "canonical_id": "norm_rachel_kerr_travel_influencer",
+        "date_first_seen": "2026-04-29T00:00:00.000Z",
+        "date_last_seen": "2026-04-29T00:00:00.000Z",
+        "canonical_term": "Rachel Kerr Travel Influencer",
+        "aliases": "rachel kerr travel influencer",
+        "language": "en",
+        "market": "UK",
+        "primary_category": "general",
+        "status": "active",
+        "last_scored_at": "2026-04-29T10:11:46.612Z",
+        "latest_opp_id": "opp_norm_rachel_kerr_travel_influencer_2026-04-29",
+        "latest_opportunity_score": "33.30",
+        "latest_tier": "reject",
+        "created_at": "2026-04-29T10:07:09.887Z",
+        "updated_at": "2026-04-29T10:11:47.651Z"
+      }
+    ],
+    "marketplace_evidence": [
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_rachel_kerr_travel_influencer",
+        "canonical_id": "norm_rachel_kerr_travel_influencer",
+        "source": "google_trends",
+        "phrase": "rachel kerr travel influencer",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T10:06:43.268Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_liverpool_transfer_news",
+        "canonical_id": "norm_liverpool_transfer_news",
+        "source": "google_trends",
+        "phrase": "liverpool transfer news",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T10:06:43.268Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_sky_newman_tickets",
+        "canonical_id": "norm_sky_newman_tickets",
+        "source": "google_trends",
+        "phrase": "sky newman tickets",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:49:12.224Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_crewe_news",
+        "canonical_id": "norm_crewe_news",
+        "source": "google_trends",
+        "phrase": "crewe news",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:49:12.224Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_stephen_mulhern",
+        "canonical_id": "norm_stephen_mulhern",
+        "source": "google_trends",
+        "phrase": "stephen mulhern",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:49:12.223Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_bangladesh_vs_new_zealand",
+        "canonical_id": "norm_bangladesh_vs_new_zealand",
+        "source": "google_trends",
+        "phrase": "bangladesh vs new zealand",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:29:53.930Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_the_lives_of_others",
+        "canonical_id": "norm_the_lives_of_others",
+        "source": "google_trends",
+        "phrase": "the lives of others",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:29:53.929Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_ubs_share_price",
+        "canonical_id": "norm_ubs_share_price",
+        "source": "google_trends",
+        "phrase": "ubs share price",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:29:53.929Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_susanna_reid",
+        "canonical_id": "norm_susanna_reid",
+        "source": "google_trends",
+        "phrase": "susanna reid",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:29:53.929Z"
+      },
+      {
+        "evidence_id": "ev_sig_google_2026_04_29_kevin_keegan",
+        "canonical_id": "norm_kevin_keegan",
+        "source": "google_trends",
+        "phrase": "kevin keegan",
+        "product_type": "t-shirt|sticker",
+        "intent_type": "trend_interest",
+        "evidence_strength": "0.55",
+        "captured_at": "2026-04-29T09:29:53.929Z"
+      }
+    ],
+    "opportunity_scores": [
+      {
+        "opp_id": "opp_norm_liverpool_transfer_news_2026-04-29",
+        "canonical_id": "norm_liverpool_transfer_news",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Liverpool Transfer News",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_rachel_kerr_travel_influencer_2026-04-29",
+        "canonical_id": "norm_rachel_kerr_travel_influencer",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Rachel Kerr Travel Influencer",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_crewe_news_2026-04-29",
+        "canonical_id": "norm_crewe_news",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Crewe News",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_sky_newman_tickets_2026-04-29",
+        "canonical_id": "norm_sky_newman_tickets",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Sky Newman Tickets",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_stephen_mulhern_2026-04-29",
+        "canonical_id": "norm_stephen_mulhern",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Stephen Mulhern",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_bangladesh_vs_new_zealand_2026-04-29",
+        "canonical_id": "norm_bangladesh_vs_new_zealand",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Bangladesh Vs New Zealand",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_rachel_reeves_uk_tax_changes_2026-04-29",
+        "canonical_id": "norm_rachel_reeves_uk_tax_changes",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Rachel Reeves Uk Tax Changes",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "0.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "4.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "36.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "26.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_ed_balls_2026-04-29",
+        "canonical_id": "norm_ed_balls",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Ed Balls",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_susanna_reid_2026-04-29",
+        "canonical_id": "norm_susanna_reid",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "Susanna Reid",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      },
+      {
+        "opp_id": "opp_norm_the_lives_of_others_2026-04-29",
+        "canonical_id": "norm_the_lives_of_others",
+        "run_date": "2026-04-28T23:00:00.000Z",
+        "niche_keyword": "The Lives Of Others",
+        "target_audience": "general",
+        "theme": "general",
+        "seasonality_flag": "unknown",
+        "product_formats": "tshirt|mug|sticker",
+        "compliance_risk": "low",
+        "demand_score": "2.00",
+        "competition_score": "8.50",
+        "conversion_score": "2.00",
+        "creative_score": "6.00",
+        "margin_score": "5.00",
+        "ops_score": "7.00",
+        "catalog_score": "5.00",
+        "repeat_score": "0.00",
+        "season_score": "4.00",
+        "raw_weighted_sum": "43.30",
+        "risk_penalty": "10.00",
+        "opportunity_score": "33.30",
+        "tier": "reject",
+        "action": "Discard — insufficient opportunity signal",
+        "scorer_version": "1.0.0",
+        "score_notes": "competition_gap_manual_review"
+      }
+    ],
+    "publishing_queue": [
+      {
+        "queue_id": "q_jjcakl_1777457517335",
+        "idempotency_key": "idem:v1:no_cluster:opp_norm_granola_girl_2026-04-29:2026-04-27",
+        "run_id": "run_wf_publish_queue_1777457517335",
+        "run_week": "2026-04-26T23:00:00.000Z",
+        "cluster_id": null,
+        "brief_id": null,
+        "status": "pending",
+        "attempt_count": 1,
+        "first_enqueued_at": "2026-04-29T10:11:57.335Z",
+        "last_seen_at": "2026-04-29T10:11:57.335Z",
+        "source_run_id": "run_wf_publish_queue_1777457517335",
+        "priority": "medium",
+        "review_notes": "fallback_from_opportunity_score:opp_norm_granola_girl_2026-04-29",
+        "updated_at": "2026-04-29T10:11:57.363Z"
+      },
+      {
+        "queue_id": "q_mvi4nk_1777457517335",
+        "idempotency_key": "idem:v1:no_cluster:opp_norm_that_girl_2026-04-29:2026-04-27",
+        "run_id": "run_wf_publish_queue_1777457517335",
+        "run_week": "2026-04-26T23:00:00.000Z",
+        "cluster_id": null,
+        "brief_id": null,
+        "status": "pending",
+        "attempt_count": 1,
+        "first_enqueued_at": "2026-04-29T10:11:57.335Z",
+        "last_seen_at": "2026-04-29T10:11:57.335Z",
+        "source_run_id": "run_wf_publish_queue_1777457517335",
+        "priority": "medium",
+        "review_notes": "fallback_from_opportunity_score:opp_norm_that_girl_2026-04-29",
+        "updated_at": "2026-04-29T10:11:57.363Z"
+      },
+      {
+        "queue_id": "q_o4m77q_1777457517335",
+        "idempotency_key": "idem:v1:no_cluster:opp_norm_mob_wife_2026-04-29:2026-04-27",
+        "run_id": "run_wf_publish_queue_1777457517335",
+        "run_week": "2026-04-26T23:00:00.000Z",
+        "cluster_id": null,
+        "brief_id": null,
+        "status": "pending",
+        "attempt_count": 1,
+        "first_enqueued_at": "2026-04-29T10:11:57.335Z",
+        "last_seen_at": "2026-04-29T10:11:57.335Z",
+        "source_run_id": "run_wf_publish_queue_1777457517335",
+        "priority": "medium",
+        "review_notes": "fallback_from_opportunity_score:opp_norm_mob_wife_2026-04-29",
+        "updated_at": "2026-04-29T10:11:57.363Z"
+      }
+    ]
+  },
+  "localWorkflowWriteHints": {
+    "wf_collect_trends": {
+      "file": "wf_collect_trends.json",
+      "mentionsWorkflowRuns": true,
+      "mentionsNormalizedTerms": false,
+      "mentionsMarketplaceEvidence": false,
+      "mentionsOpportunityScores": false,
+      "mentionsPublishingQueue": false,
+      "postgresNodeNames": [
+        {
+          "name": "Append raw_signals (batch)",
+          "operation": "upsert",
+          "query": null
+        },
+        {
+          "name": "Append dual_write_mirror_log (raw_signals)",
+          "operation": "insert",
+          "query": null
+        },
+        {
+          "name": "Append source_health",
+          "operation": "upsert",
+          "query": null
+        },
+        {
+          "name": "Append stage_run_logs",
+          "operation": "insert",
+          "query": null
+        },
+        {
+          "name": "Append workflow_runs (success)",
+          "operation": "upsert",
+          "query": null
+        }
+      ]
+    },
+    "wf_normalize_terms": {
+      "file": "wf_normalize_terms.json",
+      "mentionsWorkflowRuns": true,
+      "mentionsNormalizedTerms": true,
+      "mentionsMarketplaceEvidence": false,
+      "mentionsOpportunityScores": false,
+      "mentionsPublishingQueue": false,
+      "postgresNodeNames": [
+        {
+          "name": "Read raw_signals",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT signal_id, date_collected, source, market, term, related_term, category, signal_type, velocity_hint, url, raw_payload_json\n  FROM raw_signals\n  WHERE date_collected::date = CURRENT_DATE\n)\nSELECT * FROM rows\nUNION ALL"
+        },
+        {
+          "name": "Read normalized_terms",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT canonical_id, canonical_term, aliases, status\n  FROM normalized_terms\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS canonical_id, '' AS canonical_term, '' AS aliases, '' AS status\nWHERE NOT EXISTS (SELECT 1 FROM rows)"
+        },
+        {
+          "name": "Append dual_write_mirror_log (normalized_terms)",
+          "operation": "insert",
+          "query": null
+        },
+        {
+          "name": "Append normalized_terms",
+          "operation": "upsert",
+          "query": null
+        },
+        {
+          "name": "Append normalization_log",
+          "operation": "insert",
+          "query": null
+        },
+        {
+          "name": "Append watchlist",
+          "operation": "upsert",
+          "query": null
+        },
+        {
+          "name": "Append stage_run_logs",
+          "operation": "insert",
+          "query": null
+        },
+        {
+          "name": "Append workflow_runs (success)",
+          "operation": "upsert",
+          "query": null
+        }
+      ]
+    },
+    "wf_enrich_marketplace": {
+      "file": "wf_enrich_marketplace.json",
+      "mentionsWorkflowRuns": true,
+      "mentionsNormalizedTerms": true,
+      "mentionsMarketplaceEvidence": true,
+      "mentionsOpportunityScores": false,
+      "mentionsPublishingQueue": false,
+      "postgresNodeNames": [
+        {
+          "name": "Read raw_signals",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT signal_id, date_collected, source, market, term, related_term, category, signal_type, velocity_hint, url, raw_payload_json\n  FROM raw_signals\n  WHERE date_collected::date = CURRENT_DATE\n)\nSELECT * FROM rows\nUNION ALL"
+        },
+        {
+          "name": "Read normalized_terms",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT canonical_id, canonical_term, aliases, status\n  FROM normalized_terms\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS canonical_id, '' AS canonical_term, '' AS aliases, '' AS status\nWHERE NOT EXISTS (SELECT 1 FROM rows)"
+        },
+        {
+          "name": "Read marketplace_evidence",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT evidence_id, canonical_id, source, phrase, captured_at\n  FROM marketplace_evidence\n  WHERE captured_at >= CURRENT_DATE - INTERVAL '7 days'\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS evidence_id, '' AS canonical_id, "
+        },
+        {
+          "name": "Append marketplace_evidence",
+          "operation": "insert",
+          "query": null
+        },
+        {
+          "name": "Append workflow_runs (success)",
+          "operation": "upsert",
+          "query": null
+        }
+      ]
+    },
+    "wf_score_and_cluster": {
+      "file": "wf_score_and_cluster.json",
+      "mentionsWorkflowRuns": true,
+      "mentionsNormalizedTerms": true,
+      "mentionsMarketplaceEvidence": true,
+      "mentionsOpportunityScores": true,
+      "mentionsPublishingQueue": false,
+      "postgresNodeNames": [
+        {
+          "name": "2. Read normalized_terms (active)",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT *\n  FROM normalized_terms\n  WHERE LOWER(status) = 'active'\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS canonical_id, CURRENT_DATE AS date_first_seen, CURRENT_DATE AS date_last_seen, '' AS canonical_term, '' AS aliase"
+        },
+        {
+          "name": "3. Read raw_signals (today)",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT signal_id, date_collected, source, market, term, related_term, category, signal_type, velocity_hint, url, raw_payload_json\n  FROM raw_signals\n  WHERE date_collected::date = CURRENT_DATE\n)\nSELECT * FROM rows\nUNION ALL"
+        },
+        {
+          "name": "4. Read marketplace_evidence (7d)",
+          "operation": "executeQuery",
+          "query": "WITH rows AS (\n  SELECT *\n  FROM marketplace_evidence\n  WHERE captured_at >= NOW() - INTERVAL '7 days'\n)\nSELECT * FROM rows\nUNION ALL\nSELECT '' AS evidence_id, '' AS canonical_id, '' AS source, '' AS phrase, '' AS product_type, '' AS intent"
+        },
+        {
+          "name": "5. Read score_weights (enabled)",
+          "operation": "executeQuery",
+          "query": "SELECT * FROM score_weights WHERE enabled = TRUE"
+        },
+        {
+          "name": "8. Insert opportunity_scores",
+          "operation": "executeQuery",
+          "query": "INSERT INTO opportunity_scores (opp_id, canonical_id, run_date, niche_keyword, target_audience, theme, seasonality_flag, product_formats, compliance_risk, demand_score, competition_score, conversion_score, creative_score, margin_score, ops_"
+        },
+        {
+          "name": "9. Insert trend_scores",
+          "operation": "executeQuery",
+          "query": "INSERT INTO trend_scores (score_id, canonical_id, run_date, momentum_score, pod_fit_score, buyer_intent_score, range_depth_score, novelty_score, risk_score, total_score, decision)\nSELECT score_id, canonical_id, run_date, momentum_score, pod"
+        },
+        {
+          "name": "10. Insert score_components",
+          "operation": "executeQuery",
+          "query": "INSERT INTO score_components (component_id, opp_id, run_date, dimension, component_name, raw_value, normalized_value, weight, weighted_contribution, notes)\nSELECT component_id, opp_id, run_date, dimension, component_name, raw_value, normali"
+        },
+        {
+          "name": "11. Upsert normalized_terms scores",
+          "operation": "executeQuery",
+          "query": "INSERT INTO normalized_terms\n  (canonical_id, last_scored_at, latest_opp_id, latest_opportunity_score, latest_tier, canonical_term, status)\nSELECT\n  canonical_id, last_scored_at, latest_opp_id, latest_opportunity_score, latest_tier,\n  COALE"
+        },
+        {
+          "name": "12. Insert scoring_audit_log",
+          "operation": "executeQuery",
+          "query": "INSERT INTO scoring_audit_log\n  (audit_id, run_date, run_id, candidates_evaluated, tier_A_count, tier_B_count,\n   tier_C_count, rejected_count, avg_opportunity_score, top_opportunity,\n   scorer_version, notes)\nSELECT * FROM jsonb_to_records"
+        },
+        {
+          "name": "16. Insert theme_clusters",
+          "operation": "executeQuery",
+          "query": "INSERT INTO theme_clusters (cluster_id, run_date, theme_name, theme_slug, parent_theme, theme_summary, audience, occasion_type, seasonality, product_fit, style_fit, risk_level, cluster_score, term_count, status, review_notes)\nSELECT cluster"
+        },
+        {
+          "name": "18. Insert stage_run_logs",
+          "operation": "executeQuery",
+          "query": "INSERT INTO stage_run_logs (log_id, run_id, workflow_name, stage_name, event_type, started_at, ended_at, duration_ms, rows_in, rows_out, error_count, status, error_summary, attempt_number, parent_log_id, metadata_json)\nSELECT log_id, run_id"
+        },
+        {
+          "name": "19. Insert dual_write_mirror_log",
+          "operation": "executeQuery",
+          "query": "INSERT INTO dual_write_mirror_log (mirror_id, run_id, workflow_name, target_table, primary_sink, secondary_sink, rows_written, primary_status, secondary_status, mirror_hash, created_at)\nSELECT mirror_id, run_id, workflow_name, target_table,"
+        },
+        {
+          "name": "20. Insert workflow_runs",
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started t"
+        }
+      ]
+    },
+    "wf_publish_queue": {
+      "file": "wf_publish_queue.json",
+      "mentionsWorkflowRuns": true,
+      "mentionsNormalizedTerms": false,
+      "mentionsMarketplaceEvidence": false,
+      "mentionsOpportunityScores": true,
+      "mentionsPublishingQueue": true,
+      "postgresNodeNames": [
+        {
+          "name": "2. Read range_briefs (publishable)",
+          "operation": "executeQuery",
+          "query": "WITH briefs AS (\n  SELECT brief_id, cluster_id, status, run_date, NULL::text AS opp_id, 'high'::text AS priority\n  FROM range_briefs\n  WHERE LOWER(status) IN ('approved','draft','manual_review')\n), fallback_scores AS (\n  SELECT NULL::text A"
+        },
+        {
+          "name": "4. Upsert publishing_queue",
+          "operation": "executeQuery",
+          "query": "INSERT INTO publishing_queue\n  (queue_id, idempotency_key, run_id, run_week, cluster_id, brief_id,\n   status, attempt_count, first_enqueued_at, last_seen_at, source_run_id,\n   priority, review_notes)\nSELECT * FROM jsonb_to_recordset($1::jso"
+        },
+        {
+          "name": "5. Insert stage_run_logs",
+          "operation": "executeQuery",
+          "query": "INSERT INTO stage_run_logs\n  (log_id, run_id, workflow_name, stage_name, event_type, started_at, ended_at,\n   duration_ms, rows_in, rows_out, error_count, status, error_summary,\n   attempt_number, parent_log_id, metadata_json)\nSELECT * FROM"
+        },
+        {
+          "name": "6. Insert workflow_runs",
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started t"
+        }
+      ]
+    }
+  },
+  "localWorkflowGraphs": {
+    "wf_collect_trends": {
+      "file": "wf_collect_trends.json",
+      "edges": {
+        "Schedule Trigger (06:00 Europe/London)": [
+          "Set Run Metadata"
+        ],
+        "Set Run Metadata": [
+          "Split Out — fan-out to parallel branches"
+        ],
+        "Split Out — fan-out to parallel branches": [
+          "If — route Google Trends branch",
+          "If — route Etsy branch",
+          "If — route Pinterest branch"
+        ],
+        "If — route Google Trends branch": [
+          "Google Trends — daily rising queries"
+        ],
+        "If — route Etsy branch": [
+          "Etsy Autocomplete — buyer intent (Phase-2 seeds)"
+        ],
+        "If — route Pinterest branch": [
+          "Pinterest Trends — typeahead per seed"
+        ],
+        "Google Trends — daily rising queries": [
+          "Merge branch outputs"
+        ],
+        "Etsy Autocomplete — buyer intent (Phase-2 seeds)": [
+          "Merge branch outputs"
+        ],
+        "Merge branch outputs": [
+          "Deduplicate signals"
+        ],
+        "Deduplicate signals": [
+          "Validate raw_signals contract"
+        ],
+        "Validate raw_signals contract": [
+          "Filter validated rows"
+        ],
+        "Filter validated rows": [
+          "Append raw_signals (batch)"
+        ],
+        "Append raw_signals (batch)": [
+          "Build run log"
+        ],
+        "Build raw_signals mirror rows": [
+          "Append dual_write_mirror_log (raw_signals)"
+        ],
+        "Build source_health rows": [
+          "Append source_health"
+        ],
+        "Build stage_run_logs": [
+          "Append stage_run_logs"
+        ],
+        "Build run log": [
+          "Append workflow_runs (success)"
+        ],
+        "Pinterest Trends — typeahead per seed": [
+          "Merge branch outputs"
+        ],
+        "Append workflow_runs (success)": [
+          "Build source_health rows",
+          "Build stage_run_logs",
+          "Build raw_signals mirror rows"
+        ]
+      }
+    },
+    "wf_normalize_terms": {
+      "file": "wf_normalize_terms.json",
+      "edges": {
+        "Schedule Trigger": [
+          "Read raw_signals"
+        ],
+        "Read raw_signals": [
+          "Read normalized_terms"
+        ],
+        "Read normalized_terms": [
+          "Build normalized terms"
+        ],
+        "Build normalized terms": [
+          "IF — Has rows?"
+        ],
+        "IF — Has rows?": [
+          "Build no-rows run log",
+          "Filter normalized rows",
+          "Build run log"
+        ],
+        "Build no-rows run log": [
+          "Append workflow_runs (success)"
+        ],
+        "Filter normalized rows": [
+          "Append normalized_terms"
+        ],
+        "Append normalized_terms": [],
+        "Build normalized_terms mirror rows": [
+          "Append dual_write_mirror_log (normalized_terms)"
+        ],
+        "Build normalization_log rows": [
+          "Filter normalization_log rows"
+        ],
+        "Filter normalization_log rows": [
+          "Append normalization_log"
+        ],
+        "Build watchlist rows": [
+          "Filter watchlist rows"
+        ],
+        "Filter watchlist rows": [
+          "Append watchlist"
+        ],
+        "Build stage_run_logs": [
+          "Append stage_run_logs"
+        ],
+        "Build run log": [
+          "Append workflow_runs (success)"
+        ],
+        "Append workflow_runs (success)": [
+          "Build normalization_log rows",
+          "Build watchlist rows",
+          "Build stage_run_logs",
+          "Build normalized_terms mirror rows"
+        ]
+      }
+    },
+    "wf_enrich_marketplace": {
+      "file": "wf_enrich_marketplace.json",
+      "edges": {
+        "Schedule Trigger": [
+          "Read raw_signals"
+        ],
+        "Read raw_signals": [
+          "Read normalized_terms"
+        ],
+        "Read normalized_terms": [
+          "Read marketplace_evidence"
+        ],
+        "Read marketplace_evidence": [
+          "Build marketplace evidence"
+        ],
+        "Build marketplace evidence": [
+          "IF — Has rows?"
+        ],
+        "IF — Has rows?": [
+          "Build no-rows run log",
+          "Append marketplace_evidence"
+        ],
+        "Build no-rows run log": [
+          "Append workflow_runs (success)"
+        ],
+        "Append marketplace_evidence": [
+          "Build run log"
+        ],
+        "Build run log": [
+          "Append workflow_runs (success)"
+        ]
+      }
+    },
+    "wf_score_and_cluster": {
+      "file": "wf_score_and_cluster.json",
+      "edges": {
+        "1. Schedule Trigger — 07:00 Europe/London daily": [
+          "2. Read normalized_terms (active)"
+        ],
+        "2. Read normalized_terms (active)": [
+          "3. Read raw_signals (today)"
+        ],
+        "3. Read raw_signals (today)": [
+          "4. Read marketplace_evidence (7d)"
+        ],
+        "4. Read marketplace_evidence (7d)": [
+          "5. Read score_weights (enabled)"
+        ],
+        "5. Read score_weights (enabled)": [
+          "6. Merge signals per canonical_id"
+        ],
+        "6. Merge signals per canonical_id": [
+          "7. Score all candidates"
+        ],
+        "7. Score all candidates": [
+          "17. Build run log + mirror rows"
+        ],
+        "13. Has Tier A opportunities?": [
+          "14. Filter Tier A and B for clustering"
+        ],
+        "14. Filter Tier A and B for clustering": [
+          "15. LLM Clustering"
+        ],
+        "15. LLM Clustering": [
+          "16. Insert theme_clusters"
+        ],
+        "16. Insert theme_clusters": [],
+        "17. Build run log + mirror rows": [
+          "20. Insert workflow_runs"
+        ],
+        "20. Insert workflow_runs": [
+          "8. Insert opportunity_scores",
+          "9. Insert trend_scores",
+          "10. Insert score_components",
+          "11. Upsert normalized_terms scores",
+          "12. Insert scoring_audit_log",
+          "13. Has Tier A opportunities?",
+          "18. Insert stage_run_logs",
+          "19. Insert dual_write_mirror_log"
+        ]
+      }
+    },
+    "wf_publish_queue": {
+      "file": "wf_publish_queue.json",
+      "edges": {
+        "1. Schedule Trigger": [
+          "2. Read range_briefs (publishable)"
+        ],
+        "2. Read range_briefs (publishable)": [
+          "3. Build queue upsert payload"
+        ],
+        "3. Build queue upsert payload": [
+          "6. Insert workflow_runs"
+        ],
+        "6. Insert workflow_runs": [
+          "4. Upsert publishing_queue",
+          "5. Insert stage_run_logs"
+        ]
+      }
+    }
+  },
+  "rankedHypotheses": [
+    {
+      "rank": 4,
+      "likelihood": "low",
+      "hypothesis": "Wrong DB target is unlikely.",
+      "evidence": "The same Postgres verification sees raw_signals and wf_collect_trends workflow_runs written by Step 10, and downstream executions read those raw_signals."
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "apiUrl": "https://unmoral-impure-negotiate.ngrok-free.dev",
+  "results": [
+    {
+      "file": "wf_collect_trends.json",
+      "action": "updated",
+      "name": "wf_collect_trends — Error Handler",
+      "id": "yY38I7zLX0KqVBA9"
+    },
+    {
+      "file": "wf_collect_trends.json",
+      "action": "updated",
+      "name": "wf_collect_trends",
+      "id": "AsORoSwQOE4ABSmb"
+    },
+    {
+      "file": "wf_enrich_marketplace.json",
+      "action": "updated",
+      "name": "wf_enrich_marketplace — Error Handler",
+      "id": "TS0ub3Nc0oHRqhUV"
+    },
+    {
+      "file": "wf_enrich_marketplace.json",
+      "action": "updated",
+      "name": "wf_enrich_marketplace",
+      "id": "0jY0awmaJn8RMY8q"
+    },
+    {
+      "file": "wf_generate_range_briefs_and_phrase_expansion.json",
+      "action": "updated",
+      "name": "wf_generate_range_briefs — Error Handler",
+      "id": "8qEKHsdsmszGSn4W"
+    },
+    {
+      "file": "wf_generate_range_briefs_and_phrase_expansion.json",
+      "action": "updated",
+      "name": "wf_generate_range_briefs",
+      "id": "HfUHI8bSMxO6KzFU"
+    },
+    {
+      "file": "wf_generate_range_briefs_and_phrase_expansion.json",
+      "action": "updated",
+      "name": "wf_phrase_expansion",
+      "id": "COtkbdAHy4HWEhh7"
+    },
+    {
+      "file": "wf_ingest_performance_feedback.json",
+      "action": "updated",
+      "name": "wf_ingest_performance_feedback",
+      "id": "f9000009-f009-4009-8009-000000000002"
+    },
+    {
+      "file": "wf_normalize_terms.json",
+      "action": "updated",
+      "name": "wf_normalize_terms — Error Handler",
+      "id": "b2000002-0002-4002-8002-000000000001"
+    },
+    {
+      "file": "wf_normalize_terms.json",
+      "action": "updated",
+      "name": "wf_normalize_terms",
+      "id": "b2000002-0002-4002-8002-000000000002"
+    },
+    {
+      "file": "wf_publish_queue.json",
+      "action": "updated",
+      "name": "wf_publish_queue — Error Handler",
+      "id": "iDVs9G6KzfsYnchS"
+    },
+    {
+      "file": "wf_publish_queue.json",
+      "action": "updated",
+      "name": "wf_publish_queue",
+      "id": "WcJaRbT1v4GE1Dv9"
+    },
+    {
+      "file": "wf_score_and_cluster.json",
+      "action": "updated",
+      "name": "wf_score_and_cluster — Error Handler",
+      "id": "d4000004-0004-4004-8004-000000000001"
+    },
+    {
+      "file": "wf_score_and_cluster.json",
+      "action": "updated",
+      "name": "wf_score_and_cluster",
+      "id": "d4000004-0004-4004-8004-000000000002"
+    }
+  ]
+}

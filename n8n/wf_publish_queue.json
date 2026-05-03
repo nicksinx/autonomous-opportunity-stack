@@ -1,0 +1,273 @@
+[
+  {
+    "id": "q9000009-0009-4009-8009-000000000001",
+    "name": "wf_publish_queue — Error Handler",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "q9-err-1",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          240
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j=$input.first().json||{};const wfName=j.workflow?.name||'unknown';const msg=j.execution?.error?.message||String(j.execution?.error||'Error');const now=new Date().toISOString();return [{json:{rows:[{run_id:'run_'+wfName+'_error_'+Date.now(),run_started:now,run_finished:now,job_name:wfName,rows_added:0,rows_updated:0,status:'error',error_log:msg,sources_summary_json:null,stage_log_root_id:null}]}}];"
+        },
+        "id": "q9-err-2",
+        "name": "Build error row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          240
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started timestamptz, run_finished timestamptz,\n       job_name text, rows_added int, rows_updated int, status text,\n       error_log text, sources_summary_json jsonb, stage_log_root_id text)\nON CONFLICT (run_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.rows || []) }}"
+          }
+        },
+        "id": "q9-err-3",
+        "name": "Insert workflow_runs (error)",
+        "position": [
+          440,
+          240
+        ]
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Build error row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build error row": {
+        "main": [
+          [
+            {
+              "node": "Insert workflow_runs (error)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London"
+    },
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ]
+  },
+  {
+    "id": "q9000009-0009-4009-8009-000000000002",
+    "name": "wf_publish_queue",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 45 7 * * *"
+              }
+            ]
+          }
+        },
+        "id": "q9-101",
+        "name": "1. Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          480
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT brief_id, cluster_id, status, run_date, opp_id, priority FROM (\n  SELECT rb.brief_id, rb.cluster_id, rb.status, rb.run_date::date AS run_date,\n         NULL::text AS opp_id, 'high'::text AS priority\n    FROM range_briefs rb\n   WHERE LOWER(rb.status) IN ('approved','draft','manual_review')\n  UNION ALL\n  SELECT NULL::text AS brief_id, NULL::text AS cluster_id, 'approved'::text AS status,\n         CURRENT_DATE AS run_date, oc.opportunity_id::text AS opp_id, 'high'::text AS priority\n    FROM workflow_outbox wo\n    JOIN opportunity_candidate oc ON oc.opportunity_id::text = wo.aggregate_id\n   WHERE wo.event_type = 'opportunity_approved_for_creative'\n     AND wo.status = 'complete'\n     AND wo.processed_at >= NOW() - INTERVAL '24 hours'\n) q",
+          "options": {}
+        },
+        "id": "q9-102",
+        "name": "2. Read publish candidates",
+        "position": [
+          220,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const briefs = $('2. Read publish candidates').all().map(i=>i.json||{});\nconst nowIso = new Date().toISOString();\nconst runWeek = (() => {\n  const d = new Date();\n  // Monday of this ISO week:\n  const day = (d.getUTCDay() + 6) % 7;\n  const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - day));\n  return monday.toISOString().slice(0, 10);\n})();\nconst run_id = 'run_wf_publish_queue_' + Date.now();\nconst str = v => String(v == null ? '' : v).trim();\nconst hash = s => { let h=0; const x=String(s||''); for(let i=0;i<x.length;i++){h=(h<<5)-h+x.charCodeAt(i);h|=0;} return Math.abs(h).toString(36); };\n\nconst seen = new Set();\nconst queue_rows = [];\nfor (const b of briefs) {\n  const cluster_id = str(b.cluster_id) || null;\n  const brief_id   = str(b.brief_id);\n  const opp_id     = str(b.opp_id);\n  const entity_key = brief_id || opp_id;\n  if (!entity_key) continue;\n  const idempotency_key = ['idem','v1',cluster_id,entity_key,runWeek].join(':');\n  if (seen.has(idempotency_key)) continue;\n  seen.add(idempotency_key);\n  queue_rows.push({\n    queue_id: 'q_' + hash(idempotency_key) + '_' + Date.now(),\n    idempotency_key,\n    run_id,\n    run_week: runWeek,\n    cluster_id,\n    brief_id: brief_id || null,\n    status: 'pending',\n    attempt_count: 1,\n    first_enqueued_at: nowIso,\n    last_seen_at: nowIso,\n    source_run_id: run_id,\n    priority: str(b.priority) || 'medium',\n    review_notes: opp_id ? 'source:outbox_approved' : ''\n  });\n}\n\nconst stage_rows = [\n  { log_id: 'slog_wf_publish_queue_enqueue_'+Date.now()+'_start', run_id, workflow_name:'wf_publish_queue', stage_name:'enqueue', event_type:'start', started_at:nowIso, ended_at:null, duration_ms:null, rows_in:briefs.length, rows_out:0, error_count:0, status:'running', error_summary:'', attempt_number:1, parent_log_id:null, metadata_json:null },\n  { log_id: 'slog_wf_publish_queue_enqueue_'+Date.now()+'_end',   run_id, workflow_name:'wf_publish_queue', stage_name:'enqueue', event_type:'end',   started_at:nowIso, ended_at:new Date().toISOString(), duration_ms:0, rows_in:briefs.length, rows_out:queue_rows.length, error_count:0, status:'success', error_summary:'', attempt_number:1, parent_log_id:null, metadata_json:{ enqueued: queue_rows.length } },\n];\nconst workflow_rows = [{ run_id, run_started:nowIso, run_finished:new Date().toISOString(), job_name:'wf_publish_queue', rows_added:queue_rows.length, rows_updated:0, status:'success', error_log:'', sources_summary_json:{ briefs:briefs.length, enqueued:queue_rows.length }, stage_log_root_id:null }];\n\nreturn [{ json: { run_id, queue_rows, stage_rows, workflow_rows } }];"
+        },
+        "id": "q9-103",
+        "name": "3. Build queue upsert payload",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          440,
+          480
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO publishing_queue\n  (queue_id, idempotency_key, run_id, run_week, cluster_id, brief_id,\n   status, attempt_count, first_enqueued_at, last_seen_at, source_run_id,\n   priority, review_notes)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(queue_id text, idempotency_key text, run_id text, run_week date,\n       cluster_id text, brief_id text, status text, attempt_count int,\n       first_enqueued_at timestamptz, last_seen_at timestamptz,\n       source_run_id text, priority text, review_notes text)\nON CONFLICT (idempotency_key) DO UPDATE\n   SET attempt_count = publishing_queue.attempt_count + 1,\n       last_seen_at  = EXCLUDED.last_seen_at,\n       run_id        = EXCLUDED.run_id,\n       priority      = EXCLUDED.priority",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.queue_rows || []) }}"
+          }
+        },
+        "id": "q9-104",
+        "name": "4. Upsert publishing_queue",
+        "position": [
+          660,
+          480
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO stage_run_logs\n  (log_id, run_id, workflow_name, stage_name, event_type, started_at, ended_at,\n   duration_ms, rows_in, rows_out, error_count, status, error_summary,\n   attempt_number, parent_log_id, metadata_json)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(log_id text, run_id text, workflow_name text, stage_name text,\n       event_type text, started_at timestamptz, ended_at timestamptz,\n       duration_ms int, rows_in int, rows_out int, error_count int,\n       status text, error_summary text, attempt_number int,\n       parent_log_id text, metadata_json jsonb)\nON CONFLICT (log_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($('3. Build queue upsert payload').first().json.stage_rows || []) }}"
+          }
+        },
+        "id": "q9-105",
+        "name": "5. Insert stage_run_logs",
+        "position": [
+          880,
+          380
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started timestamptz, run_finished timestamptz,\n       job_name text, rows_added int, rows_updated int, status text,\n       error_log text, sources_summary_json jsonb, stage_log_root_id text)\nON CONFLICT (run_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($('3. Build queue upsert payload').first().json.workflow_rows || []) }}"
+          }
+        },
+        "id": "q9-106",
+        "name": "6. Insert workflow_runs",
+        "position": [
+          880,
+          580
+        ]
+      }
+    ],
+    "connections": {
+      "1. Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "2. Read publish candidates",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "2. Read publish candidates": {
+        "main": [
+          [
+            {
+              "node": "3. Build queue upsert payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "3. Build queue upsert payload": {
+        "main": [
+          [
+            {
+              "node": "4. Upsert publishing_queue",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "5. Insert stage_run_logs",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "6. Insert workflow_runs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "errorWorkflow": "q9000009-0009-4009-8009-000000000001"
+    },
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ]
+  }
+]

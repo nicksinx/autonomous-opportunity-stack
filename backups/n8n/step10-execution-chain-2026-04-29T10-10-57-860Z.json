@@ -1,0 +1,94 @@
+{
+  "status": "PASS",
+  "chosenExecutionPath": "mcp",
+  "workflowMapping": [
+    {
+      "name": "wf_collect_trends",
+      "expectedId": "AsORoSwQOE4ABSmb",
+      "liveId": "AsORoSwQOE4ABSmb",
+      "active": true,
+      "idMismatch": false
+    },
+    {
+      "name": "wf_normalize_terms",
+      "expectedId": "b2000002-0002-4002-8002-000000000002",
+      "liveId": "b2000002-0002-4002-8002-000000000002",
+      "active": true,
+      "idMismatch": false
+    },
+    {
+      "name": "wf_enrich_marketplace",
+      "expectedId": "0jY0awmaJn8RMY8q",
+      "liveId": "0jY0awmaJn8RMY8q",
+      "active": true,
+      "idMismatch": false
+    },
+    {
+      "name": "wf_score_and_cluster",
+      "expectedId": "d4000004-0004-4004-8004-000000000002",
+      "liveId": "d4000004-0004-4004-8004-000000000002",
+      "active": true,
+      "idMismatch": false
+    },
+    {
+      "name": "wf_publish_queue",
+      "expectedId": "WcJaRbT1v4GE1Dv9",
+      "liveId": "WcJaRbT1v4GE1Dv9",
+      "active": true,
+      "idMismatch": false
+    }
+  ],
+  "executions": [
+    {
+      "name": "wf_collect_trends",
+      "workflowId": "AsORoSwQOE4ABSmb",
+      "executionId": "169",
+      "startTime": "2026-04-29T10:10:58.541Z",
+      "stopTime": "2026-04-29T10:11:19.543Z",
+      "terminalStatus": "success",
+      "n8nStartedAt": "2026-04-29T10:10:58.651Z",
+      "n8nStoppedAt": "2026-04-29T10:11:19.436Z"
+    },
+    {
+      "name": "wf_normalize_terms",
+      "workflowId": "b2000002-0002-4002-8002-000000000002",
+      "executionId": "170",
+      "startTime": "2026-04-29T10:11:19.544Z",
+      "stopTime": "2026-04-29T10:11:24.844Z",
+      "terminalStatus": "success",
+      "n8nStartedAt": "2026-04-29T10:11:19.596Z",
+      "n8nStoppedAt": "2026-04-29T10:11:19.768Z"
+    },
+    {
+      "name": "wf_enrich_marketplace",
+      "workflowId": "0jY0awmaJn8RMY8q",
+      "executionId": "171",
+      "startTime": "2026-04-29T10:11:24.846Z",
+      "stopTime": "2026-04-29T10:11:30.297Z",
+      "terminalStatus": "success",
+      "n8nStartedAt": "2026-04-29T10:11:24.900Z",
+      "n8nStoppedAt": "2026-04-29T10:11:26.637Z"
+    },
+    {
+      "name": "wf_score_and_cluster",
+      "workflowId": "d4000004-0004-4004-8004-000000000002",
+      "executionId": "172",
+      "startTime": "2026-04-29T10:11:30.298Z",
+      "stopTime": "2026-04-29T10:11:56.318Z",
+      "terminalStatus": "success",
+      "n8nStartedAt": "2026-04-29T10:11:30.345Z",
+      "n8nStoppedAt": "2026-04-29T10:11:47.666Z"
+    },
+    {
+      "name": "wf_publish_queue",
+      "workflowId": "WcJaRbT1v4GE1Dv9",
+      "executionId": "173",
+      "startTime": "2026-04-29T10:11:56.318Z",
+      "stopTime": "2026-04-29T10:12:02.595Z",
+      "terminalStatus": "success",
+      "n8nStartedAt": "2026-04-29T10:11:57.287Z",
+      "n8nStoppedAt": "2026-04-29T10:11:57.374Z"
+    }
+  ],
+  "attemptArtifact": "/Users/dv/projects/Codex/autonomous-ideas-signals/backups/n8n/step10-attempt-2026-04-29T10-10-57-860Z.json"
+}

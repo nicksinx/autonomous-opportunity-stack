@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.postgres
+.cursor/mcp.json
+
+# Node
+node_modules/
+
+# n8n exports with credentials baked in
+n8n/*.credentials.json
+
+# Transient cutover diagnostics — keep on disk for forensics, not in repo.
+# Each cutover step generated many timestamped attempts; we commit only the
+# canonical PASS artifacts referenced in SPRINT_CLOSEOUT.md (negated below).
+backups/n8n/execution-*-inspection-*.json
+backups/n8n/step10-attempt-*.json
+backups/n8n/step10-execution-failure-*.json
+backups/n8n/step10-main-workflows-update-*.json
+backups/n8n/step10-execution-chain-*.json
+backups/n8n/step11-execution-audit-*.json
+backups/n8n/step11-diagnostics-*.json
+backups/n8n/workflow-audit-*.json
+backups/n8n/workflow-deletion-review-*.md
+backups/n8n/cutover-report-*.json
+backups/n8n/wf_collect_trends-live-order-patch-*.json
+backups/n8n/step11-postgres-verification-*.json
+# Negate the canonical evidence files (final PASS artifacts).
+!backups/n8n/step11-postgres-verification-2026-04-29T10-12-36-776Z.json
+!backups/n8n/step10-execution-chain-2026-04-29T10-10-57-860Z.json
+!backups/n8n/step11-execution-audit-2026-04-29T10-12-36-776Z.json
+!backups/n8n/step11-diagnostics-2026-04-29T10-12-36-776Z.json
+!backups/n8n/workflow-audit-2026-04-29T00-22-37-737Z.json
+!backups/n8n/workflow-deletion-review-2026-04-29T00-22-37-737Z.md
+!backups/n8n/cutover-report-2026-04-29T01-31-39-479Z.json

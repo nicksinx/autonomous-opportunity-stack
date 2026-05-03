@@ -1,0 +1,38 @@
+{
+  "name": "pod-trends-research",
+  "version": "1.0.0",
+  "private": true,
+  "description": "POD Trend Research System — n8n workflows + Postgres backend",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "outbox:publish": "node services/outbox-publisher/index.mjs",
+    "api:start": "node services/api/server.mjs",
+    "weights:recalibrate": "node services/weight-calibrator/index.mjs",
+    "cluster:engine": "node services/cluster-engine/index.mjs",
+    "csv:import": "node services/csv-importer/index.mjs",
+    "db:migrate": "node db/run_migrations.mjs",
+    "db:backfill": "node db/backfill_sheets_to_pg.mjs",
+    "db:psql": "docker exec -it -u postgres local-postgres psql -U pod_admin -d pod_trends",
+    "db:credentials-check": "node db/check-postgres-credentials.mjs",
+    "db:schema-columns": "node db/check-schema-columns.mjs",
+    "n8n:validate": "node n8n/validate-workflows.mjs",
+    "n8n:validate:cycle-guard": "node n8n/__fixtures__/run-cycle-fixture.mjs",
+    "n8n:phase1-gate": "node n8n/phase1-gate.mjs",
+    "layer2:readiness": "node n8n/layer2-readiness-gate.mjs",
+    "layer2:readiness:report": "node n8n/layer2-readiness-gate.mjs --write-report=LAYER2_READINESS_REPORT.md",
+    "layer2:readiness:full": "node n8n/layer2-readiness-gate.mjs --run-tests --write-report=LAYER2_READINESS_REPORT.md",
+    "n8n:simulate": "node n8n/simulate-scheduled-runs.mjs",
+    "n8n:import": "node n8n/import-workflows.mjs",
+    "n8n:import:dry": "node n8n/import-workflows.mjs --dry-run"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "fastify": "^5.2.0",
+    "pg": "^8.13.1",
+    "pg-format": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  }
+}

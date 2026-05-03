@@ -1,0 +1,1416 @@
+[
+  {
+    "updatedAt": "2026-04-28T00:20:18.040Z",
+    "createdAt": "2026-04-28T00:01:24.194Z",
+    "id": "yY38I7zLX0KqVBA9",
+    "name": "wf_collect_trends — Error Handler",
+    "description": "Error handler for wf_collect_trends.",
+    "active": false,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "a1000001-0001-4001-8001-000000000011",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          520
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j = $input.first().json;\nconst wfName = j.workflow?.name ?? 'unknown';\nconst msg = j.execution?.error?.message ?? String(j.execution?.error ?? 'Error');\nconst now = new Date().toISOString();\nreturn [\n  {\n    json: {\n      run_id: `run_${wfName}_error_${Date.now()}`,\n      run_started: now,\n      run_finished: now,\n      job_name: wfName,\n      rows_added: 0,\n      rows_updated: 0,\n      status: 'error',\n      error_log: msg,\n      sources_summary_json: null,\n      stage_log_root_id: null,\n    },\n  },\n];"
+        },
+        "id": "a1000001-0001-4001-8001-000000000012",
+        "name": "Build error row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          520
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "workflow_runs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_started",
+                "displayName": "run_started",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_finished",
+                "displayName": "run_finished",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "job_name",
+                "displayName": "job_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_added",
+                "displayName": "rows_added",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_updated",
+                "displayName": "rows_updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_log",
+                "displayName": "error_log",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "sources_summary_json",
+                "displayName": "sources_summary_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_log_root_id",
+                "displayName": "stage_log_root_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-000000000013",
+        "name": "Append workflow_runs (error)",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          440,
+          520
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Build error row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build error row": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (error)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": true,
+      "binaryMode": "separate",
+      "timezone": "Europe/London"
+    },
+    "staticData": null,
+    "meta": {
+      "aiBuilderAssisted": true
+    },
+    "pinData": {},
+    "versionId": "89ded8d1-ce1d-43ec-9b5f-278ec74b88b2",
+    "activeVersionId": null,
+    "versionCounter": 5,
+    "triggerCount": 0,
+    "shared": [
+      {
+        "updatedAt": "2026-04-28T00:01:24.197Z",
+        "createdAt": "2026-04-28T00:01:24.197Z",
+        "role": "workflow:owner",
+        "workflowId": "yY38I7zLX0KqVBA9",
+        "projectId": "sddEae96GgZ8ooZc",
+        "project": {
+          "updatedAt": "2026-04-23T21:06:51.661Z",
+          "createdAt": "2026-04-23T21:06:19.821Z",
+          "id": "sddEae96GgZ8ooZc",
+          "name": "Nicholas Sinclair <nasinclair121@gmail.com>",
+          "type": "personal",
+          "icon": null,
+          "description": null,
+          "creatorId": "37737094-c3da-4613-a529-d24436bfffcc"
+        }
+      }
+    ],
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "activeVersion": null
+  },
+  {
+    "updatedAt": "2026-04-28T00:20:18.367Z",
+    "createdAt": "2026-04-28T00:20:18.367Z",
+    "id": "AsORoSwQOE4ABSmb",
+    "name": "wf_collect_trends",
+    "description": "Scheduled workflow that collects trend signals into raw_signals.",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 0 6 * * *"
+              }
+            ]
+          }
+        },
+        "id": "a1000001-0001-4001-8001-000000000101",
+        "name": "Schedule Trigger (06:00 Europe/London)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const run_id = 'run_wf_collect_trends_' + Date.now();\nconst run_started = new Date().toISOString();\nreturn [\n  {\n    json: {\n      run_id,\n      run_started,\n      market: 'UK',\n      category: 'all',\n      parallel_dispatch: ['google_trends', 'etsy_autocomplete', 'pinterest_trends'],\n    },\n  },\n];"
+        },
+        "id": "a1000001-0001-4001-8001-000000000102",
+        "name": "Set Run Metadata",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "parallel_dispatch",
+          "include": "allOtherFields",
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-00000000010b",
+        "name": "Split Out — fan-out to parallel branches",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          440,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "if-google_trends",
+                "leftValue": "={{ $json.parallel_dispatch }}",
+                "rightValue": "google_trends",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-00000000010c",
+        "name": "If — route Google Trends branch",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          660,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "if-etsy_autocomplete",
+                "leftValue": "={{ $json.parallel_dispatch }}",
+                "rightValue": "etsy_autocomplete",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-00000000010d",
+        "name": "If — route Etsy branch",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          660,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "if-pinterest_trends",
+                "leftValue": "={{ $json.parallel_dispatch }}",
+                "rightValue": "pinterest_trends",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-00000000010e",
+        "name": "If — route Pinterest branch",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          660,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const input = $input.first().json;\nconst inputMarket = input.market ?? 'UK';\nconst geo = inputMarket === 'UK' ? 'GB' : String(inputMarket).toUpperCase();\nconst hl = geo === 'GB' ? 'en-GB' : 'en-US';\nconst outMarketLabel = geo === 'GB' ? 'UK' : geo;\nconst helpers = this.helpers;\n\nfunction slugify(text) {\n  return String(text)\n    .toLowerCase()\n    .replace(/[^a-z0-9]+/g, '_')\n    .replace(/^_+|_+$/g, '')\n    .slice(0, 80);\n}\n\nfunction decodeXmlEntities(text) {\n  return String(text || '')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#39;/g, \"'\")\n    .replace(/&apos;/g, \"'\");\n}\n\nfunction stripTags(text) {\n  return decodeXmlEntities(String(text || '').replace(/<[^>]+>/g, ' ').replace(/\\s+/g, ' ').trim());\n}\n\nfunction extractTraffic(block) {\n  const m = String(block).match(/<ht:approx_traffic>([\\s\\S]*?)<\\/ht:approx_traffic>/i);\n  return m ? stripTags(m[1]) : '';\n}\n\nfunction extractTitle(block) {\n  const m = String(block).match(/<title>([\\s\\S]*?)<\\/title>/i);\n  return m ? stripTags(m[1]) : '';\n}\n\nfunction extractRelated(block) {\n  const related = [];\n  const matches = String(block).matchAll(/<a[^>]*>([\\s\\S]*?)<\\/a>/gi);\n  for (const match of matches) {\n    const text = stripTags(match[1]);\n    if (text) related.push(text);\n  }\n  return related;\n}\n\nfunction buildRow(title, related, traffic) {\n  const slug = slugify(title) || 'unknown';\n  return {\n    json: {\n      signal_id: 'sig_google_' + new Date().toISOString().slice(0, 10) + '_' + slug,\n      date_collected: new Date().toISOString(),\n      source: 'google_trends',\n      market: outMarketLabel,\n      term: title,\n      related_term: (Array.isArray(related) ? related : []).slice(0, 5).join(' | '),\n      category: 'general',\n      signal_type: 'rising_query',\n      velocity_hint: traffic || 'medium',\n      url: 'https://trends.google.com/trending?geo=' + encodeURIComponent(geo),\n      raw_payload_json: JSON.stringify({ title, related, traffic }),\n    },\n  };\n}\n\nconst baseHeaders = {\n  Accept: 'application/rss+xml, text/xml, */*',\n  'Accept-Language': hl + ',en;q=0.8',\n  'User-Agent': 'Mozilla/5.0 (compatible; n8n-trends-bot/1.0; +https://example.invalid)',\n};\n\nasync function fetchRss() {\n  const url = 'https://trends.google.com/trending/rss?geo=' + encodeURIComponent(geo) + '&safe=active';\n  const bodyText = await helpers.httpRequest({\n    method: 'GET',\n    url,\n    headers: baseHeaders,\n    returnFullResponse: false,\n    json: false,\n  });\n  const xml = String(bodyText || '');\n  const itemBlocks = xml.match(/<item>[\\s\\S]*?<\\/item>/gi) || [];\n  return itemBlocks\n    .slice(0, 20)\n    .map((block) => {\n      const title = extractTitle(block);\n      const related = extractRelated(block);\n      const traffic = extractTraffic(block);\n      return buildRow(title, related, traffic);\n    })\n    .filter((r) => r.json.term);\n}\n\nasync function fetchDailytrendsJson() {\n  const url =\n    'https://trends.google.com/trends/api/dailytrends?hl=' +\n    encodeURIComponent(hl) +\n    '&tz=0&geo=' +\n    encodeURIComponent(geo) +\n    '&ns=15';\n  const bodyText = await helpers.httpRequest({\n    method: 'GET',\n    url,\n    headers: { ...baseHeaders, Accept: 'application/json, text/plain, */*' },\n    returnFullResponse: false,\n    json: false,\n  });\n  let text = String(bodyText || '');\n  text = text.replace(/^\\)\\]\\}',?\\s*/, '');\n  let data;\n  try {\n    data = JSON.parse(text);\n  } catch (_pe) {\n    return [];\n  }\n  const days = (data && data.default && data.default.trendingSearchesDays) || [];\n  const rows = [];\n  for (const day of days) {\n    const trends = Array.isArray(day && day.trendingSearches) ? day.trendingSearches : [];\n    for (const t of trends) {\n      const title = String((t && t.title && t.title.query) || '').trim();\n      if (!title) continue;\n      const related = (Array.isArray(t && t.relatedQueries) ? t.relatedQueries : [])\n        .map((r) => String((r && r.query) || ''))\n        .filter(Boolean);\n      const traffic = String((t && t.formattedTraffic) || '').trim();\n      rows.push(buildRow(title, related, traffic));\n    }\n  }\n  return rows;\n}\n\ntry {\n  let rows = [];\n  try {\n    rows = await fetchRss();\n  } catch (_e1) {\n    rows = [];\n  }\n  if (!rows.length) {\n    try {\n      rows = await fetchDailytrendsJson();\n    } catch (_e2) {\n      rows = [];\n    }\n  }\n  return rows;\n} catch (err) {\n  const msg = (err && err.message) || String(err);\n  return [\n    {\n      json: {\n        signal_id: 'ERROR',\n        source: 'google_trends',\n        term: 'fetch_failed',\n        date_collected: new Date().toISOString(),\n        raw_payload_json: msg,\n      },\n    },\n  ];\n}"
+        },
+        "id": "a1000001-0001-4001-8001-000000000103",
+        "name": "Google Trends — daily rising queries",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          900,
+          120
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const SEEDS = [\n  'pickleball','stanley cup','cottagecore','dark academia','granola girl',\n  'coastal grandmother','that girl','mob wife','quiet luxury','coquette',\n];\nconst dateStamp = new Date().toISOString().slice(0, 10);\nconst dateCollected = new Date().toISOString();\nconst helpers = this.helpers;\n\nfunction slugify(text) {\n  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80);\n}\nfunction dedupeKey(p) { return String(p).trim().toLowerCase(); }\nfunction delay(ms) { return new Promise((r) => setTimeout(r, ms)); }\n\nfunction extractPhrases(payload) {\n  if (!payload) return [];\n  if (Array.isArray(payload)) {\n    return payload\n      .map((x) =>\n        typeof x === 'string'\n          ? x\n          : (x && (x.query ?? x.title ?? x.text ?? x.value ?? x.suggestion ?? x.name ?? x.phrase)) || ''\n      )\n      .filter(Boolean);\n  }\n  if (typeof payload !== 'object') return [];\n  const buckets = [\n    payload.results,\n    payload.suggestions,\n    payload.data,\n    payload.prefixes,\n    payload.autocomplete,\n    payload.items,\n    payload.related,\n  ].filter(Array.isArray);\n  for (const arr of buckets) {\n    const out = extractPhrases(arr);\n    if (out.length) return out;\n  }\n  return [];\n}\n\nconst UAS = [\n  'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',\n  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',\n  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',\n];\nfunction pickUA() { return UAS[Math.floor(Math.random() * UAS.length)]; }\n\nasync function tryFetch(url, jsonExpected, extraHeaders) {\n  const headers = {\n    Accept: 'application/json, text/plain, */*',\n    'Accept-Language': 'en-GB,en;q=0.8',\n    Referer: 'https://www.etsy.com/',\n    'User-Agent': pickUA(),\n    ...(extraHeaders || {}),\n  };\n  const res = await helpers.httpRequest({ method: 'GET', url, headers, json: jsonExpected });\n  return res;\n}\n\nasync function fetchSuggestions(seed) {\n  // Primary Etsy API endpoint.\n  try {\n    const url = 'https://www.etsy.com/api/v3/ajax/autocomplete/prefix?q=' + encodeURIComponent(seed) + '&limit=10';\n    const res = await tryFetch(url, true);\n    const phrases = extractPhrases(res);\n    if (phrases.length) return { phrases, via: 'etsy_v3_prefix' };\n  } catch (_e1) {}\n\n  // Secondary Etsy endpoint.\n  try {\n    const url2 = 'https://www.etsy.com/suggestions_ajax.php?search_query=' + encodeURIComponent(seed);\n    const raw = await tryFetch(url2, false);\n    let body = raw;\n    if (typeof body === 'string') {\n      try { body = JSON.parse(body); } catch (_pe) { body = null; }\n    }\n    const phrases = extractPhrases(body);\n    if (phrases.length) return { phrases, via: 'etsy_suggestions_ajax' };\n  } catch (_e2) {}\n\n  // Reliability fallback: DuckDuckGo autocomplete (public, no key).\n  try {\n    const url3 = 'https://duckduckgo.com/ac/?q=' + encodeURIComponent(seed) + '&type=list';\n    const res3 = await tryFetch(url3, true, { Referer: 'https://duckduckgo.com/' });\n    const phrases = extractPhrases(res3);\n    if (phrases.length) return { phrases, via: 'duckduckgo_ac_fallback' };\n  } catch (_e3) {}\n\n  return { phrases: null, via: 'none' };\n}\n\nconst seen = new Map();\nconst out = [];\n\nfor (let i = 0; i < SEEDS.length; i++) {\n  if (i > 0) await delay(500);\n  const seedTerm = SEEDS[i];\n  const result = await fetchSuggestions(seedTerm);\n  const phrases = result.phrases;\n\n  if (phrases === null) {\n    out.push({\n      json: {\n        signal_id: 'ERROR',\n        source: 'etsy_autocomplete',\n        term: 'fetch_failed',\n        date_collected: dateCollected,\n        related_term: seedTerm,\n        raw_payload_json: JSON.stringify({ seed: seedTerm, error: 'all endpoints failed', via: result.via }),\n      },\n    });\n    continue;\n  }\n\n  for (const phrase of phrases) {\n    const key = dedupeKey(phrase);\n    if (!key || seen.has(key)) continue;\n    seen.set(key, true);\n    const slug = slugify(phrase) || 'unknown';\n    out.push({\n      json: {\n        signal_id: 'sig_etsy_' + dateStamp + '_' + slug,\n        date_collected: dateCollected,\n        source: 'etsy_autocomplete',\n        market: 'UK',\n        term: phrase,\n        related_term: seedTerm,\n        category: 'marketplace_phrase',\n        signal_type: 'buyer_intent',\n        velocity_hint: result.via === 'duckduckgo_ac_fallback' ? 'fallback' : 'unknown',\n        url: 'https://www.etsy.com/search?q=' + encodeURIComponent(phrase),\n        raw_payload_json: JSON.stringify({ seed: seedTerm, suggestion: phrase, via: result.via }),\n      },\n    });\n  }\n}\n\nreturn out;"
+        },
+        "id": "a1000001-0001-4001-8001-000000000104",
+        "name": "Etsy Autocomplete — buyer intent (Phase-2 seeds)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          900,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const SEEDS = [\n  'pickleball','stanley cup','cottagecore','dark academia','granola girl',\n  'coastal grandmother','that girl','mob wife','quiet luxury','coquette',\n];\nconst dateStamp = new Date().toISOString().slice(0, 10);\nconst dateCollected = new Date().toISOString();\nconst helpers = this.helpers;\n\nfunction slugify(text) {\n  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 80);\n}\nfunction dedupeKey(p) { return String(p).trim().toLowerCase(); }\nfunction delay(ms) { return new Promise((r) => setTimeout(r, ms)); }\n\nfunction isLikelySuggestion(v) {\n  const s = String(v || '').trim();\n  if (!s || s.length < 3 || s.length > 60) return false;\n  if (/[:{}<>]/.test(s)) return false;\n  if (/\\b(middleware|responder|resource|provider|wrapper|request|parser|loader|cookieparser|sessionparser|csrfrequest)\\b/i.test(s)) return false;\n  if (/^[a-z]+(?:[A-Z][a-z0-9]+)+$/.test(s)) return false;\n  if (/^[^\\s]+$/.test(s) && /[A-Z]/.test(s)) return false;\n  return true;\n}\n\nfunction collectFromArray(arr) {\n  return (Array.isArray(arr) ? arr : [])\n    .map((x) => typeof x === 'string' ? x : (x && (x.display_name ?? x.query ?? x.term ?? x.phrase ?? x.suggestion ?? x.name)) || '')\n    .map((x) => String(x || '').replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16))).trim())\n    .filter(isLikelySuggestion);\n}\n\nfunction extractPhrases(payload) {\n  if (!payload || typeof payload !== 'object') return [];\n  const rr = payload.resource_response || {};\n  const primary = collectFromArray(rr.data);\n  if (primary.length) return primary;\n  const fallbackBuckets = [payload.results, payload.suggestions, payload.terms, payload.items, payload.recommended_terms, payload.data];\n  for (const b of fallbackBuckets) {\n    const out = collectFromArray(b);\n    if (out.length) return out;\n  }\n  return [];\n}\n\nfunction extractPhrasesFromHtml(html) {\n  const text = String(html || '');\n  const out = [];\n  const patterns = [\n    /\"display_name\"\\s*:\\s*\"([^\"]+)\"/g,\n    /\"name\"\\s*:\\s*\"([^\"]+)\"/g,\n    /\"query\"\\s*:\\s*\"([^\"]+)\"/g,\n  ];\n  for (const re of patterns) {\n    let m;\n    while ((m = re.exec(text)) !== null) {\n      const v = String(m[1] || '').replace(/\\u([0-9a-fA-F]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)));\n      if (isLikelySuggestion(v)) out.push(v);\n    }\n  }\n  return out;\n}\n\nconst UA =\n  'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';\n\nasync function fetchTypeahead(seed) {\n  const headers = {\n    Accept: 'application/json, text/javascript, */*; q=0.01',\n    'Accept-Language': 'en-GB,en;q=0.8',\n    Referer: 'https://www.pinterest.com/',\n    'User-Agent': UA,\n    'X-Requested-With': 'XMLHttpRequest',\n  };\n\n  // Primary endpoint + JSON parser.\n  try {\n    const data = encodeURIComponent(JSON.stringify({ options: { pin_scope: 'pins', term: seed }, context: {} }));\n    const url = 'https://www.pinterest.com/resource/UserSearchTypeaheadResource/get/?source_url=%2Fideas%2F&data=' + data + '&_=' + Date.now();\n    const res = await helpers.httpRequest({ method: 'GET', url, headers, json: true });\n    const phrases = extractPhrases(res);\n    if (phrases.length) return { phrases, via: 'pinterest_typeahead_json' };\n  } catch (_e1) {}\n\n  // Secondary endpoint/parser path: HTML autocomplete page + regex extraction.\n  try {\n    const url2 = 'https://www.pinterest.com/search/autocomplete/?q=' + encodeURIComponent(seed);\n    const html = await helpers.httpRequest({ method: 'GET', url: url2, headers: { ...headers, Accept: 'text/html, */*; q=0.1' }, json: false });\n    const phrases = extractPhrasesFromHtml(html);\n    if (phrases.length) return { phrases, via: 'pinterest_autocomplete_html' };\n  } catch (_e2) {}\n\n  // Reliability fallback: DuckDuckGo autocomplete (public, no key).\n  try {\n    const url3 = 'https://duckduckgo.com/ac/?q=' + encodeURIComponent(seed) + '&type=list';\n    const ddg = await helpers.httpRequest({\n      method: 'GET',\n      url: url3,\n      headers: { Accept: 'application/json, text/plain, */*', Referer: 'https://duckduckgo.com/', 'User-Agent': UA },\n      json: true,\n    });\n    const phrases = extractPhrases(ddg);\n    if (phrases.length) return { phrases, via: 'duckduckgo_ac_fallback' };\n  } catch (_e3) {}\n\n  return { phrases: null, via: 'none' };\n}\n\nconst seen = new Map();\nconst out = [];\n\nfor (let i = 0; i < SEEDS.length; i++) {\n  if (i > 0) await delay(500);\n  const seed = SEEDS[i];\n  const result = await fetchTypeahead(seed);\n  const phrases = result.phrases;\n\n  if (phrases === null) {\n    out.push({\n      json: {\n        signal_id: 'ERROR',\n        source: 'pinterest_trends',\n        term: 'fetch_failed',\n        date_collected: dateCollected,\n        related_term: seed,\n        raw_payload_json: JSON.stringify({ seed, error: 'pinterest endpoints failed', via: result.via }),\n      },\n    });\n    continue;\n  }\n\n  for (const phrase of phrases) {\n    if (!isLikelySuggestion(phrase)) continue;\n    const key = dedupeKey(phrase);\n    if (!key || seen.has(key)) continue;\n    seen.set(key, true);\n    const slug = slugify(phrase) || 'unknown';\n    out.push({\n      json: {\n        signal_id: 'sig_pinterest_' + dateStamp + '_' + slug,\n        date_collected: dateCollected,\n        source: 'pinterest_trends',\n        market: 'UK',\n        term: phrase,\n        related_term: seed,\n        category: 'visual_inspiration',\n        signal_type: 'audience_interest',\n        velocity_hint: result.via === 'duckduckgo_ac_fallback' ? 'fallback' : 'unknown',\n        url: 'https://www.pinterest.com/search/pins/?q=' + encodeURIComponent(phrase),\n        raw_payload_json: JSON.stringify({ seed, suggestion: phrase, via: result.via }),\n      },\n    });\n  }\n}\n\nreturn out;"
+        },
+        "id": "a1000001-0001-4001-8001-000000000105",
+        "name": "Pinterest Trends — typeahead per seed",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          900,
+          480
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "append",
+          "numberInputs": 3,
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-000000000106",
+        "name": "Merge branch outputs",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          1140,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const items = $input.all();\nconst seen = new Set();\nconst out = [];\nfor (let i = 0; i < items.length; i++) {\n  const json = items[i].json || {};\n  const id = json.signal_id;\n  if (!id) continue;\n  // Preserve per-branch diagnostic sentinel rows instead of collapsing all ERROR rows.\n  const key = id === 'ERROR'\n    ? ['ERROR', String(json.source || ''), String(json.related_term || ''), String(i)].join('::')\n    : String(id);\n  if (seen.has(key)) continue;\n  seen.add(key);\n  out.push({ json });\n}\nreturn out;"
+        },
+        "id": "a1000001-0001-4001-8001-000000000107",
+        "name": "Deduplicate signals",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1360,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Stage 1 row-contract validator (Item 2 of pipeline hardening plan).\n// Inlined from sourceContractValidator.js.\n\nconst REQUIRED = ['signal_id', 'source', 'term', 'date_collected', 'raw_payload_json'];\nconst OPTIONAL = ['market', 'related_term', 'category', 'signal_type', 'velocity_hint', 'url'];\n\nfunction validateRow(row) {\n  const reasons = [];\n  if (!row || typeof row !== 'object') return { ok: false, reasons: ['row_not_object'] };\n  const out = {};\n  for (const f of REQUIRED) {\n    const v = row[f];\n    if (v == null || String(v).trim() === '') { reasons.push('missing:' + f); continue; }\n    out[f] = String(v).trim();\n  }\n  if (out.signal_id === 'ERROR' || (out.term && out.term.toLowerCase() === 'fetch_failed')) {\n    return { ok: false, reasons: ['sentinel_error_row'] };\n  }\n  if (out.date_collected) {\n    const ts = Date.parse(out.date_collected);\n    if (!Number.isFinite(ts)) reasons.push('invalid:date_collected');\n  }\n  if (out.raw_payload_json) {\n    try { JSON.parse(out.raw_payload_json); } catch (_e) {\n      if (String(out.raw_payload_json).length > 4000) reasons.push('invalid:raw_payload_json_too_long');\n    }\n  }\n  for (const f of OPTIONAL) if (row[f] != null) out[f] = String(row[f]).trim();\n  if (out.term && out.term.length > 200) reasons.push('invalid:term_too_long');\n  if (out.signal_id && out.signal_id.length > 200) reasons.push('invalid:signal_id_too_long');\n  return { ok: reasons.length === 0, reasons, normalized: out };\n}\n\nconst items = $input.all();\nconst accepted = [];\nconst rejected = [];\nconst bySource = {};\nconst reasonsSummary = {};\n\nfor (const it of items) {\n  const raw = it.json || {};\n  const src = String(raw.source || 'unknown').trim() || 'unknown';\n  if (!bySource[src]) bySource[src] = { accepted: 0, rejected: 0, last_reason: '' };\n  const res = validateRow(raw);\n  if (res.ok) {\n    accepted.push({ json: res.normalized });\n    bySource[src].accepted += 1;\n  } else {\n    rejected.push({ json: { __rejected: true, raw, reasons: res.reasons } });\n    bySource[src].rejected += 1;\n    bySource[src].last_reason = res.reasons.join(',');\n    for (const r of res.reasons) reasonsSummary[r] = (reasonsSummary[r] || 0) + 1;\n  }\n}\n\nconst meta = $('Set Run Metadata').first().json;\nconst summary = {\n  json: {\n    __summary: true,\n    run_id: meta.run_id,\n    run_started: meta.run_started,\n    accepted_count: accepted.length,\n    rejected_count: rejected.length,\n    reasons_summary: reasonsSummary,\n    by_source: bySource,\n  },\n};\n\nreturn accepted.length ? accepted.concat([summary]) : [summary];"
+        },
+        "id": "a1000001-0001-4001-8001-00000000010f",
+        "name": "Validate raw_signals contract",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1500,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Filter out the validator's summary item before sheet append.\nconst rows = $input.all().filter((it) => !it.json || !it.json.__summary);\nreturn rows;"
+        },
+        "id": "a1000001-0001-4001-8001-000000000110",
+        "name": "Filter validated rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1640,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "raw_signals"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [
+              "signal_id"
+            ],
+            "schema": [
+              {
+                "id": "signal_id",
+                "displayName": "signal_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "date_collected",
+                "displayName": "date_collected",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "source",
+                "displayName": "source",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "market",
+                "displayName": "market",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "term",
+                "displayName": "term",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "related_term",
+                "displayName": "related_term",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "category",
+                "displayName": "category",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "signal_type",
+                "displayName": "signal_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "velocity_hint",
+                "displayName": "velocity_hint",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "url",
+                "displayName": "url",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "raw_payload_json",
+                "displayName": "raw_payload_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-000000000108",
+        "name": "Append raw_signals (batch)",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          1780,
+          300
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Build source_health rows from validator summary.\nconst meta = $('Set Run Metadata').first().json;\nconst summaries = $('Validate raw_signals contract').all().filter((it) => it.json && it.json.__summary);\nconst summary = summaries.length ? summaries[summaries.length - 1].json : { by_source: {} };\nconst bySource = summary.by_source || {};\nconst expectedSources = Array.isArray(meta.parallel_dispatch) ? meta.parallel_dispatch : [];\nconst runDate = (meta.run_started || new Date().toISOString()).slice(0, 10);\nconst out = [];\n\nfunction pushHealth(sourceName, e, fallbackReason) {\n  const accepted = Number((e && e.accepted) || 0);\n  const rejected = Number((e && e.rejected) || 0);\n  const total = accepted + rejected;\n  let status = 'ok';\n  if (total === 0) status = 'error';\n  else if (rejected > 0 && rejected === total) status = 'error';\n  else if (rejected > 0) status = 'degraded';\n  out.push({\n    json: {\n      health_id: 'health_' + sourceName + '_' + runDate + '_' + Date.now() + '_' + Math.floor(Math.random() * 1e6),\n      run_id: meta.run_id,\n      run_date: runDate,\n      source_name: sourceName,\n      status,\n      rows_in: total,\n      rows_valid: accepted,\n      rows_rejected: rejected,\n      duration_ms: 0,\n      last_error: ((e && e.last_reason) || fallbackReason || ''),\n      http_status_codes: '',\n      consecutive_failures: 0,\n      updated_at: new Date().toISOString(),\n    },\n  });\n}\n\n// First: sources present in validator summary.\nfor (const sourceName of Object.keys(bySource)) {\n  pushHealth(sourceName, bySource[sourceName], '');\n}\n\n// Then: expected sources that produced no contract-evaluable rows.\nfor (const sourceName of expectedSources) {\n  if (Object.prototype.hasOwnProperty.call(bySource, sourceName)) continue;\n  pushHealth(sourceName, { accepted: 0, rejected: 0, last_reason: 'no_rows_after_validation' }, 'no_rows_after_validation');\n}\n\nreturn out.length ? out : [{\n  json: {\n    health_id: 'health_unknown_' + runDate + '_' + Date.now(),\n    run_id: meta.run_id,\n    run_date: runDate,\n    source_name: 'unknown',\n    status: 'error',\n    rows_in: 0,\n    rows_valid: 0,\n    rows_rejected: 0,\n    duration_ms: 0,\n    last_error: 'summary_missing',\n    http_status_codes: '',\n    consecutive_failures: 0,\n    updated_at: new Date().toISOString(),\n  },\n}];"
+        },
+        "id": "a1000001-0001-4001-8001-000000000111",
+        "name": "Build source_health rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2000,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "source_health"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [
+              "run_id",
+              "source_name"
+            ],
+            "schema": [
+              {
+                "id": "health_id",
+                "displayName": "health_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_date",
+                "displayName": "run_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "source_name",
+                "displayName": "source_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_in",
+                "displayName": "rows_in",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_valid",
+                "displayName": "rows_valid",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_rejected",
+                "displayName": "rows_rejected",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "duration_ms",
+                "displayName": "duration_ms",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "last_error",
+                "displayName": "last_error",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "http_status_codes",
+                "displayName": "http_status_codes",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "consecutive_failures",
+                "displayName": "consecutive_failures",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "updated_at",
+                "displayName": "updated_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-000000000112",
+        "name": "Append source_health",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          2220,
+          200
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Build stage_run_logs envelope rows for this workflow.\nconst meta = $('Set Run Metadata').first().json;\nconst rowsIn = $('Deduplicate signals').all().length;\nconst rowsOut = $('Filter validated rows').all().length;\nconst summaryItem = $('Validate raw_signals contract').all().filter((it) => it.json && it.json.__summary);\nconst summary = summaryItem.length ? summaryItem[summaryItem.length - 1].json : { rejected_count: 0 };\nconst rejected = summary.rejected_count || 0;\nconst startedAt = meta.run_started || new Date().toISOString();\nconst endedAt = new Date().toISOString();\nconst durationMs = Math.max(0, Date.parse(endedAt) - Date.parse(startedAt));\nconst status = rejected === rowsIn && rowsIn > 0 ? 'error' : (rejected > 0 ? 'warn' : 'success');\nreturn [\n  {\n    json: {\n      log_id: 'slog_wf_collect_trends_collect_' + Date.now() + '_start',\n      run_id: meta.run_id,\n      workflow_name: 'wf_collect_trends',\n      stage_name: 'collect_and_append',\n      event_type: 'start',\n      started_at: startedAt,\n      ended_at: null,\n      duration_ms: 0,\n      rows_in: rowsIn,\n      rows_out: 0,\n      error_count: 0,\n      status: 'running',\n      error_summary: '',\n      attempt_number: 1,\n      parent_log_id: '',\n      metadata_json: null,\n    },\n  },\n  {\n    json: {\n      log_id: 'slog_wf_collect_trends_collect_' + Date.now() + '_end',\n      run_id: meta.run_id,\n      workflow_name: 'wf_collect_trends',\n      stage_name: 'collect_and_append',\n      event_type: status === 'error' ? 'error' : 'end',\n      started_at: startedAt,\n      ended_at: endedAt,\n      duration_ms: durationMs,\n      rows_in: rowsIn,\n      rows_out: rowsOut,\n      error_count: rejected,\n      status,\n      error_summary: rejected ? ('rejected_' + rejected + '_rows') : '',\n      attempt_number: 1,\n      parent_log_id: '',\n      metadata_json: JSON.stringify({ reasons_summary: summary.reasons_summary || {} }),\n    },\n  },\n];"
+        },
+        "id": "a1000001-0001-4001-8001-000000000113",
+        "name": "Build stage_run_logs",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2000,
+          400
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "insert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "stage_run_logs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "log_id",
+                "displayName": "log_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "workflow_name",
+                "displayName": "workflow_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_name",
+                "displayName": "stage_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "event_type",
+                "displayName": "event_type",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "started_at",
+                "displayName": "started_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "ended_at",
+                "displayName": "ended_at",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "duration_ms",
+                "displayName": "duration_ms",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_in",
+                "displayName": "rows_in",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_out",
+                "displayName": "rows_out",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_count",
+                "displayName": "error_count",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_summary",
+                "displayName": "error_summary",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "attempt_number",
+                "displayName": "attempt_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "parent_log_id",
+                "displayName": "parent_log_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "metadata_json",
+                "displayName": "metadata_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-000000000114",
+        "name": "Append stage_run_logs",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          2220,
+          400
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const meta = $('Set Run Metadata').first().json;\nconst rows_added = $('Filter validated rows').all().length;\nconst summaries = $('Validate raw_signals contract').all().filter((it) => it.json && it.json.__summary);\nconst summary = summaries.length ? summaries[summaries.length - 1].json : { rejected_count: 0, by_source: {} };\nconst run_finished = new Date().toISOString();\nreturn [\n  {\n    json: {\n      run_id: meta.run_id,\n      run_started: meta.run_started,\n      run_finished,\n      job_name: 'wf_collect_trends',\n      rows_added,\n      rows_updated: 0,\n      status: summary.rejected_count > 0 ? 'success_with_rejects' : 'success',\n      error_log: summary.rejected_count > 0 ? ('rejects=' + summary.rejected_count) : '',\n      sources_summary_json: (summary.by_source || {}),\n      stage_log_root_id: null,\n    },\n  },\n];"
+        },
+        "id": "a1000001-0001-4001-8001-000000000109",
+        "name": "Build run log",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2440,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "mode": "list",
+            "value": "workflow_runs"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [
+              "run_id"
+            ],
+            "schema": [
+              {
+                "id": "run_id",
+                "displayName": "run_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_started",
+                "displayName": "run_started",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "run_finished",
+                "displayName": "run_finished",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "job_name",
+                "displayName": "job_name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_added",
+                "displayName": "rows_added",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "rows_updated",
+                "displayName": "rows_updated",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "status",
+                "displayName": "status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "error_log",
+                "displayName": "error_log",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "sources_summary_json",
+                "displayName": "sources_summary_json",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "stage_log_root_id",
+                "displayName": "stage_log_root_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "id": "a1000001-0001-4001-8001-00000000010a",
+        "name": "Append workflow_runs (success)",
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          2020,
+          300
+        ],
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger (06:00 Europe/London)": {
+        "main": [
+          [
+            {
+              "node": "Set Run Metadata",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Run Metadata": {
+        "main": [
+          [
+            {
+              "node": "Split Out — fan-out to parallel branches",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out — fan-out to parallel branches": {
+        "main": [
+          [
+            {
+              "node": "If — route Google Trends branch",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "If — route Etsy branch",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "If — route Pinterest branch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If — route Google Trends branch": {
+        "main": [
+          [
+            {
+              "node": "Google Trends — daily rising queries",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "If — route Etsy branch": {
+        "main": [
+          [
+            {
+              "node": "Etsy Autocomplete — buyer intent (Phase-2 seeds)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "If — route Pinterest branch": {
+        "main": [
+          [
+            {
+              "node": "Pinterest Trends — typeahead per seed",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          []
+        ]
+      },
+      "Google Trends — daily rising queries": {
+        "main": [
+          [
+            {
+              "node": "Merge branch outputs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Etsy Autocomplete — buyer intent (Phase-2 seeds)": {
+        "main": [
+          [
+            {
+              "node": "Merge branch outputs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge branch outputs": {
+        "main": [
+          [
+            {
+              "node": "Deduplicate signals",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Deduplicate signals": {
+        "main": [
+          [
+            {
+              "node": "Validate raw_signals contract",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate raw_signals contract": {
+        "main": [
+          [
+            {
+              "node": "Filter validated rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Filter validated rows": {
+        "main": [
+          [
+            {
+              "node": "Append raw_signals (batch)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append raw_signals (batch)": {
+        "main": [
+          [
+            {
+              "node": "Build run log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build source_health rows": {
+        "main": [
+          [
+            {
+              "node": "Append source_health",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build stage_run_logs": {
+        "main": [
+          [
+            {
+              "node": "Append stage_run_logs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build run log": {
+        "main": [
+          [
+            {
+              "node": "Append workflow_runs (success)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Pinterest Trends — typeahead per seed": {
+        "main": [
+          [
+            {
+              "node": "Merge branch outputs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append workflow_runs (success)": {
+        "main": [
+          [
+            {
+              "node": "Build source_health rows",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Build stage_run_logs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "availableInMCP": true,
+      "timezone": "Europe/London",
+      "errorWorkflow": "yY38I7zLX0KqVBA9",
+      "binaryMode": "separate"
+    },
+    "staticData": {
+      "node:Schedule Trigger (06:00 Europe/London)": {
+        "recurrenceRules": []
+      }
+    },
+    "meta": {
+      "aiBuilderAssisted": true
+    },
+    "pinData": {},
+    "versionId": "1c87040d-c95d-4290-bd6e-d46694dac8c0",
+    "activeVersionId": null,
+    "versionCounter": 8,
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2026-04-28T00:20:18.369Z",
+        "createdAt": "2026-04-28T00:20:18.369Z",
+        "role": "workflow:owner",
+        "workflowId": "AsORoSwQOE4ABSmb",
+        "projectId": "sddEae96GgZ8ooZc",
+        "project": {
+          "updatedAt": "2026-04-23T21:06:51.661Z",
+          "createdAt": "2026-04-23T21:06:19.821Z",
+          "id": "sddEae96GgZ8ooZc",
+          "name": "Nicholas Sinclair <nasinclair121@gmail.com>",
+          "type": "personal",
+          "icon": null,
+          "description": null,
+          "creatorId": "37737094-c3da-4613-a529-d24436bfffcc"
+        }
+      }
+    ],
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "activeVersion": null
+  }
+]

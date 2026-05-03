@@ -1,0 +1,290 @@
+{
+  "generatedAt": "2026-04-29T10:13:05.367Z",
+  "sourceStep10Artifact": "backups/n8n/step10-execution-chain-2026-04-29T10-10-57-860Z.json",
+  "anchor": "2026-04-29T10:10:58.651Z",
+  "windowEnd": "2026-04-29T10:21:57.374Z",
+  "expectedWorkflowNames": [
+    "wf_collect_trends",
+    "wf_normalize_terms",
+    "wf_enrich_marketplace",
+    "wf_score_and_cluster",
+    "wf_publish_queue"
+  ],
+  "workflowRuns": [
+    {
+      "job_name": "wf_collect_trends",
+      "status": "success",
+      "run_started": "2026-04-29T10:10:58.730Z",
+      "run_finished": "2026-04-29T10:11:07.658Z",
+      "run_id": "run_wf_collect_trends_1777457458730",
+      "rows_added": 10,
+      "rows_updated": 0,
+      "error_log": "",
+      "sources_summary_json": {
+        "etsy_autocomplete": {
+          "accepted": 10,
+          "rejected": 0,
+          "last_reason": ""
+        }
+      }
+    },
+    {
+      "job_name": "wf_normalize_terms",
+      "status": "success",
+      "run_started": "2026-04-29T10:11:19.689Z",
+      "run_finished": "2026-04-29T10:11:19.696Z",
+      "run_id": "run_wf_normalize_terms_1777457479689",
+      "rows_added": 0,
+      "rows_updated": 0,
+      "error_log": "",
+      "sources_summary_json": null
+    },
+    {
+      "job_name": "wf_enrich_marketplace",
+      "status": "success",
+      "run_started": "2026-04-29T10:11:26.623Z",
+      "run_finished": "2026-04-29T10:11:26.623Z",
+      "run_id": "run_wf_enrich_marketplace_1777457486623",
+      "rows_added": 0,
+      "rows_updated": 0,
+      "error_log": "",
+      "sources_summary_json": null
+    },
+    {
+      "job_name": "wf_score_and_cluster",
+      "status": "success",
+      "run_started": "2026-04-29T10:11:36.541Z",
+      "run_finished": "2026-04-29T10:11:47.548Z",
+      "run_id": "run_wf_score_and_cluster_1777457496541",
+      "rows_added": 41,
+      "rows_updated": 41,
+      "error_log": "",
+      "sources_summary_json": {
+        "trends": 41,
+        "clusters": 0,
+        "candidates": 41
+      }
+    },
+    {
+      "job_name": "wf_publish_queue",
+      "status": "success",
+      "run_started": "2026-04-29T10:11:57.335Z",
+      "run_finished": "2026-04-29T10:11:57.335Z",
+      "run_id": "run_wf_publish_queue_1777457517335",
+      "rows_added": 3,
+      "rows_updated": 0,
+      "error_log": "",
+      "sources_summary_json": {
+        "briefs": 3,
+        "enqueued": 3
+      }
+    }
+  ],
+  "workflowRunsByExpected": {
+    "wf_collect_trends": [
+      {
+        "job_name": "wf_collect_trends",
+        "status": "success",
+        "run_started": "2026-04-29T10:10:58.730Z",
+        "run_finished": "2026-04-29T10:11:07.658Z",
+        "run_id": "run_wf_collect_trends_1777457458730",
+        "rows_added": 10,
+        "rows_updated": 0,
+        "error_log": "",
+        "sources_summary_json": {
+          "etsy_autocomplete": {
+            "accepted": 10,
+            "rejected": 0,
+            "last_reason": ""
+          }
+        }
+      }
+    ],
+    "wf_normalize_terms": [
+      {
+        "job_name": "wf_normalize_terms",
+        "status": "success",
+        "run_started": "2026-04-29T10:11:19.689Z",
+        "run_finished": "2026-04-29T10:11:19.696Z",
+        "run_id": "run_wf_normalize_terms_1777457479689",
+        "rows_added": 0,
+        "rows_updated": 0,
+        "error_log": "",
+        "sources_summary_json": null
+      }
+    ],
+    "wf_enrich_marketplace": [
+      {
+        "job_name": "wf_enrich_marketplace",
+        "status": "success",
+        "run_started": "2026-04-29T10:11:26.623Z",
+        "run_finished": "2026-04-29T10:11:26.623Z",
+        "run_id": "run_wf_enrich_marketplace_1777457486623",
+        "rows_added": 0,
+        "rows_updated": 0,
+        "error_log": "",
+        "sources_summary_json": null
+      }
+    ],
+    "wf_score_and_cluster": [
+      {
+        "job_name": "wf_score_and_cluster",
+        "status": "success",
+        "run_started": "2026-04-29T10:11:36.541Z",
+        "run_finished": "2026-04-29T10:11:47.548Z",
+        "run_id": "run_wf_score_and_cluster_1777457496541",
+        "rows_added": 41,
+        "rows_updated": 41,
+        "error_log": "",
+        "sources_summary_json": {
+          "trends": 41,
+          "clusters": 0,
+          "candidates": 41
+        }
+      }
+    ],
+    "wf_publish_queue": [
+      {
+        "job_name": "wf_publish_queue",
+        "status": "success",
+        "run_started": "2026-04-29T10:11:57.335Z",
+        "run_finished": "2026-04-29T10:11:57.335Z",
+        "run_id": "run_wf_publish_queue_1777457517335",
+        "rows_added": 3,
+        "rows_updated": 0,
+        "error_log": "",
+        "sources_summary_json": {
+          "briefs": 3,
+          "enqueued": 3
+        }
+      }
+    ]
+  },
+  "tableCounts": [
+    {
+      "table": "raw_signals",
+      "exists": true,
+      "currentCount": 42,
+      "columns": [
+        "signal_id",
+        "date_collected",
+        "source",
+        "market",
+        "term",
+        "related_term",
+        "category",
+        "signal_type",
+        "velocity_hint",
+        "url",
+        "raw_payload_json"
+      ],
+      "freshness": {
+        "dateCollectedOnOrAfterAnchorDate": 42
+      }
+    },
+    {
+      "table": "normalized_terms",
+      "exists": true,
+      "currentCount": 41,
+      "columns": [
+        "canonical_id",
+        "date_first_seen",
+        "date_last_seen",
+        "canonical_term",
+        "aliases",
+        "language",
+        "market",
+        "primary_category",
+        "status",
+        "last_scored_at",
+        "latest_opp_id",
+        "latest_opportunity_score",
+        "latest_tier",
+        "created_at",
+        "updated_at"
+      ],
+      "freshness": {
+        "createdAtSinceAnchor": 0,
+        "updatedAtSinceAnchor": 41
+      }
+    },
+    {
+      "table": "marketplace_evidence",
+      "exists": true,
+      "currentCount": 41,
+      "columns": [
+        "evidence_id",
+        "canonical_id",
+        "source",
+        "phrase",
+        "product_type",
+        "intent_type",
+        "evidence_strength",
+        "captured_at"
+      ],
+      "freshness": {
+        "capturedAtSinceAnchor": 0
+      }
+    },
+    {
+      "table": "opportunity_scores",
+      "exists": true,
+      "currentCount": 41,
+      "columns": [
+        "opp_id",
+        "canonical_id",
+        "run_date",
+        "niche_keyword",
+        "target_audience",
+        "theme",
+        "seasonality_flag",
+        "product_formats",
+        "compliance_risk",
+        "demand_score",
+        "competition_score",
+        "conversion_score",
+        "creative_score",
+        "margin_score",
+        "ops_score",
+        "catalog_score",
+        "repeat_score",
+        "season_score",
+        "raw_weighted_sum",
+        "risk_penalty",
+        "opportunity_score",
+        "tier",
+        "action",
+        "scorer_version",
+        "score_notes"
+      ],
+      "freshness": {
+        "runDateOnOrAfterAnchorDate": 41
+      }
+    },
+    {
+      "table": "publishing_queue",
+      "exists": true,
+      "currentCount": 3,
+      "columns": [
+        "queue_id",
+        "idempotency_key",
+        "run_id",
+        "run_week",
+        "cluster_id",
+        "brief_id",
+        "status",
+        "attempt_count",
+        "first_enqueued_at",
+        "last_seen_at",
+        "source_run_id",
+        "priority",
+        "review_notes",
+        "updated_at"
+      ],
+      "freshness": {
+        "updatedAtSinceAnchor": 3,
+        "rowsLinkedToStep10Runs": 3
+      }
+    }
+  ]
+}

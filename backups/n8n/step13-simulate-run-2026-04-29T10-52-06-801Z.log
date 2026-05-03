@@ -1,0 +1,20 @@
+step13 simulate start: 2026-04-29T10:52:06.803Z
+command: npm run n8n:simulate
+
+
+> pod-trends-research@1.0.0 n8n:simulate
+> node n8n/simulate-scheduled-runs.mjs
+
+Instance: https://unmoral-impure-negotiate.ngrok-free.dev
+Workflows to run: wf_collect_trends, wf_normalize_terms, wf_enrich_marketplace, wf_score_and_cluster, wf_generate_range_briefs
+Start spread: 15000ms
+
+Results:
+  OK   wf_collect_trends  execution="174" status=success started=2026-04-29T10:52:07.650Z stopped=2026-04-29T10:52:31.008Z
+  OK   wf_normalize_terms  execution="175" status=success started=2026-04-29T10:52:46.575Z stopped=2026-04-29T10:52:47.492Z
+  OK   wf_enrich_marketplace  execution="176" status=success started=2026-04-29T10:53:03.497Z stopped=2026-04-29T10:53:06.466Z
+  OK   wf_score_and_cluster  execution="177" status=unknown
+  OK   wf_generate_range_briefs  execution="178" status=success started=2026-04-29T10:54:23.942Z stopped=2026-04-29T10:54:24.010Z
+
+step13 simulate end: 2026-04-29T10:54:24.265Z
+exitCode: 0
