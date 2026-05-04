@@ -1,0 +1,26 @@
+---
+description: POD Trends Postgres URIs, n8n credential name, and phase1-gate flags for this repo
+alwaysApply: true
+---
+
+# POD Trends — Postgres and n8n conventions
+
+## Postgres connection strings
+
+- From the **host** (Node scripts, psql on laptop): use **`127.0.0.1:5433`** → maps to Postgres `5432` in Docker (`docker-compose.postgres.yml`).
+- From **another container on `pod_local_net`** (n8n in compose with same network): host **`local-postgres`**, port **`5432`**.
+- Never put `http://` in a Postgres host field.
+
+## n8n credential
+
+- Postgres credential **display name must be exactly**: `Postgres - POD Research` (workflow JSON references this).
+
+## Phase 1 gate (`n8n/phase1-gate.mjs`)
+
+- **`--skip-trigger`** — Skip Gate 5 when public `POST /api/v1/workflows/{id}/execute` is unavailable and REST `/run` is not configured with Editor session + `browser-id`.
+- **`--skip-phase3`** — Skip Gate 6 until pipeline data exists (Etsy evidence, scores, watchlist).
+- Infra smoke: `npm run n8n:phase1-gate -- --skip-trigger --skip-phase3`.
+
+## Simulate (`npm run n8n:simulate`)
+
+- Each target workflow must have **MCP access enabled** in n8n workflow settings or simulate fails with “Workflow is not available in MCP”.

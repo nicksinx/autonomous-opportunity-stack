@@ -16,6 +16,9 @@
 .env.postgres
 .cursor/mcp.json
 
+# Local scratch / diagnostics (do not commit)
+.tmp-check-cols.mjs
+
 # Node
 node_modules/
 
