@@ -19,6 +19,7 @@ Health and ops views live under `db/views/` and refresh on `npm run db:migrate` 
 | `v_cluster_strategy_comparison` | Cluster counts by strategy version |
 | `v_score_weight_history` | Calibration audit trail |
 | `v_lifecycle_history` | Review decisions |
+| `v_creative_pack_status` | Latest Layer 3 creative run per approved candidate (Drive URL, status, errors) |
 
 Run ad hoc checks as `pod_app` or admin against these views; wire Grafana or Metabase if desired.
 

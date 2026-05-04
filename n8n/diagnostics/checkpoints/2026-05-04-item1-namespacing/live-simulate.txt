@@ -1,0 +1,15 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> pod-trends-research@1.0.0 n8n:simulate
+> node n8n/simulate-scheduled-runs.mjs --spread-ms=8000
+
+Instance: http://127.0.0.1:5678
+Workflows to run: wf_collect_trends, wf_normalize_terms, wf_enrich_marketplace, wf_score_and_cluster, wf_generate_range_briefs
+Start spread: 8000ms
+
+Results:
+  OK   wf_collect_trends  execution="181" status=success started=2026-05-04T09:02:16.883Z stopped=2026-05-04T09:02:35.336Z
+  OK   wf_normalize_terms  execution="182" status=success started=2026-05-04T09:02:43.407Z stopped=2026-05-04T09:02:43.729Z
+  OK   wf_enrich_marketplace  execution="183" status=success started=2026-05-04T09:02:52.492Z stopped=2026-05-04T09:02:57.807Z
+  OK   wf_score_and_cluster  execution="184" status=success started=2026-05-04T09:03:08.277Z stopped=2026-05-04T09:03:08.417Z
+  OK   wf_generate_range_briefs  execution="185" status=success started=2026-05-04T09:03:17.338Z stopped=2026-05-04T09:03:17.383Z

@@ -1,0 +1,72 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> pod-trends-research@1.0.0 n8n:phase1-gate
+> node n8n/phase1-gate.mjs
+
+Phase 1 gate — instance: http://127.0.0.1:5678, db: pod_trends
+
+[PASS] Gate 2: required tables exist with expected column count
+    - sources_config: ok (columns=7/7)
+    - raw_signals: ok (columns=12/12)
+    - normalized_terms: ok (columns=15/14)
+    - marketplace_evidence: ok (columns=8/8)
+    - canonical_signals: ok (columns=25/22)
+    - workflow_outbox: ok (columns=10/10)
+    - scoring_runs: ok (columns=9/9)
+    - opportunity_candidate: ok (columns=20/18)
+    - opportunity_score: ok (columns=12/11)
+    - opportunity_score_factor: ok (columns=8/8)
+    - trend_cluster_v2: ok (columns=13/12)
+    - cluster_members_v2: ok (columns=7/6)
+    - trend_scores: ok (columns=11/11)
+    - theme_clusters: ok (columns=18/16)
+    - range_briefs: ok (columns=11/11)
+    - phrase_bank: ok (columns=7/7)
+    - watchlist: ok (columns=6/6)
+    - workflow_runs: ok (columns=10/10)
+    - opportunity_scores: ok (columns=25/25)
+    - score_components: ok (columns=10/9)
+    - score_weights: ok (columns=6/6)
+    - performance_feedback: ok (columns=12/12)
+    - scoring_audit_log: ok (columns=12/11)
+    - normalization_log: ok (columns=10/10)
+    - publishing_queue: ok (columns=14/14)
+    - stage_run_logs: ok (columns=16/16)
+    - source_health: ok (columns=13/13)
+    - pipeline_locks: ok (columns=10/10)
+
+[PASS] Gate 3: sources_config has 6 seed rows
+    sources_config rows: 7
+
+[PASS] Gate 1: Postgres migrations applied (derived)
+
+[PASS] Gate 4: required workflows imported and active
+    - wf_collect_trends: active (id=Vow2Om4u2mjwU4BM, nodes=20)
+    - wf_normalize_terms: active (id=zQQgoZfq4gNMYSZE, nodes=23)
+    - wf_score_and_cluster: active (id=QgvxMPvZ5g6xl1qZ, nodes=22)
+    - wf_enrich_marketplace: active (id=YQH7dP8fNtcJ5xRy, nodes=11)
+    - wf_generate_range_briefs: active (id=1IkVLD9JLhRcmpSG, nodes=14)
+    - wf_publish_queue: active (id=Laau66aHUAI3jMkf, nodes=6)
+
+[FAIL] Gate 5: manual trigger writes a row to workflow_runs
+  ERROR: workflow_runs did not grow after triggering "wf_collect_trends" (before=16, after=16)
+  ERROR: workflow_runs did not grow after triggering "wf_normalize_terms" (before=16, after=16)
+  ERROR: workflow_runs did not grow after triggering "wf_enrich_marketplace" (before=17, after=17)
+    - wf_collect_trends: FAIL (status=success, rows 16 → 16)
+    - wf_normalize_terms: FAIL (status=success, rows 16 → 16)
+    - wf_score_and_cluster: PASS (exec=188 status=success, rows 16 → 17)
+    - wf_enrich_marketplace: FAIL (status=success, rows 17 → 17)
+    - wf_generate_range_briefs: PASS (exec=190 status=success, rows 17 → 18)
+    - wf_publish_queue: PASS (exec=191 status=success, rows 18 → 19)
+
+[PASS] Gate 6: Phase 3 data acceptance criteria
+    normalized_terms rows: 100, duplicate canonical_id: 0
+    marketplace_evidence rows: 120, etsy rows: 30
+    trend_scores rows: 44, latest=2026-05-04, decision hits=44, parity=NaN/undefined
+    watchlist rows: 0
+
+[PASS] Gate 7: workflow_outbox health
+
+[PASS] Gate 8: canonical_signals contract sample
+
+OVERALL: FAIL

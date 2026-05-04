@@ -54,25 +54,36 @@ function skipped(evidence) { return { status: "skipped", evidence, refs: [] }; }
 async function tableInfo(pool, name) {
   if (!pool) return null;
   const cols = await pool.query(
-    `SELECT column_name, data_type, is_nullable
+    `SELECT table_schema, column_name, data_type, is_nullable
        FROM information_schema.columns
-      WHERE table_schema = 'public' AND table_name = $1`,
-    [name],
+      WHERE table_schema = ANY($2::text[]) AND table_name = $1`,
+    [name, ["intake", "scoring", "workflow", "analytics", "public"]],
   );
   if (!cols.rows.length) return { exists: false };
+  const order = ["intake", "scoring", "workflow", "analytics", "public"];
+  const schemas = [...new Set(cols.rows.map((r) => r.table_schema))];
+  const preferred = order.find((s) => schemas.includes(s)) || schemas[0];
+  const effectiveRows = cols.rows.filter((r) => r.table_schema === preferred);
   return {
     exists: true,
-    columns: new Map(cols.rows.map((r) => [r.column_name, r])),
-    columnCount: cols.rows.length,
+    schema: preferred,
+    columns: new Map(effectiveRows.map((r) => [r.column_name, r])),
+    columnCount: effectiveRows.length,
   };
+}
+
+async function tableSchema(pool, name) {
+  const t = await tableInfo(pool, name);
+  if (!t?.exists) return null;
+  return t.schema || null;
 }
 
 async function viewExists(pool, name) {
   if (!pool) return null;
   const r = await pool.query(
-    `SELECT 1 FROM pg_views WHERE schemaname = 'public' AND viewname = $1
-     UNION SELECT 1 FROM pg_matviews WHERE schemaname = 'public' AND matviewname = $1`,
-    [name],
+    `SELECT 1 FROM pg_views WHERE schemaname = ANY($2::text[]) AND viewname = $1
+     UNION SELECT 1 FROM pg_matviews WHERE schemaname = ANY($2::text[]) AND matviewname = $1`,
+    [name, ["intake", "scoring", "workflow", "analytics", "public"]],
   );
   return r.rows.length > 0;
 }
@@ -82,18 +93,20 @@ async function relkind(pool, name) {
   const r = await pool.query(
     `SELECT relkind FROM pg_class c
        JOIN pg_namespace n ON n.oid = c.relnamespace
-      WHERE n.nspname = 'public' AND c.relname = $1`,
-    [name],
+      WHERE n.nspname = ANY($2::text[]) AND c.relname = $1`,
+    [name, ["intake", "scoring", "workflow", "analytics", "public"]],
   );
   return r.rows[0]?.relkind || null;
 }
 
 async function indexExists(pool, table, indexNameLike) {
   if (!pool) return null;
+  const schema = await tableSchema(pool, table);
+  if (!schema) return [];
   const r = await pool.query(
     `SELECT indexname FROM pg_indexes
-      WHERE schemaname = 'public' AND tablename = $1 AND indexname ILIKE $2`,
-    [table, indexNameLike],
+      WHERE schemaname = $1 AND tablename = $2 AND indexname ILIKE $3`,
+    [schema, table, indexNameLike],
   );
   return r.rows.map((x) => x.indexname);
 }
@@ -115,6 +128,8 @@ function normalizeConstraintColumnList(cols) {
 
 async function uniqueOnColumns(pool, table, columns) {
   if (!pool) return null;
+  const schema = await tableSchema(pool, table);
+  if (!schema) return false;
   const r = await pool.query(
     `SELECT con.conname,
             ARRAY(SELECT a.attname
@@ -125,9 +140,9 @@ async function uniqueOnColumns(pool, table, columns) {
        FROM pg_constraint con
        JOIN pg_class c ON c.oid = con.conrelid
        JOIN pg_namespace n ON n.oid = c.relnamespace
-      WHERE n.nspname = 'public' AND c.relname = $1
+      WHERE n.nspname = $2 AND c.relname = $1
         AND con.contype = 'u'`,
-    [table],
+    [table, schema],
   );
   const want = columns.slice().sort().join(",");
   return r.rows.some((row) => {
@@ -141,28 +156,32 @@ async function uniqueOnColumns(pool, table, columns) {
 
 async function fkExists(pool, table, column) {
   if (!pool) return null;
+  const schema = await tableSchema(pool, table);
+  if (!schema) return false;
   const r = await pool.query(
     `SELECT con.conname
        FROM pg_constraint con
        JOIN pg_class c ON c.oid = con.conrelid
        JOIN pg_namespace n ON n.oid = c.relnamespace
        JOIN pg_attribute a ON a.attrelid = con.conrelid AND a.attnum = ANY(con.conkey)
-      WHERE n.nspname = 'public' AND c.relname = $1
+      WHERE n.nspname = $3 AND c.relname = $1
         AND con.contype = 'f' AND a.attname = $2`,
-    [table, column],
+    [table, column, schema],
   );
   return r.rows.length > 0;
 }
 
 async function checkConstraintMentions(pool, table, mustInclude) {
   if (!pool) return null;
+  const schema = await tableSchema(pool, table);
+  if (!schema) return false;
   const r = await pool.query(
     `SELECT pg_get_constraintdef(con.oid) AS def
        FROM pg_constraint con
        JOIN pg_class c ON c.oid = con.conrelid
        JOIN pg_namespace n ON n.oid = c.relnamespace
-      WHERE n.nspname = 'public' AND c.relname = $1 AND con.contype = 'c'`,
-    [table],
+      WHERE n.nspname = $2 AND c.relname = $1 AND con.contype = 'c'`,
+    [table, schema],
   );
   return r.rows.some((row) => mustInclude.every((tok) => String(row.def).includes(tok)));
 }

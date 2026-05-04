@@ -1,0 +1,532 @@
+[
+  {
+    "id": "l3000016-l003-4003-8003-000000000001",
+    "name": "wf_layer3_creative_pack — Error Handler",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "l3-err-1",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          520
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j=$input.first().json||{};const wfName=j.workflow?.name||'unknown';const msg=j.execution?.error?.message||String(j.execution?.error||'Error');const now=new Date().toISOString();return [{json:{rows:[{run_id:'run_'+wfName+'_error_'+Date.now(),run_started:now,run_finished:now,job_name:wfName,rows_added:0,rows_updated:0,status:'error',error_log:msg,sources_summary_json:null,stage_log_root_id:null}]}}];"
+        },
+        "id": "l3-err-2",
+        "name": "Build error row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          220,
+          520
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started timestamptz, run_finished timestamptz,\n       job_name text, rows_added int, rows_updated int, status text,\n       error_log text, sources_summary_json jsonb, stage_log_root_id text)\nON CONFLICT (run_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.rows || []) }}"
+          }
+        },
+        "id": "l3-err-3",
+        "name": "Insert workflow_runs (error)",
+        "position": [
+          440,
+          520
+        ]
+      }
+    ],
+    "connections": {
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Build error row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build error row": {
+        "main": [
+          [
+            {
+              "node": "Insert workflow_runs (error)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London"
+    },
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ]
+  },
+  {
+    "id": "l3000016-l003-4003-8003-000000000002",
+    "name": "wf_layer3_creative_pack",
+    "active": false,
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 30 8 * * *"
+              }
+            ]
+          }
+        },
+        "id": "l3-101",
+        "name": "Schedule Trigger (08:30 daily)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          300
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "SELECT oc.opportunity_id, oc.title, oc.primary_niche, oc.sub_niche,\n  oc.target_audience, oc.product_type_candidates, oc.commercial_hypothesis,\n  oc.creative_hypotheses, oc.market_context, oc.risk_level,\n  oc.latest_score_id, oc.latest_score, oc.latest_confidence,\n  oc.canonical_id\nFROM opportunity_candidate oc\nWHERE oc.readiness_status = 'approved_for_creative'\n  AND oc.latest_score_id IS NOT NULL\n  AND NOT EXISTS (\n    SELECT 1 FROM creative_generation_run r\n    WHERE r.opportunity_id = oc.opportunity_id\n      AND (r.score_id IS NOT DISTINCT FROM oc.latest_score_id)\n      AND r.status IN ('success', 'partial')\n  )\nORDER BY oc.updated_at DESC\nLIMIT 10",
+          "options": {}
+        },
+        "id": "l3-102",
+        "name": "Read pending approved opportunities",
+        "position": [
+          220,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": false
+          },
+          "batchSize": 1
+        },
+        "id": "l3-103",
+        "name": "Split opportunities (batch 1)",
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          440,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j = $input.first().json || {};\nconst idempotency_key = 'l3:' + String(j.opportunity_id || '') + ':' + String(j.latest_score_id || 'none');\nreturn [{ json: { candidate: j, idempotency_key } }];"
+        },
+        "id": "l3-104",
+        "name": "Prepare idempotency",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          660,
+          420
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO creative_generation_run (\n  opportunity_id, score_id, status, idempotency_key, workflow_version, started_at\n)\nSELECT\n  (el->'candidate'->>'opportunity_id')::uuid,\n  NULLIF(trim(el->'candidate'->>'latest_score_id'),'')::uuid,\n  'processing',\n  el->>'idempotency_key',\n  'layer3-v1',\n  NOW()\nFROM jsonb_array_elements($1::jsonb) AS t(el)\nRETURNING run_id, opportunity_id, idempotency_key",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify([$json]) }}"
+          }
+        },
+        "id": "l3-105",
+        "name": "Insert creative_generation_run",
+        "position": [
+          880,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "conditions": [
+              {
+                "id": "l3if1",
+                "leftValue": "={{ Boolean($json.run_id) }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "l3-106",
+        "name": "IF — run inserted?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1100,
+          420
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "// Inlined into wf_layer3_creative_pack — expects nodes:\n// \"Prepare idempotency\" (candidate), \"Postgres insert creative run\" (run_id).\n\nfunction envOr(key, fallback) {\n  try {\n    if (typeof $env !== \"undefined\" && $env[key]) return String($env[key]);\n  } catch (_e) {}\n  return fallback;\n}\n\nfunction extractJsonObject(raw) {\n  const s = String(raw == null ? \"\" : raw).trim();\n  const start = s.indexOf(\"{\");\n  const end = s.lastIndexOf(\"}\");\n  if (start !== -1 && end > start) return JSON.parse(s.slice(start, end + 1));\n  throw new Error(\"No JSON object in response\");\n}\n\nfunction extractSvg(raw) {\n  const s = String(raw || \"\");\n  const m = s.match(/<svg[\\s\\S]*?<\\/svg>/i);\n  if (m) return m[0];\n  throw new Error(\"No SVG element in response\");\n}\n\nconst ins = $(\"Insert creative_generation_run\").first()?.json || {};\nconst prep = $(\"Prepare idempotency\").first()?.json || {};\nconst run_id = ins.run_id;\nconst candidate = prep.candidate || {};\n\nif (!run_id) {\n  return [{ json: { skipped: true, reason: \"idempotency_conflict_or_no_insert\" } }];\n}\n\nconst anthropicKey = envOr(\"ANTHROPIC_API_KEY\", \"\");\nconst openaiKey = envOr(\"OPENAI_API_KEY\", \"\");\nconst imageModel = envOr(\"LAYER3_OPENAI_IMAGE_MODEL\", \"dall-e-3\");\nconst skipDrive = String(envOr(\"LAYER3_SKIP_DRIVE_UPLOAD\", \"true\")).toLowerCase() === \"true\";\n\nconst title = String(candidate.title || \"\").trim();\nconst niche = String(candidate.primary_niche || \"\").trim();\nconst audience = candidate.target_audience\n  ? typeof candidate.target_audience === \"object\"\n    ? JSON.stringify(candidate.target_audience)\n    : String(candidate.target_audience)\n  : \"\";\nconst ctx = candidate.market_context\n  ? typeof candidate.market_context === \"object\"\n    ? JSON.stringify(candidate.market_context)\n    : String(candidate.market_context)\n  : \"\";\n\nconst mjSystem =\n  \"You output JSON only. No markdown fences. POD-safe: no brand names, celebrities, sports teams, or trademarks.\";\nconst mjUser = `Create Midjourney-oriented prompts and three shorter English prompts for OpenAI image generation for print-on-demand (apparel graphics).\n\nReturn strict JSON:\n{\n  \"midjourney_primary\": \"\",\n  \"midjourney_alt_a\": \"\",\n  \"midjourney_alt_b\": \"\",\n  \"image_prompts\": [\"flat vector illustration ...\", \"minimal line art ...\", \"badge logo style ...\"]\n}\n\nTheme/title: ${title}\nNiche: ${niche}\nAudience/context JSON: ${audience}\nMarket JSON: ${ctx}\n\nRules:\n- image_prompts must be exactly 3 strings, each under 900 characters, no text requiring trademarked logos.\n- Midjourney-style richness for the three midjourney_* fields (parameters ok: --ar 1:1 --v 6).`;\n\nlet prompt_pack = {};\nlet images_b64 = [];\nlet svg_text = \"\";\nlet error_summary = null;\n\ntry {\n  if (!anthropicKey) throw new Error(\"ANTHROPIC_API_KEY not set\");\n  if (!openaiKey) throw new Error(\"OPENAI_API_KEY not set\");\n\n  const mjBody = await this.helpers.httpRequest({\n    method: \"POST\",\n    url: \"https://api.anthropic.com/v1/messages\",\n    headers: {\n      \"x-api-key\": anthropicKey,\n      \"anthropic-version\": \"2023-06-01\",\n      \"content-type\": \"application/json\",\n    },\n    body: {\n      model: \"claude-sonnet-4-20250514\",\n      max_tokens: 4096,\n      system: mjSystem,\n      messages: [{ role: \"user\", content: mjUser }],\n    },\n    json: true,\n  });\n  const mjTxt = (mjBody?.content || []).find((b) => b.type === \"text\" && b.text)?.text || \"\";\n  prompt_pack = extractJsonObject(mjTxt);\n\n  const ips = Array.isArray(prompt_pack.image_prompts) ? prompt_pack.image_prompts : [];\n  const prompts3 = [ips[0], ips[1], ips[2]].map((p, i) =>\n    String(p || \"\").trim() || `Original illustration concept for ${title} variant ${i + 1}`,\n  );\n\n  for (let i = 0; i < 3; i++) {\n    const imgRes = await this.helpers.httpRequest({\n      method: \"POST\",\n      url: \"https://api.openai.com/v1/images/generations\",\n      headers: {\n        authorization: `Bearer ${openaiKey}`,\n        \"content-type\": \"application/json\",\n      },\n      body: {\n        model: imageModel,\n        prompt: prompts3[i],\n        n: 1,\n        size: \"1024x1024\",\n        response_format: \"b64_json\",\n      },\n      json: true,\n    });\n    const b64 = imgRes?.data?.[0]?.b64_json;\n    if (!b64) throw new Error(`OpenAI image ${i + 1}: no b64_json`);\n    images_b64.push(b64);\n  }\n\n  const svgSystem =\n    \"Reply with a single valid SVG root element only. viewBox=\\\"0 0 1024 1024\\\". No script, no foreignObject, no external images. Use basic shapes and text for a POD graphic.\";\n  const svgUser = `Design a simple editable SVG graphic inspired by this POD theme (no trademarks):\\nTitle: ${title}\\nNiche: ${niche}\\nConcept: ${String(prompt_pack.midjourney_primary || \"\").slice(0, 1200)}`;\n\n  const svgBody = await this.helpers.httpRequest({\n    method: \"POST\",\n    url: \"https://api.anthropic.com/v1/messages\",\n    headers: {\n      \"x-api-key\": anthropicKey,\n      \"anthropic-version\": \"2023-06-01\",\n      \"content-type\": \"application/json\",\n    },\n    body: {\n      model: \"claude-sonnet-4-20250514\",\n      max_tokens: 8192,\n      system: svgSystem,\n      messages: [{ role: \"user\", content: svgUser }],\n    },\n    json: true,\n  });\n  const svgTxt = (svgBody?.content || []).find((b) => b.type === \"text\" && b.text)?.text || \"\";\n  svg_text = extractSvg(svgTxt);\n} catch (e) {\n  error_summary = String(e?.message || e);\n}\n\nconst mjMd = [\n  \"# Midjourney prompts\",\n  \"\",\n  \"## Primary\",\n  String(prompt_pack.midjourney_primary || \"\"),\n  \"\",\n  \"## Alternate A\",\n  String(prompt_pack.midjourney_alt_a || \"\"),\n  \"\",\n  \"## Alternate B\",\n  String(prompt_pack.midjourney_alt_b || \"\"),\n  \"\",\n].join(\"\\n\");\n\nconst prompt_pack_obj = {\n  ...prompt_pack,\n  openai_image_model: imageModel,\n  skipped_drive_upload: skipDrive,\n};\n\nconst output_rows = [];\noutput_rows.push({\n  run_id,\n  kind: \"mj_prompt_bundle\",\n  variant_index: 0,\n  mime_type: \"text/markdown\",\n  body_text: mjMd,\n  metadata_json: JSON.stringify({ source: \"layer3_inline\" }),\n});\n\nfor (let i = 0; i < images_b64.length; i++) {\n  output_rows.push({\n    run_id,\n    kind: \"openai_image\",\n    variant_index: i,\n    mime_type: \"image/png\",\n    body_text: null,\n    metadata_json: JSON.stringify({\n      variant: i + 1,\n      model: imageModel,\n      prompt_used: Array.isArray(prompt_pack.image_prompts) ? prompt_pack.image_prompts[i] : \"\",\n    }),\n  });\n}\n\noutput_rows.push({\n  run_id,\n  kind: \"svg_sample\",\n  variant_index: 0,\n  mime_type: \"image/svg+xml\",\n  body_text: svg_text || \"<svg xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 100 100\\\"><!-- failed --></svg>\",\n  metadata_json: JSON.stringify({ valid: Boolean(svg_text && !error_summary) }),\n});\n\nconst finalStatus = error_summary ? \"failed\" : \"success\";\n\nreturn [\n  {\n    json: {\n      run_id,\n      opportunity_id: candidate.opportunity_id,\n      prompt_pack_obj,\n      output_rows,\n      images_b64,\n      mj_markdown: mjMd,\n      svg_text,\n      final_status: finalStatus,\n      error_summary,\n      skip_drive: skipDrive,\n    },\n  },\n];\n"
+        },
+        "id": "l3-107",
+        "name": "Generate creative pack (Claude + OpenAI + SVG)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1320,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j = $input.first().json || {};\nconst upd = [{\n  run_id: String(j.run_id || ''),\n  prompt_pack_json: JSON.stringify(j.prompt_pack_obj || {}),\n  status: String(j.final_status || 'failed'),\n  error_summary: String(j.error_summary || ''),\n}];\nconst outs = (j.output_rows || []).map((r) => ({\n  run_id: String(r.run_id || ''),\n  kind: String(r.kind || ''),\n  variant_index: Number(r.variant_index),\n  mime_type: String(r.mime_type || ''),\n  body_text: r.body_text == null ? '' : String(r.body_text),\n  metadata_json: typeof r.metadata_json === 'string' ? r.metadata_json : JSON.stringify(r.metadata_json || {}),\n}));\nreturn [{ json: { persist_update_rows: upd, persist_output_rows: outs } }];"
+        },
+        "id": "l3-108",
+        "name": "Build persist payload",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1540,
+          360
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "UPDATE creative_generation_run AS u SET\n  prompt_pack_json = (v.prompt_pack_json)::jsonb,\n  status = v.status,\n  finished_at = NOW(),\n  error_summary = NULLIF(trim(v.error_summary),'')\nFROM jsonb_to_recordset($1::jsonb) AS v(\n  run_id text,\n  prompt_pack_json text,\n  status text,\n  error_summary text\n)\nWHERE u.run_id = v.run_id::uuid",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.persist_update_rows || []) }}"
+          }
+        },
+        "id": "l3-109",
+        "name": "UPDATE creative_generation_run",
+        "position": [
+          1760,
+          360
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO creative_output (\n  run_id, kind, variant_index, mime_type, body_text, metadata_json\n)\nSELECT\n  (t.run_id)::uuid,\n  t.kind,\n  t.variant_index,\n  NULLIF(trim(t.mime_type),''),\n  NULLIF(trim(t.body_text),''),\n  NULLIF(trim(t.metadata_json),'')::jsonb\nFROM jsonb_to_recordset($1::jsonb) AS t(\n  run_id text,\n  kind text,\n  variant_index int,\n  mime_type text,\n  body_text text,\n  metadata_json text\n)",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.persist_output_rows || []) }}"
+          }
+        },
+        "id": "l3-110",
+        "name": "INSERT creative_output",
+        "position": [
+          1980,
+          360
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForAllItems",
+          "language": "javaScript",
+          "jsCode": "const j = $('Generate creative pack (Claude + OpenAI + SVG)').first()?.json || {};\nconst now = new Date().toISOString();\nconst rid = 'run_wf_layer3_item_' + String(j.run_id || '').slice(0, 8) + '_' + Date.now();\nreturn [{ json: { workflow_runs_rows: [{\n  run_id: rid,\n  run_started: now,\n  run_finished: now,\n  job_name: 'wf_layer3_creative_pack',\n  rows_added: 1,\n  rows_updated: 0,\n  status: j.final_status === 'failed' ? 'error' : 'success',\n  error_log: j.error_summary || '',\n  sources_summary_json: { opportunity_id: j.opportunity_id, creative_run_id: j.run_id },\n  stage_log_root_id: null,\n}] } }];"
+        },
+        "id": "l3-111",
+        "name": "Build workflow_runs row",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2200,
+          360
+        ]
+      },
+      {
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "credentials": {
+          "postgres": {
+            "name": "Postgres - POD Research"
+          }
+        },
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "INSERT INTO workflow_runs\n  (run_id, run_started, run_finished, job_name, rows_added, rows_updated,\n   status, error_log, sources_summary_json, stage_log_root_id)\nSELECT * FROM jsonb_to_recordset($1::jsonb)\n  AS t(run_id text, run_started timestamptz, run_finished timestamptz,\n       job_name text, rows_added int, rows_updated int, status text,\n       error_log text, sources_summary_json jsonb, stage_log_root_id text)\nON CONFLICT (run_id) DO NOTHING",
+          "options": {
+            "queryReplacement": "={{ JSON.stringify($json.workflow_runs_rows || []) }}"
+          }
+        },
+        "id": "l3-112",
+        "name": "Insert workflow_runs",
+        "position": [
+          2420,
+          360
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "l3-113",
+        "name": "NoOp — batch finished",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          660,
+          120
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "l3-114",
+        "name": "NoOp — skip (no run_id)",
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          1320,
+          520
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger (08:30 daily)": {
+        "main": [
+          [
+            {
+              "node": "Read pending approved opportunities",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read pending approved opportunities": {
+        "main": [
+          [
+            {
+              "node": "Split opportunities (batch 1)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split opportunities (batch 1)": {
+        "main": [
+          [
+            {
+              "node": "NoOp — batch finished",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Prepare idempotency",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare idempotency": {
+        "main": [
+          [
+            {
+              "node": "Insert creative_generation_run",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insert creative_generation_run": {
+        "main": [
+          [
+            {
+              "node": "IF — run inserted?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF — run inserted?": {
+        "main": [
+          [
+            {
+              "node": "Generate creative pack (Claude + OpenAI + SVG)",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "NoOp — skip (no run_id)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate creative pack (Claude + OpenAI + SVG)": {
+        "main": [
+          [
+            {
+              "node": "Build persist payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build persist payload": {
+        "main": [
+          [
+            {
+              "node": "UPDATE creative_generation_run",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "UPDATE creative_generation_run": {
+        "main": [
+          [
+            {
+              "node": "INSERT creative_output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "INSERT creative_output": {
+        "main": [
+          [
+            {
+              "node": "Build workflow_runs row",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build workflow_runs row": {
+        "main": [
+          [
+            {
+              "node": "Insert workflow_runs",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Insert workflow_runs": {
+        "main": [
+          [
+            {
+              "node": "Split opportunities (batch 1)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "NoOp — skip (no run_id)": {
+        "main": [
+          [
+            {
+              "node": "Split opportunities (batch 1)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "timezone": "Europe/London",
+      "errorWorkflow": "l3000016-l003-4003-8003-000000000001"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "tags": [
+      {
+        "name": "pod-research"
+      }
+    ],
+    "versionId": "l3000016-l003-4003-8003-0000000000e2"
+  }
+]

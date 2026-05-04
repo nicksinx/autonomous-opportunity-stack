@@ -24,7 +24,8 @@
     "layer2:readiness:full": "node n8n/layer2-readiness-gate.mjs --run-tests --write-report=LAYER2_READINESS_REPORT.md",
     "n8n:simulate": "node n8n/simulate-scheduled-runs.mjs",
     "n8n:import": "node n8n/import-workflows.mjs",
-    "n8n:import:dry": "node n8n/import-workflows.mjs --dry-run"
+    "n8n:import:dry": "node n8n/import-workflows.mjs --dry-run",
+    "n8n:build-layer3": "node n8n/build_layer3_creative_pack.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -36,7 +36,7 @@
           "schema": {
             "__rl": true,
             "mode": "list",
-            "value": "public"
+            "value": "workflow"
           },
           "table": {
             "__rl": true,
@@ -350,7 +350,7 @@
           "schema": {
             "__rl": true,
             "mode": "list",
-            "value": "public"
+            "value": "intake"
           },
           "table": {
             "__rl": true,
@@ -537,7 +537,7 @@
           "schema": {
             "__rl": true,
             "mode": "list",
-            "value": "public"
+            "value": "workflow"
           },
           "table": {
             "__rl": true,
@@ -695,7 +695,7 @@
           "schema": {
             "__rl": true,
             "mode": "list",
-            "value": "public"
+            "value": "workflow"
           },
           "table": {
             "__rl": true,
@@ -804,7 +804,7 @@
           "schema": {
             "__rl": true,
             "mode": "list",
-            "value": "public"
+            "value": "workflow"
           },
           "table": {
             "__rl": true,
@@ -1001,7 +1001,7 @@
           "schema": {
             "__rl": true,
             "mode": "list",
-            "value": "public"
+            "value": "workflow"
           },
           "table": {
             "__rl": true,

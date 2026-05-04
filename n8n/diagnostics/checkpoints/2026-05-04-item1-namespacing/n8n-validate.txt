@@ -1,0 +1,31 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> pod-trends-research@1.0.0 n8n:validate
+> node n8n/validate-workflows.mjs
+
+Validated 8 file(s) under /Users/admin/Projects/autonomous-ideas-signals-commit-changes/n8n
+
+— n8n/wf_collect_trends.json
+  [PASS] wf_collect_trends — Error Handler (3 nodes)
+  [PASS] wf_collect_trends (20 nodes)
+— n8n/wf_enrich_marketplace.json
+  [PASS] wf_enrich_marketplace — Error Handler (3 nodes)
+  [PASS] wf_enrich_marketplace (11 nodes)
+— n8n/wf_generate_range_briefs_and_phrase_expansion.json
+  [PASS] wf_generate_range_briefs — Error Handler (3 nodes)
+  [PASS] wf_generate_range_briefs (14 nodes)
+  [PASS] wf_phrase_expansion (9 nodes)
+— n8n/wf_ingest_performance_feedback.json
+  [PASS] wf_ingest_performance_feedback (13 nodes)
+— n8n/wf_layer3_creative_pack.json
+  [PASS] wf_layer3_creative_pack — Error Handler (3 nodes)
+  [PASS] wf_layer3_creative_pack (14 nodes)
+— n8n/wf_normalize_terms.json
+  [PASS] wf_normalize_terms — Error Handler (3 nodes)
+  [PASS] wf_normalize_terms (23 nodes)
+— n8n/wf_publish_queue.json
+  [PASS] wf_publish_queue — Error Handler (3 nodes)
+  [PASS] wf_publish_queue (6 nodes)
+— n8n/wf_score_and_cluster.json
+  [PASS] wf_score_and_cluster — Error Handler (3 nodes)
+  [PASS] wf_score_and_cluster (22 nodes)

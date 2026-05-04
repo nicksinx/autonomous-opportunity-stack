@@ -96,6 +96,7 @@ const REQUIRED_WORKFLOWS = [
   "wf_generate_range_briefs",
   "wf_publish_queue",
 ];
+const APP_SCHEMAS = ["intake", "scoring", "workflow", "analytics", "public"];
 
 const EXEC_POLL_INTERVAL_MS = 2000;
 const EXEC_POLL_TIMEOUT_MS = 90_000;
@@ -300,13 +301,17 @@ async function gate2CheckSchema(pool) {
   const errors = [];
   const tabReports = [];
   const sql = `
-    SELECT table_name, COUNT(*)::int AS column_count
-      FROM information_schema.columns
-     WHERE table_schema = 'public'
-       AND table_name = ANY($1::text[])
-  GROUP BY table_name`;
+    SELECT table_name, MAX(column_count)::int AS column_count
+    FROM (
+      SELECT table_schema, table_name, COUNT(*)::int AS column_count
+        FROM information_schema.columns
+       WHERE table_schema = ANY($2::text[])
+         AND table_name = ANY($1::text[])
+    GROUP BY table_schema, table_name
+    ) s
+   GROUP BY table_name`;
   const names = REQUIRED_TABLES.map((t) => t.name);
-  const res = await pool.query(sql, [names]);
+  const res = await pool.query(sql, [names, APP_SCHEMAS]);
   const colCounts = new Map(res.rows.map((r) => [r.table_name, Number(r.column_count)]));
   for (const tab of REQUIRED_TABLES) {
     const have = colCounts.get(tab.name) ?? 0;

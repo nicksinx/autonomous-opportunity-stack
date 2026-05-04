@@ -1,0 +1,21 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> pod-trends-research@1.0.0 layer2:readiness:full
+> node n8n/layer2-readiness-gate.mjs --run-tests --write-report=LAYER2_READINESS_REPORT.md
+
+Wrote /Users/admin/Projects/autonomous-ideas-signals-commit-changes/LAYER2_READINESS_REPORT.md
+Layer 2 readiness: NOT READY
+- Must Complete: 31 total (26 pass, 3 fail, 2 partial)
+- Strongly Recommended: 10 total (9 pass, 1 partial)
+- Can Be Deferred: 11 total (8 pass, 3 deferred)
+- Decisions Needed: 13 total (13 pass)
+
+Failing:
+  [FAIL] must.schema.canonical_signals_table — UNIQUE (dedupe_key, contract_version) not present  -> ALTER TABLE canonical_signals ADD CONSTRAINT ...
+  [FAIL] must.schema.opportunity_score_runid_uniqueness — UNIQUE(opportunity_id,scoring_run_id)=false; opportunity_scores_legacy.relkind=r  -> ALTER TABLE opportunity_score ADD CONSTRAINT uq_opportunity_score_run UNIQUE(opportunity_id, scoring_run_id)
+  [FAIL] must.schema.raw_signals_canonical_fk — column=true; FK=false; idx=none  -> Add column + FK per migration 0005
+
+Partial:
+  [PARTIAL] must.schema.workflow_outbox_table — cols=10; idx(status,scheduled)=false; idx(aggregate)=false  -> Add the two indexes from spec §12.6
+  [PARTIAL] must.schema.scoring_runs_table — cols=9; trigger_type CHECK=false; status CHECK=false; idx=false  -> Add CHECK constraints per spec §12.5
+  [PARTIAL] should.schema.readiness_status_column — CHECK does not enumerate all 8 states  -> Update CHECK constraint per spec §13.1

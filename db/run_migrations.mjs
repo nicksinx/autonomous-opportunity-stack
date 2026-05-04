@@ -53,7 +53,7 @@ function readSql(dir, filename) {
 
 async function ensureMigrationsTable(client) {
   await client.query(`
-    CREATE TABLE IF NOT EXISTS _migrations (
+    CREATE TABLE IF NOT EXISTS public._migrations (
       filename    TEXT PRIMARY KEY,
       applied_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       checksum    TEXT
@@ -63,7 +63,7 @@ async function ensureMigrationsTable(client) {
 
 async function listApplied(client) {
   const { rows } = await client.query(
-    "SELECT filename FROM _migrations ORDER BY filename",
+    "SELECT filename FROM public._migrations ORDER BY filename",
   );
   return new Set(rows.map((r) => r.filename));
 }
@@ -74,7 +74,7 @@ async function applyMigration(client, filename, sql) {
   try {
     await client.query(sql);
     await client.query(
-      "INSERT INTO _migrations (filename) VALUES ($1) ON CONFLICT (filename) DO NOTHING",
+      "INSERT INTO public._migrations (filename) VALUES ($1) ON CONFLICT (filename) DO NOTHING",
       [filename],
     );
     await client.query("COMMIT");
@@ -93,6 +93,7 @@ async function applyViews(client) {
   console.log(`Refreshing ${files.length} view file(s)...`);
   await client.query("BEGIN");
   try {
+    await client.query("SET LOCAL search_path = public, intake, scoring, workflow, analytics");
     for (const f of files) {
       console.log(`  -> ${f}`);
       await client.query(readSql(VIEWS_DIR, f));

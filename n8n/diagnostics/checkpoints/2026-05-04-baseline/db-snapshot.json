@@ -1,0 +1,75 @@
+{
+  "at": "2026-05-04T08:49:09.581Z",
+  "counts": {
+    "raw_signals": 116,
+    "normalized_terms": 96,
+    "canonical_signals": 40,
+    "marketplace_evidence": 116,
+    "trend_scores": 40,
+    "opportunity_candidate": 40,
+    "trend_cluster_v2": 0,
+    "range_briefs": 0,
+    "publishing_queue": 3,
+    "workflow_runs": 117
+  },
+  "latest_workflow_runs": [
+    {
+      "job_name": "wf_publish_queue",
+      "status": "success",
+      "rows_added": 0,
+      "run_started": "2026-05-04T08:49:05.625Z"
+    },
+    {
+      "job_name": "wf_generate_range_briefs",
+      "status": "no_clusters",
+      "rows_added": 0,
+      "run_started": "2026-05-04T08:49:03.546Z"
+    },
+    {
+      "job_name": "wf_enrich_marketplace",
+      "status": "success",
+      "rows_added": 20,
+      "run_started": "2026-05-04T08:49:00.005Z"
+    },
+    {
+      "job_name": "wf_score_and_cluster",
+      "status": "success",
+      "rows_added": 40,
+      "run_started": "2026-05-04T08:48:53.152Z"
+    },
+    {
+      "job_name": "wf_normalize_terms",
+      "status": "success",
+      "rows_added": 10,
+      "run_started": "2026-05-04T08:48:51.187Z"
+    },
+    {
+      "job_name": "wf_collect_trends",
+      "status": "success",
+      "rows_added": 10,
+      "run_started": "2026-05-04T08:48:30.571Z"
+    },
+    {
+      "job_name": "wf_publish_queue",
+      "status": "success",
+      "rows_added": 0,
+      "run_started": "2026-05-03T17:35:27.136Z"
+    },
+    {
+      "job_name": "wf_generate_range_briefs",
+      "status": "no_clusters",
+      "rows_added": 0,
+      "run_started": "2026-05-03T17:35:18.090Z"
+    }
+  ],
+  "raw_signals_by_source_24h": [
+    {
+      "source": "google_trends",
+      "n": 35
+    },
+    {
+      "source": "etsy_autocomplete",
+      "n": 20
+    }
+  ]
+}

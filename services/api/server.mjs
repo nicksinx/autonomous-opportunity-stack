@@ -129,6 +129,27 @@ app.get("/opportunities/:id/scores", async (req, reply) => {
   return { items: rows };
 });
 
+app.get("/opportunities/:id/creative", async (req, reply) => {
+  const { rows: oc } = await p.query(`SELECT opportunity_id FROM opportunity_candidate WHERE opportunity_id = $1`, [
+    req.params.id,
+  ]);
+  if (!oc.length) return reply.code(404).send({ error: "not_found" });
+  const { rows: runs } = await p.query(
+    `SELECT * FROM creative_generation_run WHERE opportunity_id = $1 ORDER BY started_at DESC`,
+    [req.params.id],
+  );
+  const runIds = runs.map((r) => r.run_id);
+  let outputs = [];
+  if (runIds.length) {
+    const { rows: out } = await p.query(
+      `SELECT * FROM creative_output WHERE run_id = ANY($1::uuid[]) ORDER BY created_at ASC`,
+      [runIds],
+    );
+    outputs = out;
+  }
+  return { runs, outputs };
+});
+
 app.post("/opportunities/:id/decision", async (req, reply) => {
   const body = req.body || {};
   const decision = body.decision;

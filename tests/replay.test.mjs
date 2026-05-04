@@ -39,6 +39,7 @@ test("replay appends scores and rejects duplicate (opportunity_id, scoring_run_i
 
   try {
     await client.query("BEGIN");
+    await client.query("SET LOCAL search_path = intake, scoring, workflow, analytics, public");
 
     await client.query(
       `INSERT INTO normalized_terms (canonical_id, canonical_term, status)

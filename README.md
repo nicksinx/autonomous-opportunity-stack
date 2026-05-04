@@ -12,6 +12,8 @@ optional CSV and contract validation align producers with
 lifecycle layer on top of that foundation (see `oportunity-scoring-spec-layer-2.md`,
 `LAYER2_FEASIBILITY_ASSESSMENT.md`, and migrations `0009_*` onward).
 
+**Layer 3** (creative pack) adds `creative_generation_run` / `creative_output`, view `v_creative_pack_status`, and n8n workflow `wf_layer3_creative_pack` — Midjourney-oriented prompts, OpenAI images (2–3), and sample SVG text persisted for operators; optional Google Drive wiring is documented in [`docs/layer3-google-drive-n8n.md`](docs/layer3-google-drive-n8n.md).
+
 ## Storage backend
 
 The system stores all pipeline data in a local Dockerised Postgres instance
@@ -43,12 +45,14 @@ npm run db:backfill
 #    — create credential "Postgres - POD Research" in n8n UI
 #    — see db/README.md "n8n credential + workflow import" for details
 
-# 6. Import all seven workflow JSON files into a running n8n instance
+# 6. Import all workflow JSON files (`n8n/wf_*.json`) into a running n8n instance
 #    Set N8N_API_URL (must include http:// or https://, e.g. http://127.0.0.1:5678)
 #    and N8N_API_KEY in .env — see .env.example
 npm run n8n:import:dry            # preview create/update
 npm run n8n:import                # actually create/update
 ```
+
+After editing Layer 3 generator code, regenerate the workflow JSON: `npm run n8n:build-layer3`. Set **`ANTHROPIC_API_KEY`** and **`OPENAI_API_KEY`** in n8n (optional **`LAYER3_OPENAI_IMAGE_MODEL`**, **`LAYER3_SKIP_DRIVE_UPLOAD`** — see [`docs/layer3-google-drive-n8n.md`](docs/layer3-google-drive-n8n.md)).
 
 ## Daily commands
 
@@ -66,6 +70,7 @@ npm run n8n:import                # actually create/update
 | `npm run db:credentials-check` | Verify `DATABASE_URI` / `DATABASE_URI_ADMIN` can connect (masks passwords) |
 | `npm run db:schema-columns` | Confirm every Phase 1 table has columns from `db/migrations/0001_init.sql` |
 | `npm test`                  | Run Node’s built-in test runner (`tests/*.test.mjs`)      |
+| `npm run n8n:build-layer3` | Regenerate [`n8n/wf_layer3_creative_pack.json`](n8n/wf_layer3_creative_pack.json) from the builder + snippet |
 
 ## Verification and Phase 1 gate
 

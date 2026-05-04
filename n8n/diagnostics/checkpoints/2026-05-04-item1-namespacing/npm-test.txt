@@ -1,0 +1,36 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> pod-trends-research@1.0.0 test
+> node --test
+
+✔ stableHashKey is deterministic (1.876477ms)
+✔ partitionDeterministic chunks by maxPerCluster (17.016434ms)
+✔ confidence grows with source diversity (1.757019ms)
+✔ validateCanonicalSignal accepts minimal valid row (2.8209ms)
+✔ ALL_CHECKS has expected sections and unique ids (4.747146ms)
+✔ extractDecisionRecords splits on `## decision:` headings (0.793572ms)
+✔ parseDecisionBody handles key:value lines and ignores prose (0.312485ms)
+✔ parseDecisions returns one entry per known decision id (missing -> empty body) (0.247545ms)
+✔ makeCtx exposes file helpers anchored at repoRoot (2.825031ms)
+✔ intake_writes_canonical check passes when JSON contains UPSERT canonical_signals (0.949738ms)
+✔ intake_writes_canonical check fails when JSON lacks canonical_signals write (0.837153ms)
+✔ no_mirror_writes flags any wf_*.json that mentions dual_write_mirror_log (1.234456ms)
+✔ no_handedits_helper passes when the helper is absent (0.624714ms)
+✔ vestigial_js_archived passes when files live under archive/legacy-modules/ (2.981994ms)
+✔ decision check passes when status=resolved with owner+resolution (0.327937ms)
+✔ decision check fails when block missing (0.190042ms)
+✔ dual_write_mirror_table check PASSes when both live and legacy tables are gone (0.435056ms)
+✔ dual_write_mirror_table check PASSes when only the *_legacy table exists (post-0015) (1.385798ms)
+✔ dual_write_mirror_table check stays DEFERRED when migration 0015 has not run (0.335801ms)
+✔ renderReport produces sections for every present status (0.671429ms)
+✔ renderHuman lists failing checks with fix hints (0.302761ms)
+✔ 0009_layer2_entities.sql defines append-only score history key (1.697731ms)
+✔ replay appends scores and rejects duplicate (opportunity_id, scoring_run_id) (57.573275ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 384.535956
